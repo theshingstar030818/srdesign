@@ -7,13 +7,16 @@
 
 #include <stdio.h>
 
+
+#include "../LPC17xx.h"
 #include "./BasalDose/BasalDose.h"
 #include "./BosalDose/BosalDose.h"
+#include "./StepperMotor/StepperMotor.h"
 
 int main()
 {
 	while(1)
 	{
-		printf("%s\n", BasalDose_PrintStatus());
+		StepperMotor_StepFoward();
 	}
 }

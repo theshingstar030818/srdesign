@@ -5,25 +5,44 @@
  *      Author: sle
  */
 
-static int stepSequence[] = {1, 2, 4, 8};
-int position = 0;
+//static int stepSequence[] = {1, 2, 4, 8};
+int curPosition = 0;
 
 void StepperMotor_StepFoward()
 {
-	PORT1 = stepSequence[position];
-	if (position == 3)
+	switch (curPosition)
 	{
-		position = 0;
+		case 0:
+			P0[0] = 1;
+			P0[1] = 0;
+			P0[2] = 0;
+			P0[3] = 0;
+			curPosition += 1;
+			break;
+		case 1:
+			P0[0] = 0;
+			P0[1] = 1;
+			P0[2] = 0;
+			P0[3] = 0;
+			curPosition += 1;
+			break;
+		case 2:
+			P0[0] = 0;
+			P0[1] = 0;
+			P0[2] = 1;
+			P0[3] = 0;
+			curPosition += 1;
+			break;
+		case 3:
+			P0[0] = 0;
+			P0[1] = 0;
+			P0[2] = 0;
+			P0[3] = 1;
+			curPosition = 0;
+			break;
 	}
-	position += 1;
 }
 
 void StepperMotor_StepBackward()
 {
-	PORT1 = stepSequence[position];
-	if (position == 0)
-	{
-		position = 3;
-	}
-	position -= 1;
 }
