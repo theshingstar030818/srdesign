@@ -15,8 +15,8 @@ uint32_t globalPos;
 bool isSyringeEmpty(void);
 
 
-unsigned int i = 0;
-unsigned int max_time = 1500000;
+uint32_t i = 0;
+uint32_t max_time = 1500000;
 
 int main()
 {
