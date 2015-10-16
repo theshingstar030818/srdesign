@@ -58,7 +58,7 @@ void StepperMotor_StepFoward()
 		}
 		for(i=0; i<max_time; i++);
 	}
-	stepBackward();
+	StepperMotor_StepBackward();
 }
 
 void StepperMotor_StepBackward()
@@ -103,5 +103,5 @@ void StepperMotor_StepBackward()
 		for(i=0; i<max_time; i++);
 	}
 	globalPos = 0;
-	stepForward();
+	StepperMotor_StepForward();
 }
