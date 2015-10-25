@@ -8,31 +8,31 @@
 #include "Control.c"
 #include "StepperMotor.h"
 
-//Global variables
+// Global variables
 uint32_t StepperMotor_CurrentPosition;
 uint32_t StepperMotor_GlobalPosition;
 
-//Initializes the stepper motor
+// Initializes the stepper motor
 void StepperMotor_Initiate(void)
 {
-	//Initialize the pins P0.0 to P0.3
-	//These are the leads for the stepper motor
+	// Initialize the pins P0.0 to P0.3
+	// These are the leads for the stepper motor
 	LPC_GPIO0->FIODIR |= (0x0000000F);
 	LPC_GPIO0->FIOPIN &= ~(0x0000000F);
 	
-	//Declaring the global variables
+	// Declaring the global variables
 	StepperMotor_CurrentPosition = 0;
 	StepperMotor_GlobalPosition = 0;
 	BasalDose_DoseAmountCounter = 0;
 }
 
-//Function that will drive the stepper motor forward
+// Function that will drive the stepper motor forward
 void StepperMotor_StepForward(void)
 {
-	//increase the BasalDose_DoseAmountCounter with each step forward
+	// Increase the BasalDose_DoseAmountCounter with each step forward
 	BasalDose_DoseAmountCounter++;
 	
-	//Compare and keep track of the current position of the stepper motor
+	// Compare and keep track of the current position of the stepper motor
 	switch(StepperMotor_CurrentPosition)
 	{
 		case 0:
@@ -69,21 +69,21 @@ void StepperMotor_StepForward(void)
 			break;
 	}
 	
-	//Increment stepper motors global variable
+	// Increment stepper motors global variable
 	StepperMotor_GlobalPosition += 1;
 	
-	//Compare if the amount injecfted is more than amount that is able to be recieved
+	// Compare if the amount injecfted is more than amount that is able to be recieved
 	if(BasalDose_DoseAmountCounter >= STEPS_PER_DOSE)
 	{
-		NVIC_DisableIRQ(TIMER1_IRQn); //Disable Timer1
-		BasalDose_DoseAmountCounter = 0; //Set to 0
+		NVIC_DisableIRQ(TIMER1_IRQn); // Disable Timer1
+		BasalDose_DoseAmountCounter = 0; // Set to 0
 	}
 }
 
-//Function that will drive the stepper motor backward
+// Function that will drive the stepper motor backward
 void StepperMotor_StepBackward(void)
 {
-	//Compare and keep track of the current position of the stepper motor
+	// Compare and keep track of the current position of the stepper motor
 	switch(StepperMotor_CurrentPosition)
 	{
 		case 0:
@@ -120,6 +120,6 @@ void StepperMotor_StepBackward(void)
 			break;
 	}
 	
-	//Decrement stepper motors global variable
+	// Decrement stepper motors global variable
 	StepperMotor_GlobalPosition -= 1;
 }
