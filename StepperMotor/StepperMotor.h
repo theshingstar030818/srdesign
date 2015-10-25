@@ -17,18 +17,23 @@
  * variables that describe where the stepper motor is relative
  * from where it starts.
  */
+ 
 void StepperMotor_Initiate();
 
 /* Function: StepperMotor_StepForward()
- * TODO: Add description of function
+ *
+ * Called when Timer1 is enabled.
+ * Function is used to make half steps on the stepper motor.
+ * Currently, adds globalPos and currentPos by 1 with each half step.
  */
 void StepperMotor_StepFoward();
 
 /* Function: StepperMotor_StepBackward()
- * TODO: Add description of function
+ *
+ * Called when the Control_IsSyringeEmpty() is true.
+ * Function makes half steps on the stepper motor.
+ * Currently, subtracts globalPos and currentPos by 1 with each half step.
  */
 void StepperMotor_StepBackward();
-
-
 
 #endif /* STEPPERMOTOR_STEPPERMOTOR_H_ */
