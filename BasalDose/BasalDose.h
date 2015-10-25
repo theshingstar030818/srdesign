@@ -8,6 +8,10 @@
 #ifndef BASALDOSE_H_
 #define BASALDOSE_H_
 
-char* BasalDose_PrintStatus(void);
+void BasalDose_DoseTimingInitiate(void);
+void BasalDose_DoseEnable(void);
+
+void BasalDose_DoseAmountInitiate(void);
+void BasalDose_DoseInject(void);
 
 #endif /* BASALDOSE_H_ */

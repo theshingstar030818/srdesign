@@ -5,103 +5,107 @@
  *      Author: sle
  */
 
-void StepperMotor_Initiate()
+#include "Control.c"
+#include "StepperMotor.h"
+
+uint32_t StepperMotor_CurrentPosition;
+uint32_t StepperMotor_GlobalPosition;
+
+void StepperMotor_Initiate(void)
 {
 	LPC_GPIO0->FIODIR |= (0x0000000F);
 	LPC_GPIO0->FIOPIN &= ~(0x0000000F);
 
-	currentPos = 0;
-	globalPos = 0;
+	StepperMotor_CurrentPosition = 0;
+	StepperMotor_GlobalPosition = 0;
+	BasalDose_DoseAmountCounter = 0;
 }
 
-void StepperMotor_StepFoward()
+void StepperMotor_StepForward(void)
 {
-	while(1)
+	BasalDose_DoseAmountCounter++;
+
+	switch(StepperMotor_CurrentPosition)
 	{
-		if(isSyringeEmpty())
+		case 0:
+			LPC_GPIO0->FIOPIN = (0x00000003);
+			StepperMotor_CurrentPosition += 1;
 			break;
-		globalPos += 1;
-		switch(currentPos)
-		{
-			case 0:
-				LPC_GPIO0->FIOPIN = (0x00000003);
-				currentPos += 1;
-				break;
-			case 1:
-				LPC_GPIO0->FIOPIN = (0x00000002);
-				currentPos += 1;
-				break;
-			case 2:
-				LPC_GPIO0->FIOPIN = (0x00000006);
-				currentPos += 1;
-				break;
-			case 3:
-				LPC_GPIO0->FIOPIN = (0x00000004);
-				currentPos += 1;
-				break;
-			case 4:
-				LPC_GPIO0->FIOPIN = (0x0000000C);
-				currentPos += 1;
-				break;
-			case 5:
-				LPC_GPIO0->FIOPIN = (0x00000008);
-				currentPos += 1;
-				break;
-			case 6:
-				LPC_GPIO0->FIOPIN = (0x00000009);
-				currentPos += 1;
-				break;
-			case 7:
-				LPC_GPIO0->FIOPIN = (0x00000001);
-				currentPos = 0;
-				break;
-		}
-		for(i=0; i<max_time; i++);
+		case 1:
+			LPC_GPIO0->FIOPIN = (0x00000002);
+			StepperMotor_CurrentPosition += 1;
+			break;
+		case 2:
+			LPC_GPIO0->FIOPIN = (0x00000006);
+			StepperMotor_CurrentPosition += 1;
+			break;
+		case 3:
+			LPC_GPIO0->FIOPIN = (0x00000004);
+			StepperMotor_CurrentPosition += 1;
+			break;
+		case 4:
+			LPC_GPIO0->FIOPIN = (0x0000000C);
+			StepperMotor_CurrentPosition += 1;
+			break;
+		case 5:
+			LPC_GPIO0->FIOPIN = (0x00000008);
+			StepperMotor_CurrentPosition += 1;
+			break;
+		case 6:
+			LPC_GPIO0->FIOPIN = (0x00000009);
+			StepperMotor_CurrentPosition += 1;
+			break;
+		case 7:
+			LPC_GPIO0->FIOPIN = (0x00000001);
+			StepperMotor_CurrentPosition = 0;
+			break;
 	}
-	StepperMotor_StepBackward();
+
+	StepperMotor_GlobalPosition += 1;
+
+	if(BasalDose_DoseAmountCounter >= STEPS_PER_DOSE)
+	{
+		NVIC_DisableIRQ(TIMER1_IRQn);
+		BasalDose_DoseAmountCounter = 0;
+	}
 }
 
-void StepperMotor_StepBackward()
+void StepperMotor_StepBackward(void)
 {
-	for(; globalPos > 0; globalPos--)
+	switch(StepperMotor_CurrentPosition)
 	{
-		switch(currentPos)
-		{
-			case 0:
-				LPC_GPIO0->FIOPIN = (0x00000009);
-				currentPos = 7;
-				break;
-			case 1:
-				LPC_GPIO0->FIOPIN = (0x00000001);
-				currentPos--;
-				break;
-			case 2:
-				LPC_GPIO0->FIOPIN = (0x00000003);
-				currentPos--;
-				break;
-			case 3:
-				LPC_GPIO0->FIOPIN = (0x00000002);
-				currentPos--;
-				break;
-			case 4:
-				LPC_GPIO0->FIOPIN = (0x00000006);
-				currentPos--;
-				break;
-			case 5:
-				LPC_GPIO0->FIOPIN = (0x00000004);
-				currentPos--;
-				break;
-			case 6:
-				LPC_GPIO0->FIOPIN = (0x0000000C);
-				currentPos--;
-				break;
-			case 7:
-				LPC_GPIO0->FIOPIN = (0x00000008);
-				currentPos--;
-				break;
-		}
-		for(i=0; i<max_time; i++);
+		case 0:
+			LPC_GPIO0->FIOPIN = (0x00000009);
+			StepperMotor_CurrentPosition = 7;
+			break;
+		case 1:
+			LPC_GPIO0->FIOPIN = (0x00000001);
+			StepperMotor_CurrentPosition--;
+			break;
+		case 2:
+			LPC_GPIO0->FIOPIN = (0x00000003);
+			StepperMotor_CurrentPosition--;
+			break;
+		case 3:
+			LPC_GPIO0->FIOPIN = (0x00000002);
+			StepperMotor_CurrentPosition--;
+			break;
+		case 4:
+			LPC_GPIO0->FIOPIN = (0x00000006);
+			StepperMotor_CurrentPosition--;
+			break;
+		case 5:
+			LPC_GPIO0->FIOPIN = (0x00000004);
+			StepperMotor_CurrentPosition--;
+			break;
+		case 6:
+			LPC_GPIO0->FIOPIN = (0x0000000C);
+			StepperMotor_CurrentPosition--;
+			break;
+		case 7:
+			LPC_GPIO0->FIOPIN = (0x00000008);
+			StepperMotor_CurrentPosition--;
+			break;
 	}
-	globalPos = 0;
-	StepperMotor_StepForward();
+	StepperMotor_GlobalPosition -= 1;
 }

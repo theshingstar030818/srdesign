@@ -8,62 +8,34 @@
 #include "lpc17xx.h"                 // Device header
 #include "StepperMotor.h"
 
+extern StepperMotor_GlobalPosition;
+
 typedef enum {false, true} bool;
 
-uint32_t currentPos;
-uint32_t globalPos;
+#define MAX_TIME 75000
+#define STEPS_PER_DOSE 50
+
 uint32_t i = 0;
-uint32_t max_time = 1500000;
+uint32_t wait = MAX_TIME;
 
 bool Control_IsSyringeEmpty(void);
-void BasalDose_DoseTimingInitiate();
-void BasalDose_DoseAmountInitiate();
 
-int main()
+int main(void)
 {
 	SystemInit();
-	StepperMotor_Initiate();
-	StepperMotor_StepForward();
 
-	return 0;
+	StepperMotor_Initiate();
+	BasalDose_DoseTimingInitiate();
+
+	while(1);
 }
 
 bool Control_IsSyringeEmpty()
 {
-	if(globalPos >= 20)
+	if(StepperMotor_GlobalPosition >= 20)
 		return true;
 	else
 		return false;
-}
-
-void BasalDose_DoseTimingInitiate()
-{
-	LPC_SC->PCONP    |= 1 << 1; // Set to initialize timer0
-	LPC_SC->PCLKSEL0 |= 1 << 2; // Set for divisor of clk to be 2
-
-	LPC_TIM0->TCM = 0x02; 		// Set to resets timer0
-	LPC_TIM0->PR  = 0x00; 		// Set so that there is no pre-scaler (pre-scaler = 0)
-	LPC_TIM0->MR0 = ; 			// TODO: Insert "match" number here;
-	LPC_TIM0->MCR = 3; 			// Set so when there is a match, interrupt is triggered and
-								// timer is reset
-
-	BasalDose_DoseAmountInitiate();
-	return;
-
-}
-
-void BasalDose_DoseAmountInitate()
-{
-	LPC_SC->PCONP 	 |= 1 << 2; // This would be the setup to initialize timer1
-	LPC_SC->PCLKSEL1 |= 1 << 2; // Same thing, but for divisor
-
-	LPC_TIM1->TCM = 0x02;
-	LPC_TIM1->PR  = 0x00;
-	LPC_TIM1->MR0 = ;
-	LPC_TIM1->MCR = 3;
-
-	return;
-
 }
 
 
