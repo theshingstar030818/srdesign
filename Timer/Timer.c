@@ -24,3 +24,11 @@ void TIMER1_IRQHandler(void)
 		BasalDose_DoseInject(); // Call for the stepper motor to rotate
 	}
 }
+
+void EINT3_IRQHandler(void)
+{
+	LPC_GPIOINT->IO2IntClr |= (1<<10); // Clear the status
+	LPC_GPIO1->FIOPIN ^= 1 << 31; // Toggle the LED
+
+	NVIC_EnableIRQ(TIMER1_IRQn);
+}
