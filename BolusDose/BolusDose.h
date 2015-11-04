@@ -5,4 +5,4 @@
  *      Author: sle
  */
 
-
+void BolusDose_DoseInitiate(void);
