@@ -1,11 +1,12 @@
-/*
- * Timer.c
+/**
+ *  Timer.c
  *
  *  Created on: Oct 25, 2015
  *      Author: sle
  */
 
 #include "BasalDose.h"
+#include "BolusDose.h"
 
 // Timer0 IRQ Handler
 void TIMER0_IRQHandler(void)
@@ -25,6 +26,7 @@ void TIMER1_IRQHandler(void)
 	}
 }
 
+// EXternal interrupt 3 Handler
 void EINT3_IRQHandler(void)
 {
 	LPC_GPIOINT->IO2IntClr |= (1<<10); // Clear the status

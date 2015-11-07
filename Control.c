@@ -1,5 +1,5 @@
-/*
- * Control.c
+/**
+ *  Control.c
  *
  *  Created on: Aug 31, 2015
  *      Author: sle
@@ -7,8 +7,12 @@
 
 #include "lpc17xx.h"                 // Device header
 #include "StepperMotor.h"
+#include "BasalDose.h"
+#include "BolusDose.h"
 
-extern StepperMotor_GlobalPosition;
+// Global variables declared in other files
+extern uint32_t StepperMotor_GlobalPosition;
+extern uint32_t BasalDose_DoseAmountCounter;
 
 // Create bool
 typedef enum {false, true} bool;
@@ -40,6 +44,4 @@ bool Control_IsSyringeEmpty()
 	else
 		return false;
 }
-
-
 
