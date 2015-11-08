@@ -5,9 +5,10 @@
  *      Author: sle
  */
 
-#include "Control.c"
+#include "lpc17xx.h"  
+//#include "Control.c"
 #include "StepperMotor.h"
-#include "BasalDose.h"
+//#include "BasalDose.h"
 
 extern uint32_t Control_AmountPerDose;
 extern uint32_t BasalDose_DoseAmountCounter;

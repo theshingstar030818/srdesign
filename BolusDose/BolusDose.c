@@ -5,7 +5,8 @@
  *      Author: sle
  */
  
-#include "Control.c"
+#include "lpc17xx.h"  
+//#include "Control.c"
 #include "BolusDose.h"
 
 // Amount of steps for Bolus
