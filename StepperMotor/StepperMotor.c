@@ -9,6 +9,9 @@
 #include "StepperMotor.h"
 #include "BasalDose.h"
 
+extern uint32_t Control_AmountPerDose;
+extern uint32_t BasalDose_DoseAmountCounter;
+
 // Global variables
 uint32_t StepperMotor_CurrentPosition;
 uint32_t StepperMotor_GlobalPosition;
@@ -72,7 +75,7 @@ void StepperMotor_StepForward(void)
 	StepperMotor_GlobalPosition++; // Increment stepper motors global variable
 	
 	// Compare if the amount injecfted is more than amount that is able to be recieved
-	if(BasalDose_DoseAmountCounter >= STEPS_PER_DOSE)
+	if(BasalDose_DoseAmountCounter >= Control_AmountPerDose)
 	{
 		BasalDose_DoseDisable(); // Disable Timer1 IRQ
 		BasalDose_DoseTimingEnable(); // Enable Timer0
