@@ -112,6 +112,6 @@ void TIMER0_IRQHandler(void);
  *  @return void: void
  */
 
-void TIMER1_IRQHandler(void)
+void TIMER1_IRQHandler(void);
 
 #endif /* BASALDOSE_H_ */
