@@ -16,6 +16,9 @@
  *  Currently, sets StepperMotor_GlobalPosition and StepperMotor_CurrentPosition to 0, which are
  *  variables that describe where the stepper motor is relative
  *  from where it starts.
+ *  
+ *  @param void: void
+ *  @return void: void
  */
  
 void StepperMotor_Initiate(void);
@@ -25,6 +28,9 @@ void StepperMotor_Initiate(void);
  *  Called when Timer1 is enabled.
  *  Function is used to make half steps on the stepper motor.
  *  Currently, adds StepperMotor_GlobalPosition and StepperMotor_CurrentPosition by 1 with each half step.
+ *  
+ *  @param void: void
+ *  @return void: void
  */
  
 void StepperMotor_StepFoward(void);
@@ -34,6 +40,9 @@ void StepperMotor_StepFoward(void);
  *  Called when the Control_IsSyringeEmpty() is true.
  *  Function makes half steps on the stepper motor.
  *  Currently, subtracts StepperMotor_GlobalPosition and StepperMotor_CurrentPosition by 1 with each half step.
+ *  
+ *  @param void: void
+ *  @return void: void
  */
  
 void StepperMotor_StepBackward(void);

@@ -8,6 +8,9 @@
 #include "Control.c"
 #include "BasalDose.h"
 
+// Amount of steps for Basal
+#define BASAL_STEPS 50
+
 // Global variable
 uint32_t BasalDose_DoseAmountCounter;
 
@@ -27,19 +30,37 @@ void BasalDose_DoseTimingInitiate(void)
 	LPC_TIM0->MCR |= 1 << 1; // Reset timer on Match 0.
 	LPC_TIM0->TCR |= 1 << 1; // Manually Reset Timer0 (forced)
 	LPC_TIM0->TCR &=~(1 << 1); // Stop resetting the timer.
-	NVIC_EnableIRQ(TIMER0_IRQn); // Enable Timer0 IRQ
 	LPC_TIM0->TCR |= 1 << 0; // Reset Timer0
-
-	BasalDose_DoseAmountInitiate(); // Call on Timer1
+	
+	BasalDose_DoseTimingEnable(); // Enable Timer0
 }
 
-// Initialize Timer1
+// Enable Timer0
+void BasalDose_DoseTimingEnable(void)
+{
+	LPC_TIM0->TCR |= 1 << 0; // Reset Timer0
+	NVIC_EnableIRQ(TIMER0_IRQn); // Enable Timer0 IRQ
+}
+
+// Disable Timer0
+void BasalDose_DoseTimingDisable(void)
+{
+	NVIC_DisableIRQ(TIMER0_IRQn); // Disable Timer0 IRQ
+}
+
+// Enable Timer1
 void BasalDose_DoseEnable(void)
 {
 	LPC_TIM0->IR |= 1 << 0; // Clear MR0 interrupt flag
 	LPC_GPIO1->FIOPIN ^= 1 << 29; // Toggle the LED
 
 	NVIC_EnableIRQ(TIMER1_IRQn); // Enable Timer1 IRQ
+}
+
+// Disable Timer1
+void BasalDose_DoseDisable(void)
+{
+	NVIC_DisableIRQ(TIMER1_IRQn); // Disable Timer1 IRQ
 }
 
 // Set up Timer1 for the speed of the stepper motor
@@ -62,6 +83,48 @@ void BasalDose_DoseInject(void)
 	LPC_TIM1->IR |= 1 << 0; // Clear MR0 interrupt flag
 	LPC_GPIO1->FIOPIN ^= 1 << 28; // Toggle the LED
 	
-	// call the stepper motor
-	StepperMotor_StepForward();
+	BasalDose_DoseTimingDisable(); // Disable Timer0
+	
+	StepperMotor_StepForward(); // Call the stepper motor
+}
+
+// Function tthat calls the stepper motor in reverse
+void BasalDose_RetractSyringe(void)
+{
+	LPC_TIM1->IR |= 1 << 0; // Clear MR0 interrupt flag
+	LPC_GPIO1->FIOPIN ^= 1 << 28; // Toggle the LED
+	
+	BasalDose_DoseTimingDisable(); // Disable Timer0
+	
+	StepperMotor_StepBackward(); // Call stepper motor
+}
+
+// Timer0 IRQ Handler
+void TIMER0_IRQHandler(void)
+{
+	if((LPC_TIM0->IR & 0x01) == 0x01) // If MR0 interrupt
+	{
+		Control_DosageAmount(BASAL_STEPS); // Calculate the number of steps
+		
+		BasalDose_DoseEnable(); // Enables Timer1
+	}
+}
+
+// Timer1 IRQ Handler
+void TIMER1_IRQHandler(void)
+{
+	if((LPC_TIM1->IR & 0x01) == 0x01) // if MR0 interrupt
+	{
+		//BasalDose_DoseInject(); // Call the stepper motor forward
+		
+		if(!Control_IsSyringeEmpty()) // check if the syringe is empty
+		{
+			BasalDose_DoseInject(); // Call the stepper motor forward
+		}
+		else
+		{
+			BasalDose_RetractSyringe(); // Call the stepper motor backward
+		}
+		
+	}
 }
