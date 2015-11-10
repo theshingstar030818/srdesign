@@ -6,7 +6,6 @@
  */
 
 #include "lpc17xx.h"  
-//#include "Control.c"
 #include "BasalDose.h"
 
 // Amount of steps for Basal
@@ -111,6 +110,7 @@ void TIMER0_IRQHandler(void)
 	}
 }
 
+/******Testing this portion******/
 // Timer1 IRQ Handler
 void TIMER1_IRQHandler(void)
 {

@@ -6,10 +6,9 @@
  */
 
 #include "lpc17xx.h"  
-//#include "Control.c"
 #include "StepperMotor.h"
-//#include "BasalDose.h"
 
+// Global variables from other files
 extern uint32_t Control_AmountPerDose;
 extern uint32_t BasalDose_DoseAmountCounter;
 
@@ -131,5 +130,4 @@ void StepperMotor_StepBackward(void)
 		BasalDose_DoseDisable(); // Disable Timer1 IRQ
 		BasalDose_DoseTimingEnable(); // Enable Timer0 IRQ
 	}
-	StepperMotor_GlobalPosition--;
 }

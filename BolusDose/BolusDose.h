@@ -8,7 +8,6 @@
 #ifndef BOLUSDOSE_H_
 #define BOLUSDOSE_H_ 
 
-
 /** Function:  BolusDose_DoseInitiate()
  * 
  *  Must be called at the beginning of the main method.

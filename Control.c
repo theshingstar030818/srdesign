@@ -26,6 +26,7 @@ uint32_t i = 0;
 uint32_t wait = MAX_TIME;
 uint32_t Control_AmountPerDose;
 
+// Control functions
 bool Control_IsSyringeEmpty(void);
 void Control_DosageAmount(uint32_t amount);
 
@@ -49,7 +50,7 @@ bool Control_IsSyringeEmpty(void)
 	else
 		return false;
 }
-
+// Function to assign the value of steps
 void Control_DosageAmount(uint32_t amount)
 {
 	Control_AmountPerDose = amount;

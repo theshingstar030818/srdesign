@@ -6,12 +6,10 @@
  */
  
 #include "lpc17xx.h"  
-//#include "Control.c"
 #include "BolusDose.h"
 
 // Amount of steps for Bolus
 #define BOLUS_STEPS 200
-
 
 // Global variable
 uint32_t BolusDose_DoseAmountCounter;
