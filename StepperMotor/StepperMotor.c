@@ -5,10 +5,9 @@
  *      Author: sle
  */
 
-#include "lpc17xx.h"  
 #include "StepperMotor.h"
+#include "Control.h"
 
-// Global variables from other files
 extern uint32_t Control_AmountPerDose;
 extern uint32_t BasalDose_DoseAmountCounter;
 
@@ -125,8 +124,9 @@ void StepperMotor_StepBackward(void)
 	
 	StepperMotor_GlobalPosition--; // Decrement stepper motors global variable
 	
-	if(StepperMotor_GlobalPosition <= 1)
+	if(StepperMotor_GlobalPosition <= SYRINGE_LENGTH)
 	{
+		StepperMotor_GlobalPosition = 0;
 		BasalDose_DoseDisable(); // Disable Timer1 IRQ
 		BasalDose_DoseTimingEnable(); // Enable Timer0 IRQ
 	}

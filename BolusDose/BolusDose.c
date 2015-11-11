@@ -4,12 +4,9 @@
  *  Created on: Aug 31, 2015
  *      Author: sle
  */
- 
-#include "lpc17xx.h"  
+  
 #include "BolusDose.h"
-
-// Amount of steps for Bolus
-#define BOLUS_STEPS 200
+#include "Control.h"
 
 // Global variable
 uint32_t BolusDose_DoseAmountCounter;

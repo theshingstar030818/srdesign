@@ -5,11 +5,11 @@
  *      Author: sle
  */
 
-#include "lpc17xx.h"  
 #include "BasalDose.h"
+#include "StepperMotor.h"
+#include "Control.h"
 
-// Amount of steps for Basal
-#define BASAL_STEPS 50
+extern uint32_t StepperMotor_GlobalPosition;
 
 // Global variable
 uint32_t BasalDose_DoseAmountCounter;
@@ -38,6 +38,8 @@ void BasalDose_DoseTimingInitiate(void)
 // Enable Timer0
 void BasalDose_DoseTimingEnable(void)
 {
+	LPC_TIM0->TCR |= 1 << 1; // Manually Reset Timer0 (forced)
+	LPC_TIM0->TCR &=~(1 << 1); // Stop resetting the timer.
 	LPC_TIM0->TCR |= 1 << 0; // Reset Timer0
 	NVIC_EnableIRQ(TIMER0_IRQn); // Enable Timer0 IRQ
 }
@@ -110,7 +112,6 @@ void TIMER0_IRQHandler(void)
 	}
 }
 
-/******Testing this portion******/
 // Timer1 IRQ Handler
 void TIMER1_IRQHandler(void)
 {
@@ -124,6 +125,8 @@ void TIMER1_IRQHandler(void)
 		}
 		else
 		{
+			if(StepperMotor_GlobalPosition <= SYRINGE_LENGTH)
+				StepperMotor_GlobalPosition += SYRINGE_LENGTH;
 			BasalDose_RetractSyringe(); // Call the stepper motor backward
 		}
 		
