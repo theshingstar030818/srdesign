@@ -5,9 +5,11 @@
  *      Author: sle
  */
 
-#include "Control.c"
 #include "StepperMotor.h"
-#include "BasalDose.h"
+#include "Control.h"
+
+extern uint32_t Control_AmountPerDose;
+extern uint32_t BasalDose_DoseAmountCounter;
 
 // Global variables
 uint32_t StepperMotor_CurrentPosition;
@@ -30,39 +32,38 @@ void StepperMotor_Initiate(void)
 // Function that will drive the stepper motor forward
 void StepperMotor_StepForward(void)
 {
-	// Increase the BasalDose_DoseAmountCounter with each step forward
-	BasalDose_DoseAmountCounter++;
+	BasalDose_DoseAmountCounter++; // Increase Basal counter
 	
 	// Compare and keep track of the current position of the stepper motor
 	switch(StepperMotor_CurrentPosition)
 	{
 		case 0:
 			LPC_GPIO0->FIOPIN = (0x00000003);
-			StepperMotor_CurrentPosition += 1;
+			StepperMotor_CurrentPosition++;
 			break;
 		case 1:
 			LPC_GPIO0->FIOPIN = (0x00000002);
-			StepperMotor_CurrentPosition += 1;
+			StepperMotor_CurrentPosition++;
 			break;
 		case 2:
 			LPC_GPIO0->FIOPIN = (0x00000006);
-			StepperMotor_CurrentPosition += 1;
+			StepperMotor_CurrentPosition++;
 			break;
 		case 3:
 			LPC_GPIO0->FIOPIN = (0x00000004);
-			StepperMotor_CurrentPosition += 1;
+			StepperMotor_CurrentPosition++;
 			break;
 		case 4:
 			LPC_GPIO0->FIOPIN = (0x0000000C);
-			StepperMotor_CurrentPosition += 1;
+			StepperMotor_CurrentPosition++;
 			break;
 		case 5:
 			LPC_GPIO0->FIOPIN = (0x00000008);
-			StepperMotor_CurrentPosition += 1;
+			StepperMotor_CurrentPosition++;
 			break;
 		case 6:
 			LPC_GPIO0->FIOPIN = (0x00000009);
-			StepperMotor_CurrentPosition += 1;
+			StepperMotor_CurrentPosition++;
 			break;
 		case 7:
 			LPC_GPIO0->FIOPIN = (0x00000001);
@@ -70,13 +71,13 @@ void StepperMotor_StepForward(void)
 			break;
 	}
 	
-	// Increment stepper motors global variable
-	StepperMotor_GlobalPosition += 1;
+	StepperMotor_GlobalPosition++; // Increment stepper motors global variable
 	
 	// Compare if the amount injecfted is more than amount that is able to be recieved
-	if(BasalDose_DoseAmountCounter >= STEPS_PER_DOSE)
+	if(BasalDose_DoseAmountCounter >= Control_AmountPerDose)
 	{
-		NVIC_DisableIRQ(TIMER1_IRQn); // Disable Timer1
+		BasalDose_DoseDisable(); // Disable Timer1 IRQ
+		BasalDose_DoseTimingEnable(); // Enable Timer0
 		BasalDose_DoseAmountCounter = 0; // Set to 0
 	}
 }
@@ -121,6 +122,12 @@ void StepperMotor_StepBackward(void)
 			break;
 	}
 	
-	// Decrement stepper motors global variable
-	StepperMotor_GlobalPosition -= 1;
+	StepperMotor_GlobalPosition--; // Decrement stepper motors global variable
+	
+	if(StepperMotor_GlobalPosition <= SYRINGE_LENGTH)
+	{
+		StepperMotor_GlobalPosition = 0;
+		BasalDose_DoseDisable(); // Disable Timer1 IRQ
+		BasalDose_DoseTimingEnable(); // Enable Timer0 IRQ
+	}
 }
