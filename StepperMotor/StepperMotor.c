@@ -78,7 +78,7 @@ void StepperMotor_StepForward(void)
 	{
 		/* 
 		 * Turn off P1.28, P1.29, P1.30 LEDs to indicate that dosing the is now over
-     	 * GPIO1 P1.28 indicates motor rotation
+		 * GPIO1 P1.28 indicates motor rotation
 		 * GPIO1 P1.29 indicates basal dose rotation
 		 * GPIO1 P1.31 indicates bolus dose rotation
 		 */
