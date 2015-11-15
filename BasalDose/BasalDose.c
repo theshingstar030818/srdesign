@@ -82,11 +82,12 @@ void BasalDose_DoseAmountInitiate(void)
 void BasalDose_DoseInject(void)
 {
 	LPC_TIM1->IR |= 1 << 0; // Clear MR0 interrupt flag
-	//LPC_GPIO1->FIOPIN ^= 1 << 28; // Toggle the LED
 	
 	BasalDose_DoseTimingDisable(); // Disable Timer0
 	
-	LPC_GPIO1->FIOSET |= 1 << 28;
+	LPC_GPIO1->FIOSET |= 1 << 28; // Turn P1.28 LED on to indicate
+								  // stepper motor is spinning
+								  
 	StepperMotor_StepForward(); // Call the stepper motor
 }
 
@@ -94,11 +95,12 @@ void BasalDose_DoseInject(void)
 void BasalDose_RetractSyringe(void)
 {
 	LPC_TIM1->IR |= 1 << 0; // Clear MR0 interrupt flag
-	//LPC_GPIO1->FIOPIN ^= 1 << 28; // Toggle the LED
 	
 	BasalDose_DoseTimingDisable(); // Disable Timer0
 	
-	LPC_GPIO1->FIOSET |= 1 << 28;
+	LPC_GPIO1->FIOSET |= 1 << 28; // Turn P1.28 LED on to indicate
+								  // stepper motor is spinning
+								  
 	StepperMotor_StepBackward(); // Call stepper motor
 }
 
@@ -108,7 +110,9 @@ void TIMER0_IRQHandler(void)
 	if((LPC_TIM0->IR & 0x01) == 0x01) // If MR0 interrupt
 	{
 		Control_DosageAmount(BASAL_STEPS); // Calculate the number of steps
-		LPC_GPIO1->FIOSET |= 1 << 29; // Toggle the LED
+		LPC_GPIO1->FIOSET |= 1 << 29; // Turn P1.29 LED on to indicate that 
+									  // the basal dose is being administered
+									  
 		BasalDose_DoseEnable(); // Enables Timer1
 	}
 }
