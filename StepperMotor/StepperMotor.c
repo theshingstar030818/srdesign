@@ -76,6 +76,9 @@ void StepperMotor_StepForward(void)
 	// Compare if the amount injecfted is more than amount that is able to be recieved
 	if(BasalDose_DoseAmountCounter >= Control_AmountPerDose)
 	{
+		LPC_GPIO1->FIOCLR |= 1 << 28;
+		LPC_GPIO1->FIOCLR |= 1 << 29;
+		LPC_GPIO1->FIOCLR |= 1 << 31;
 		BasalDose_DoseDisable(); // Disable Timer1 IRQ
 		BasalDose_DoseTimingEnable(); // Enable Timer0
 		BasalDose_DoseAmountCounter = 0; // Set to 0
