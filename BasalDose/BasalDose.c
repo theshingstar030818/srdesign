@@ -101,7 +101,7 @@ void BasalDose_RetractSyringe(void)
 	// Turn P1.28 LED on to indicate stepper motor is spinning (backward)
 	LPC_GPIO1->FIOSET |= 1 << 28;
 	
-	/*
+	/**
 	 * I have retract currently as the same LED as going forward,
 	 * could easily change to another LED
 	 */
