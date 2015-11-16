@@ -27,7 +27,9 @@ void BolusDose_DoseInitiate(void)
 void EINT3_IRQHandler(void)
 {
 	LPC_GPIOINT->IO2IntClr |= (1<<10); // Clear the status
-	LPC_GPIO1->FIOPIN ^= 1 << 31; // Toggle the LED
+	
+	// Turn P1.31 LED on to indicate that the bolus dose is being administered
+	LPC_GPIO1->FIOSET |= 1 << 31; 
 	
 	Control_DosageAmount(BOLUS_STEPS); // Calculate the number of steps
 	

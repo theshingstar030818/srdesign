@@ -54,7 +54,6 @@ void BasalDose_DoseTimingDisable(void)
 void BasalDose_DoseEnable(void)
 {
 	LPC_TIM0->IR |= 1 << 0; // Clear MR0 interrupt flag
-	LPC_GPIO1->FIOPIN ^= 1 << 29; // Toggle the LED
 
 	NVIC_EnableIRQ(TIMER1_IRQn); // Enable Timer1 IRQ
 }
@@ -83,9 +82,11 @@ void BasalDose_DoseAmountInitiate(void)
 void BasalDose_DoseInject(void)
 {
 	LPC_TIM1->IR |= 1 << 0; // Clear MR0 interrupt flag
-	LPC_GPIO1->FIOPIN ^= 1 << 28; // Toggle the LED
 	
 	BasalDose_DoseTimingDisable(); // Disable Timer0
+	
+	// Turn P1.28 LED on to indicate stepper motor is spinning (forward)
+	LPC_GPIO1->FIOSET |= 1 << 28;
 	
 	StepperMotor_StepForward(); // Call the stepper motor
 }
@@ -94,9 +95,17 @@ void BasalDose_DoseInject(void)
 void BasalDose_RetractSyringe(void)
 {
 	LPC_TIM1->IR |= 1 << 0; // Clear MR0 interrupt flag
-	LPC_GPIO1->FIOPIN ^= 1 << 28; // Toggle the LED
 	
 	BasalDose_DoseTimingDisable(); // Disable Timer0
+	
+	// Turn P1.28 LED on to indicate stepper motor is spinning (backward)
+	LPC_GPIO1->FIOSET |= 1 << 28;
+	
+	/**
+	 * I have retract currently as the same LED as going forward,
+	 * could easily change to another LED
+	 */
+	LPC_GPIO1->FIOSET |= 1 << 29; 
 	
 	StepperMotor_StepBackward(); // Call stepper motor
 }
@@ -107,6 +116,9 @@ void TIMER0_IRQHandler(void)
 	if((LPC_TIM0->IR & 0x01) == 0x01) // If MR0 interrupt
 	{
 		Control_DosageAmount(BASAL_STEPS); // Calculate the number of steps
+		
+		// Turn P1.29 LED on to indicate that the basal dose is being administered
+		LPC_GPIO1->FIOSET |= 1 << 29;
 		
 		BasalDose_DoseEnable(); // Enables Timer1
 	}
@@ -125,6 +137,9 @@ void TIMER1_IRQHandler(void)
 		}
 		else
 		{
+			// If the syringe empty, clear out bolus LED if it is being adminsitered
+			LPC_GPIO1->FIOCLR |= 1 << 31; 
+			
 			if(StepperMotor_GlobalPosition <= SYRINGE_LENGTH)
 				StepperMotor_GlobalPosition += SYRINGE_LENGTH;
 			BasalDose_RetractSyringe(); // Call the stepper motor backward
