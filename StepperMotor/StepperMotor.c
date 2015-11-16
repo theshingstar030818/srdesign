@@ -137,6 +137,17 @@ void StepperMotor_StepBackward(void)
 	
 	if(StepperMotor_GlobalPosition <= SYRINGE_LENGTH)
 	{
+		/* 
+		 * Turn off P1.28, P1.29, P1.30 LEDs to indicate that dosing the is now over
+		 * GPIO1 P1.28 indicates stepper motor rotation
+		 * GPIO1 P1.29 indicates basal dose rotation
+		 * GPIO1 P1.31 indicates bolus dose rotation
+		 */
+		 
+		LPC_GPIO1->FIOCLR |= 1 << 28;
+		LPC_GPIO1->FIOCLR |= 1 << 29;
+		LPC_GPIO1->FIOCLR |= 1 << 31;
+		
 		StepperMotor_GlobalPosition = 0;
 		BasalDose_DoseDisable(); // Disable Timer1 IRQ
 		BasalDose_DoseTimingEnable(); // Enable Timer0 IRQ
