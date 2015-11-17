@@ -39,7 +39,7 @@ bool Control_IsSyringeEmpty(void);
  *  will take to inject insulin depending on whether a 
  *  basal or bolus injection will occur.
  *  
- *  @param uin32_t: unsigned integer 32-bit
+ *  @param uin32_t: amount - the number of steps the motor will spin
  *  @return void: void
  */
 
