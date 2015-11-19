@@ -1,5 +1,5 @@
 # srdesign
-Repo for Sr Design Project.
+Repo for Sr Design Project.<BR />
 Creating an Embedded Controller for an Insulin Pump.
 Control.c contains the main loop for the project.
 Folders were made to contain their subsequent .c and .h files.
