@@ -17,9 +17,6 @@ uint32_t BasalDose_DoseAmountCounter;
 // Set and enable Timer0 for the basal timer in between doses
 void BasalDose_DoseTimingInitiate(void)
 {
-	// Initialize the pins P1.28 to P1.31
-	// The pins are used for debugging
-
 	LPC_SC->PCONP |= 1 << 1; // Power up Timer0
 	LPC_SC->PCLKSEL0 |= 1 << 2; // Clock select
 	LPC_TIM0->PR = 0x02; // Pre-scalar
