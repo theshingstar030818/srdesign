@@ -6,7 +6,7 @@
  */
 
 #include "StepperMotor.h"
-#include "Control.h"
+#include "..\Control.h"
 
 extern uint32_t Control_AmountPerDose;
 extern uint32_t BasalDose_DoseAmountCounter;
@@ -22,7 +22,7 @@ void StepperMotor_Initiate(void)
 	// These are the leads for the stepper motor
 	LPC_GPIO0->FIODIR |= (0x0000000F);
 	LPC_GPIO0->FIOPIN &= ~(0x0000000F);
-	
+
 	// Declaring the global variables
 	StepperMotor_CurrentPosition = 0;
 	StepperMotor_GlobalPosition = 0;
@@ -33,7 +33,7 @@ void StepperMotor_Initiate(void)
 void StepperMotor_StepForward(void)
 {
 	BasalDose_DoseAmountCounter++; // Increase Basal counter
-	
+
 	// Compare and keep track of the current position of the stepper motor
 	switch(StepperMotor_CurrentPosition)
 	{
@@ -70,9 +70,9 @@ void StepperMotor_StepForward(void)
 			StepperMotor_CurrentPosition = 0;
 			break;
 	}
-	
+
 	StepperMotor_GlobalPosition++; // Increment stepper motors global variable
-	
+
 	// Compare if the amount injecfted is more than amount that is able to be recieved
 	if(BasalDose_DoseAmountCounter >= Control_AmountPerDose)
 	{
@@ -82,11 +82,11 @@ void StepperMotor_StepForward(void)
 		 * GPIO1 P1.29 indicates basal dose rotation
 		 * GPIO1 P1.31 indicates bolus dose rotation
 		 */
-		 
+
 		LPC_GPIO1->FIOCLR |= 1 << 28;
 		LPC_GPIO1->FIOCLR |= 1 << 29;
 		LPC_GPIO1->FIOCLR |= 1 << 31;
-		
+
 		BasalDose_DoseDisable(); // Disable Timer1 IRQ
 		BasalDose_DoseTimingEnable(); // Enable Timer0
 		BasalDose_DoseAmountCounter = 0; // Set to 0
@@ -132,9 +132,9 @@ void StepperMotor_StepBackward(void)
 			StepperMotor_CurrentPosition--;
 			break;
 	}
-	
+
 	StepperMotor_GlobalPosition--; // Decrement stepper motors global variable
-	
+
 	if(StepperMotor_GlobalPosition <= SYRINGE_LENGTH)
 	{
 		/**
@@ -143,11 +143,11 @@ void StepperMotor_StepBackward(void)
 		 * GPIO1 P1.29 indicates basal dose rotation
 		 * GPIO1 P1.31 indicates bolus dose rotation
 		 */
-		 
+
 		LPC_GPIO1->FIOCLR |= 1 << 28;
 		LPC_GPIO1->FIOCLR |= 1 << 29;
 		LPC_GPIO1->FIOCLR |= 1 << 31;
-		
+
 		StepperMotor_GlobalPosition = 0;
 		BasalDose_DoseDisable(); // Disable Timer1 IRQ
 		BasalDose_DoseTimingEnable(); // Enable Timer0 IRQ

@@ -4,9 +4,9 @@
  *  Created on: Aug 31, 2015
  *      Author: sle
  */
-  
-#include "BolusDose.h"
-#include "Control.h"
+
+#include "..\BolusDose\BolusDose.h"
+#include "..\Control.h"
 
 // Global variable
 uint32_t BolusDose_DoseAmountCounter;
@@ -27,11 +27,11 @@ void BolusDose_DoseInitiate(void)
 void EINT3_IRQHandler(void)
 {
 	LPC_GPIOINT->IO2IntClr |= (1<<10); // Clear the status
-	
+
 	// Turn P1.31 LED on to indicate that the bolus dose is being administered
-	LPC_GPIO1->FIOSET |= 1 << 31; 
-	
+	LPC_GPIO1->FIOSET |= 1 << 31;
+
 	Control_DosageAmount(BOLUS_STEPS); // Calculate the number of steps
-	
+
 	BasalDose_DoseEnable(); // Enable Timer1
 }
