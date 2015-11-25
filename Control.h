@@ -18,6 +18,17 @@ typedef enum {Basal, Bolus, Backward, None} status;
 #define BASAL_STEPS 50
 #define BOLUS_STEPS 200
 
+/** Function Control_LEDInitiate()
+ *
+ *  Function is called in the main loop to initialize the LED pins,
+ *  LPC_GPIO1 pins P1.28-P1.31 as output.
+ *
+ *  @param void: void 
+ *  @return void: void
+ */
+
+void Control_LEDInitiate(void);
+
 /** Function Control_IsSyringeEmpty()
  *
  *  Function is called in the TIMER1 IRQ Handler.
@@ -27,7 +38,7 @@ typedef enum {Basal, Bolus, Backward, None} status;
  *  retract the syringe.
  *
  *  @param void: void
- *  @return bool: true or false
+ *  @return bool: whether or not the syringe is empty (T/F)
  */
 
 bool Control_IsSyringeEmpty(void);

@@ -10,11 +10,11 @@
 #include "..\Control.h"
 
 extern uint32_t StepperMotor_GlobalPosition;
+extern uint32_t StepperMotor_CurrentBasalDose;
+extern uint32_t StepperMotor_CurrentBolusDose;
 
-// Global variable
-uint32_t BasalDose_DoseAmountCounter;
+extern status Control_GlobalStatus;
 
-// Set and enable Timer0 for the basal timer in between doses
 void BasalDose_DoseTimingInitiate(void)
 {
 	LPC_SC->PCONP |= 1 << 1; // Power up Timer0
@@ -30,36 +30,28 @@ void BasalDose_DoseTimingInitiate(void)
 	BasalDose_DoseTimingEnable(); // Enable Timer0
 }
 
-// Enable Timer0
 void BasalDose_DoseTimingEnable(void)
 {
-	LPC_TIM0->TCR |= 1 << 1; // Manually Reset Timer0 (forced)
-	LPC_TIM0->TCR &=~(1 << 1); // Stop resetting the timer.
-	LPC_TIM0->TCR |= 1 << 0; // Reset Timer0
 	NVIC_EnableIRQ(TIMER0_IRQn); // Enable Timer0 IRQ
+	BasalDose_DoseDisable();
 }
 
-// Disable Timer0
 void BasalDose_DoseTimingDisable(void)
 {
 	NVIC_DisableIRQ(TIMER0_IRQn); // Disable Timer0 IRQ
 }
 
-// Enable Timer1
 void BasalDose_DoseEnable(void)
 {
-	LPC_TIM0->IR |= 1 << 0; // Clear MR0 interrupt flag
-
 	NVIC_EnableIRQ(TIMER1_IRQn); // Enable Timer1 IRQ
+	BasalDose_DoseTimingDisable();
 }
 
-// Disable Timer1
 void BasalDose_DoseDisable(void)
 {
 	NVIC_DisableIRQ(TIMER1_IRQn); // Disable Timer1 IRQ
 }
 
-// Set up Timer1 for the speed of the stepper motor
 void BasalDose_DoseAmountInitiate(void)
 {
 	LPC_SC->PCONP |= 1 << 2; // Power up Timer1
@@ -73,72 +65,42 @@ void BasalDose_DoseAmountInitiate(void)
 	LPC_TIM1->TCR |= 1 << 0; // Reset Timer1
 }
 
-// Function that calls the stepper motor
-void BasalDose_DoseInject(void)
-{
-	LPC_TIM1->IR |= 1 << 0; // Clear MR0 interrupt flag
-
-	BasalDose_DoseTimingDisable(); // Disable Timer0
-
-	// Turn P1.28 LED on to indicate stepper motor is spinning (forward)
-	LPC_GPIO1->FIOSET |= 1 << 28;
-
-	StepperMotor_StepForward(); // Call the stepper motor
-}
-
-// Function tthat calls the stepper motor in reverse
-void BasalDose_RetractSyringe(void)
-{
-	LPC_TIM1->IR |= 1 << 0; // Clear MR0 interrupt flag
-
-	BasalDose_DoseTimingDisable(); // Disable Timer0
-
-	// Turn P1.28 LED on to indicate stepper motor is spinning (backward)
-	LPC_GPIO1->FIOSET |= 1 << 28;
-
-	/**
-	 * I have retract currently as the same LED as going forward,
-	 * could easily change to another LED
-	 */
-	LPC_GPIO1->FIOSET |= 1 << 29;
-
-	StepperMotor_StepBackward(); // Call stepper motor
-}
-
-// Timer0 IRQ Handler
 void TIMER0_IRQHandler(void)
 {
-	if((LPC_TIM0->IR & 0x01) == 0x01) // If MR0 interrupt
+	if(StepperMotor_GlobalPosition + BASAL_STEPS <= SYRINGE_LENGTH)
 	{
-		Control_DosageAmount(BASAL_STEPS); // Calculate the number of steps
-
-		// Turn P1.29 LED on to indicate that the basal dose is being administered
-		LPC_GPIO1->FIOSET |= 1 << 29;
-
-		BasalDose_DoseEnable(); // Enables Timer1
+		Control_GlobalStatus = Basal;
 	}
+	else
+	{
+		Control_GlobalStatus = Backward;
+	}
+	BasalDose_DoseEnable();	
 }
 
-// Timer1 IRQ Handler
 void TIMER1_IRQHandler(void)
 {
-	if((LPC_TIM1->IR & 0x01) == 0x01) // if MR0 interrupt
+	switch(Control_GlobalStatus)
 	{
-		//BasalDose_DoseInject(); // Call the stepper motor forward
-
-		if(!Control_IsSyringeEmpty()) // check if the syringe is empty
-		{
-			BasalDose_DoseInject(); // Call the stepper motor forward
-		}
-		else
-		{
-			// If the syringe empty, clear out bolus LED if it is being adminsitered
+		case Basal:
+			LPC_GPIO1->FIOSET |= 1 << 28;
+			StepperMotor_CurrentBasalDose++;
+			StepperMotor_StepForward();
+			break;
+		case Bolus:
+			LPC_GPIO1->FIOSET |= 1 << 29;
+			StepperMotor_CurrentBolusDose++;
+			StepperMotor_StepForward();
+			break;
+		case Backward:
+			LPC_GPIO1->FIOSET |= 1 << 31;
+			StepperMotor_StepBackward();
+			break;
+		case None:
+			BasalDose_DoseTimingEnable();
+			LPC_GPIO1->FIOCLR |= 1 << 28;
+			LPC_GPIO1->FIOCLR |= 1 << 29;
 			LPC_GPIO1->FIOCLR |= 1 << 31;
-
-			if(StepperMotor_GlobalPosition <= SYRINGE_LENGTH)
-				StepperMotor_GlobalPosition += SYRINGE_LENGTH;
-			BasalDose_RetractSyringe(); // Call the stepper motor backward
-		}
-
+			break;
 	}
 }
