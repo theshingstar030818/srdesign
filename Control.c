@@ -25,6 +25,8 @@ int main(void)
 	BasalDose_DoseAmountInitiate();
 	
 	BolusDose_DoseInitiate();
+	
+	LPC_TIM0->TCR |= 1 << 0; // Start Counting
 	while(1);
 	/*
 	{

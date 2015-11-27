@@ -25,31 +25,48 @@ void BasalDose_DoseTimingInitiate(void)
 	LPC_TIM0->MCR |= 1 << 1; // Reset timer on Match 0.
 	LPC_TIM0->TCR |= 1 << 1; // Manually Reset Timer0 (forced)
 	LPC_TIM0->TCR &=~(1 << 1); // Stop resetting the timer.
-	LPC_TIM0->TCR |= 1 << 0; // Reset Timer0
 
 	NVIC_EnableIRQ(TIMER0_IRQn);
+}
+
+void BasalDose_DoseTimingReset(void)
+{
+	LPC_TIM0->TCR &=~(1 << 0);
+	LPC_TIM0->TCR |= 1 << 1;
+	LPC_TIM0->TCR &=~(1 << 1);
 }
 
 void BasalDose_DoseTimingEnable(void)
 {
 	NVIC_EnableIRQ(TIMER0_IRQn); // Enable Timer0 IRQ
 	BasalDose_DoseDisable();
+	LPC_TIM0->TCR |= 1 << 0;
 }
 
 void BasalDose_DoseTimingDisable(void)
 {
 	NVIC_DisableIRQ(TIMER0_IRQn); // Disable Timer0 IRQ
+	BasalDose_DoseTimingReset();
 }
 
 void BasalDose_DoseEnable(void)
 {
 	NVIC_EnableIRQ(TIMER1_IRQn); // Enable Timer1 IRQ
 	BasalDose_DoseTimingDisable();
+	LPC_TIM1->TCR |= 1 << 0;
+}
+
+void BasalDose_DoseReset(void)
+{
+	LPC_TIM1->TCR &=~(1 << 0);
+	LPC_TIM1->TCR |= 1 << 1;
+	LPC_TIM1->TCR &=~(1 << 1);
 }
 
 void BasalDose_DoseDisable(void)
 {
 	NVIC_DisableIRQ(TIMER1_IRQn); // Disable Timer1 IRQ
+	BasalDose_DoseReset();
 }
 
 void BasalDose_DoseAmountInitiate(void)
@@ -61,8 +78,7 @@ void BasalDose_DoseAmountInitiate(void)
 	LPC_TIM1->MCR |= 1 << 0; // Interrupt and reset
 	LPC_TIM1->MCR |= 1 << 1; // Reset timer on Match 0.
 	LPC_TIM1->TCR |= 1 << 1; // Manually Reset Timer1 (forced)
-	LPC_TIM1->TCR &=~(1 << 1); // Stop resetting the timer.
-	LPC_TIM1->TCR |= 1 << 0; // Reset Timer1
+	LPC_TIM1->TCR &=~(1 << 1); // Stop resetting the timer.s
 }
 
 void TIMER0_IRQHandler(void)
@@ -103,4 +119,5 @@ void TIMER1_IRQHandler(void)
 			LPC_GPIO1->FIOCLR |= 1 << 31;
 			break;
 	}
+	LPC_TIM1->IR |= 1 << 0;
 }
