@@ -27,7 +27,7 @@ void BasalDose_DoseTimingInitiate(void)
 	LPC_TIM0->TCR &=~(1 << 1); // Stop resetting the timer.
 	LPC_TIM0->TCR |= 1 << 0; // Reset Timer0
 
-	BasalDose_DoseTimingEnable(); // Enable Timer0
+	NVIC_EnableIRQ(TIMER0_IRQn);
 }
 
 void BasalDose_DoseTimingEnable(void)

@@ -25,12 +25,20 @@ int main(void)
 	BasalDose_DoseAmountInitiate();
 	
 	BolusDose_DoseInitiate();
-
 	while(1);
+	/*
+	{
+		int i;
+		StepperMotor_StepForward();
+		for(i = 250000; i > 0; i--);
+	}
+	*/
 }
 
 void Control_LEDInitiate(void)
 {
   LPC_GPIO1->FIODIR |= (0xF0000000);
   LPC_GPIO1->FIOPIN &=~(0xF0000000);
+	LPC_GPIO2->FIODIR |= (0x00000006);
+	LPC_GPIO2->FIOPIN &=~(0x00000006);
 }

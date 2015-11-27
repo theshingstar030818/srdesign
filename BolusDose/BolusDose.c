@@ -10,6 +10,7 @@
 #include "..\BasalDose\BasalDose.h"
 
 extern uint32_t StepperMotor_GlobalPosition;
+
 extern status Control_GlobalStatus;
 
 void BolusDose_DoseInitiate(void)

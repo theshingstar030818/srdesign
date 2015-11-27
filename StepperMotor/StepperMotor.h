@@ -33,7 +33,7 @@ void StepperMotor_Initiate(void);
  *  @return void: void
  */
  
-void StepperMotor_StepFoward(void);
+void StepperMotor_StepForward(void);
 
 /** Function: StepperMotor_StepBackward()
  * 
