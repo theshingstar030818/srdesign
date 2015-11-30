@@ -10,8 +10,9 @@
 
 #include "lpc17xx.h" // Device header
 
-// Create bool
+// Create bool enum
 typedef enum {false, true} bool;
+// Create state machine enum
 typedef enum {Basal, Bolus, Backward, None} status;
 
 #define SYRINGE_LENGTH 400
@@ -29,32 +30,15 @@ typedef enum {Basal, Bolus, Backward, None} status;
 
 void Control_LEDInitiate(void);
 
-/** Function Control_IsSyringeEmpty()
+/** Function Control_ClockInitiate()
  *
- *  Function is called in the TIMER1 IRQ Handler.
- *  The function checks if the syringe is empty.
- *  If the syringe is not empty, the pump will inject
- *  the user.  If the syringe is empty, the pump will
- *  retract the syringe.
+ *  Function is called in the main loop to initialize clock.
+ *	Powers up Timer0 and Timer1 and sets PCLK = CCLK
  *
- *  @param void: void
- *  @return bool: whether or not the syringe is empty (T/F)
- */
-
-bool Control_IsSyringeEmpty(void);
-
-/** Function Control_DosageAmount()
- *
- *  Function is called in the TIMER0 IRQ Handler
- *  as well as the External Interrupt 3 IRQ Handler.
- *  The function assings the amount of steps that the motor
- *  will take to inject insulin depending on whether a
- *  basal or bolus injection will occur.
- *
- *  @param uin32_t: amount - the number of steps the motor will spin
+ *  @param void: void 
  *  @return void: void
  */
-
-void Control_DosageAmount(uint32_t amount);
+ 
+void Control_ClockInitiate(void);
 
 #endif /* CONTROL_CONTROL_H_ */

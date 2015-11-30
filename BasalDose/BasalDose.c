@@ -14,12 +14,9 @@ extern uint32_t StepperMotor_CurrentBasalDose;
 extern uint32_t StepperMotor_CurrentBolusDose;
 
 extern status Control_GlobalStatus;
-extern bool BolusDose_FirstIRQHandle;
 
 void BasalDose_DoseTimingInitiate(void)
 {
-	LPC_SC->PCONP |= 1 << 1; // Power up Timer0
-	LPC_SC->PCLKSEL0 |= 1 << 2; // Clock select
 	LPC_TIM0->PR = 0x02; // Pre-scalar
 	LPC_TIM0->MR0 = 1 << 27; // Match number
 	LPC_TIM0->MCR |= 1 << 0; // Interrupt and reset
@@ -28,14 +25,6 @@ void BasalDose_DoseTimingInitiate(void)
 	LPC_TIM0->TCR &=~(1 << 1); // Stop resetting the timer.
 
 	NVIC_EnableIRQ(TIMER0_IRQn);
-}
-
-void BasalDose_DoseTimingReset(void)
-{
-	LPC_TIM0->TCR &=~(1 << 0);
-	LPC_TIM0->TCR |= 1 << 1;
-	LPC_TIM0->TCR &=~(1 << 1);
-	LPC_TIM0->IR |= 1 << 0;
 }
 
 void BasalDose_DoseTimingEnable(void)
@@ -51,19 +40,29 @@ void BasalDose_DoseTimingDisable(void)
 	BasalDose_DoseTimingReset();
 }
 
+void BasalDose_DoseTimingReset(void)
+{
+	LPC_TIM0->TCR &=~(1 << 0);
+	LPC_TIM0->TCR |= 1 << 1;
+	LPC_TIM0->TCR &=~(1 << 1);
+	LPC_TIM0->IR |= 1 << 0;
+}
+
+void BasalDose_DoseInitiate(void)
+{
+	LPC_TIM1->PR = 0x02; // Pre-scalar
+	LPC_TIM1->MR0 = 1 << 17; // Match number
+	LPC_TIM1->MCR |= 1 << 0; // Interrupt and reset
+	LPC_TIM1->MCR |= 1 << 1; // Reset timer on Match 0.
+	LPC_TIM1->TCR |= 1 << 1; // Manually Reset Timer1 (forced)
+	LPC_TIM1->TCR &=~(1 << 1); // Stop resetting the timer.s
+}
+
 void BasalDose_DoseEnable(void)
 {
 	NVIC_EnableIRQ(TIMER1_IRQn); // Enable Timer1 IRQ
 	BasalDose_DoseTimingDisable();
 	LPC_TIM1->TCR |= 1 << 0;
-}
-
-void BasalDose_DoseReset(void)
-{
-	LPC_TIM1->TCR &=~(1 << 0);
-	LPC_TIM1->TCR |= 1 << 1;
-	LPC_TIM1->TCR &=~(1 << 1);
-	LPC_TIM1->IR |= 1 << 1;
 }
 
 void BasalDose_DoseDisable(void)
@@ -72,16 +71,12 @@ void BasalDose_DoseDisable(void)
 	BasalDose_DoseReset();
 }
 
-void BasalDose_DoseAmountInitiate(void)
+void BasalDose_DoseReset(void)
 {
-	LPC_SC->PCONP |= 1 << 2; // Power up Timer1
-	LPC_SC->PCLKSEL0 |= 1 << 2; // Clock select
-	LPC_TIM1->PR = 0x02; // Pre-scalar
-	LPC_TIM1->MR0 = 1 << 17; // Match number
-	LPC_TIM1->MCR |= 1 << 0; // Interrupt and reset
-	LPC_TIM1->MCR |= 1 << 1; // Reset timer on Match 0.
-	LPC_TIM1->TCR |= 1 << 1; // Manually Reset Timer1 (forced)
-	LPC_TIM1->TCR &=~(1 << 1); // Stop resetting the timer.s
+	LPC_TIM1->TCR &=~(1 << 0);
+	LPC_TIM1->TCR |= 1 << 1;
+	LPC_TIM1->TCR &=~(1 << 1);
+	LPC_TIM1->IR |= 1 << 1;
 }
 
 void TIMER0_IRQHandler(void)

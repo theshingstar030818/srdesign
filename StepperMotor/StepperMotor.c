@@ -10,7 +10,6 @@
 #include "..\BasalDose\BasalDose.h"
 
 extern status Control_GlobalStatus;
-extern bool BolusDose_FirstIRQHandle;
 
 uint32_t StepperMotor_CurrentPosition;
 uint32_t StepperMotor_GlobalPosition;
@@ -20,12 +19,13 @@ uint32_t StepperMotor_CurrentBolusDose;
 
 void StepperMotor_Initiate(void)
 {
+	// Initialilze P0.0, P0.1, P0.2, P0.3 to output
 	LPC_GPIO0->FIODIR |= (0x0000000F);
 	LPC_GPIO0->FIOPIN &= ~(0x0000000F);
 
+	// Initialize globals
 	StepperMotor_CurrentPosition = 0;
 	StepperMotor_GlobalPosition = 0;
-	
 	StepperMotor_CurrentBasalDose = 0;
 	StepperMotor_CurrentBolusDose = 0;
 }
@@ -69,12 +69,13 @@ void StepperMotor_StepForward(void)
 	}
 	StepperMotor_GlobalPosition++;
 	
+	// Check to see if Basal or Bolus has completed.
 	if((StepperMotor_CurrentBasalDose >= BASAL_STEPS) || (StepperMotor_CurrentBolusDose >= BOLUS_STEPS))
 	{
+		// Reset relevant globals
 		StepperMotor_CurrentBasalDose = 0;
 		StepperMotor_CurrentBolusDose = 0;
 		Control_GlobalStatus = None;
-		BolusDose_FirstIRQHandle = true;
 	}
 }
 
@@ -117,8 +118,10 @@ void StepperMotor_StepBackward(void)
 	}
 	StepperMotor_GlobalPosition--;
 	
+	// Check to see if syringe is back to original spot
 	if(StepperMotor_GlobalPosition <= 0)
 	{
+		// Reset relevant globals
 		StepperMotor_GlobalPosition = 0;
 		Control_GlobalStatus = None;
 	}

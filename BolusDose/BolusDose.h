@@ -18,15 +18,18 @@
  *  @param void: void
  *  @return void: void
  */
+ 
 void BolusDose_DoseInitiate(void);
 
 /** Function: EINT3_IRQHandler()
  *
- *  The function enables external interrupt.
+ *  The interrupt handler for the external
+ *  interrupt connected to pin P2.10.
  *  
  *  @param void: void
  *  @return void: void
  */
+ 
 void EINT3_IRQHandler(void);
 
 #endif /* BOLUSDOSE_H_ */

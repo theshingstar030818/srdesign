@@ -13,11 +13,8 @@ extern uint32_t StepperMotor_GlobalPosition;
 
 extern status Control_GlobalStatus;
 
-bool BolusDose_FirstIRQHandle = true;
-
 void BolusDose_DoseInitiate(void)
 {
-
 	LPC_PINCON->PINSEL4 &=~ (3<<20); // P2.10 is GPIO
 	LPC_GPIO2->FIODIR &=~ (1<<10); // P2.10 in input
 
@@ -29,6 +26,12 @@ void BolusDose_DoseInitiate(void)
 void EINT3_IRQHandler(void)
 {
 	LPC_GPIOINT->IO2IntClr |= (1<<10); // Clear the status
+	
+	/* Check to see if there is enough to do a bolus injection,
+	 * if not enough retract the syringe
+	 * TODO: Add additional state so that we inject until empty,
+	 * then retract syringe.
+	 */
 	if(StepperMotor_GlobalPosition + BOLUS_STEPS <= SYRINGE_LENGTH)
 	{
 		Control_GlobalStatus = Bolus;
@@ -38,5 +41,4 @@ void EINT3_IRQHandler(void)
 		Control_GlobalStatus = Backward;
 	}
 	BasalDose_DoseEnable();	
-		
 }
