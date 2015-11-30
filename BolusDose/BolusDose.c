@@ -28,18 +28,15 @@ void BolusDose_DoseInitiate(void)
 
 void EINT3_IRQHandler(void)
 {
-	if(BolusDose_FirstIRQHandle)
+	LPC_GPIOINT->IO2IntClr |= (1<<10); // Clear the status
+	if(StepperMotor_GlobalPosition + BOLUS_STEPS <= SYRINGE_LENGTH)
 	{
-		BolusDose_FirstIRQHandle = false;
-		if(StepperMotor_GlobalPosition + BOLUS_STEPS <= SYRINGE_LENGTH)
-		{
-			Control_GlobalStatus = Bolus;
-		}
-		else
-		{
-			Control_GlobalStatus = Backward;
-		}
-		BasalDose_DoseEnable();	
+		Control_GlobalStatus = Bolus;
 	}
+	else
+	{
+		Control_GlobalStatus = Backward;
+	}
+	BasalDose_DoseEnable();	
 		
 }
