@@ -14,6 +14,7 @@ extern uint32_t StepperMotor_CurrentBasalDose;
 extern uint32_t StepperMotor_CurrentBolusDose;
 
 extern status Control_GlobalStatus;
+extern bool BolusDose_FirstIRQHandle;
 
 void BasalDose_DoseTimingInitiate(void)
 {
@@ -34,6 +35,7 @@ void BasalDose_DoseTimingReset(void)
 	LPC_TIM0->TCR &=~(1 << 0);
 	LPC_TIM0->TCR |= 1 << 1;
 	LPC_TIM0->TCR &=~(1 << 1);
+	LPC_TIM0->IR |= 1 << 0;
 }
 
 void BasalDose_DoseTimingEnable(void)
@@ -61,6 +63,7 @@ void BasalDose_DoseReset(void)
 	LPC_TIM1->TCR &=~(1 << 0);
 	LPC_TIM1->TCR |= 1 << 1;
 	LPC_TIM1->TCR &=~(1 << 1);
+	LPC_TIM1->IR |= 1 << 1;
 }
 
 void BasalDose_DoseDisable(void)
@@ -117,6 +120,7 @@ void TIMER1_IRQHandler(void)
 			LPC_GPIO1->FIOCLR |= 1 << 28;
 			LPC_GPIO1->FIOCLR |= 1 << 29;
 			LPC_GPIO1->FIOCLR |= 1 << 31;
+			NVIC_EnableIRQ(EINT3_IRQn);
 			break;
 	}
 	LPC_TIM1->IR |= 1 << 0;

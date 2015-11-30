@@ -10,6 +10,7 @@
 #include "..\BasalDose\BasalDose.h"
 
 extern status Control_GlobalStatus;
+extern bool BolusDose_FirstIRQHandle;
 
 uint32_t StepperMotor_CurrentPosition;
 uint32_t StepperMotor_GlobalPosition;
@@ -73,6 +74,7 @@ void StepperMotor_StepForward(void)
 		StepperMotor_CurrentBasalDose = 0;
 		StepperMotor_CurrentBolusDose = 0;
 		Control_GlobalStatus = None;
+		BolusDose_FirstIRQHandle = true;
 	}
 }
 

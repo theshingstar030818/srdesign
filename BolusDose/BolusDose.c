@@ -13,6 +13,8 @@ extern uint32_t StepperMotor_GlobalPosition;
 
 extern status Control_GlobalStatus;
 
+bool BolusDose_FirstIRQHandle = true;
+
 void BolusDose_DoseInitiate(void)
 {
 
@@ -26,13 +28,18 @@ void BolusDose_DoseInitiate(void)
 
 void EINT3_IRQHandler(void)
 {
-	if(StepperMotor_GlobalPosition + BOLUS_STEPS <= SYRINGE_LENGTH)
+	if(BolusDose_FirstIRQHandle)
 	{
-		Control_GlobalStatus = Bolus;
+		BolusDose_FirstIRQHandle = false;
+		if(StepperMotor_GlobalPosition + BOLUS_STEPS <= SYRINGE_LENGTH)
+		{
+			Control_GlobalStatus = Bolus;
+		}
+		else
+		{
+			Control_GlobalStatus = Backward;
+		}
+		BasalDose_DoseEnable();	
 	}
-	else
-	{
-		Control_GlobalStatus = Backward;
-	}
-	BasalDose_DoseEnable();	
+		
 }
