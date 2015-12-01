@@ -6,9 +6,10 @@
  */
 
 #include "Control.h"
-#include ".\StepperMotor\StepperMotor.h"
 #include ".\BasalDose\BasalDose.h"
 #include ".\BolusDose\BolusDose.h"
+#include ".\StepperMotor\StepperMotor.h"
+
 
 status Control_GlobalStatus;
 

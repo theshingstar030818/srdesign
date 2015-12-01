@@ -5,8 +5,8 @@
  *      Author: sle
  */
 
-#include "StepperMotor.h"
 #include "..\Control.h"
+#include "StepperMotor.h"
 #include "..\BasalDose\BasalDose.h"
 
 extern status Control_GlobalStatus;

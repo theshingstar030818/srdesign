@@ -6,8 +6,8 @@
  */
 
 #include "BasalDose.h"
-#include "..\StepperMotor\StepperMotor.h"
 #include "..\Control.h"
+#include "..\StepperMotor\StepperMotor.h"
 
 extern uint32_t StepperMotor_GlobalPosition;
 extern uint32_t StepperMotor_CurrentBasalDose;
