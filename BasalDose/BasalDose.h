@@ -21,9 +21,8 @@ void BasalDose_DoseTimingInitiate(void);
 
 /** Function: BasalDose_DoseTimingEnable()
  *  
- *  Function is used to enable Timer0,
- *  then Disables and Resets Timer1, and 
- *  starts counting Timer0
+ *  Function is used to enable Timer0 counter,
+ *  then disables and resets Timer1.
  *  
  *  @param void: void
  *  @return void: void
@@ -43,7 +42,7 @@ void BasalDose_DoseTimingDisable(void);
 
 /** Function: BasalDose_DoseTimingReset()
  *  
- *  Resets all pending Timer0 interrupts and clears out registers
+ *  Resets all pending Timer0 interrupts and clears out counters.
  *  
  *  @param void: void
  *  @return void: void
@@ -53,7 +52,7 @@ void BasalDose_DoseTimingReset(void);
 
 /** Function: BasalDose_DoseInitiate()
  * 
- *  Function is used initialize Timer1, but not start counting.
+ *  Sets up and enables Timer1.
  *
  *	@param void: void
  *	@return void: void
@@ -63,9 +62,8 @@ void BasalDose_DoseInitiate(void);
 
 /** Function: BasalDose_DoseEnable()
  * 
- *  Function is used to enable Timer1,
- *  then Disables and Resets Timer0, and 
- *  starts counting Timer1
+ *  Function is used to enable Timer1 counter,
+ *  then disables and resets Timer0.
  *	
  *	@param void: void
  *	@return void: void
@@ -75,7 +73,7 @@ void BasalDose_DoseEnable(void);
 
 /** Function: BasalDose_DoseDisable()
  *  
- *  Resets all pending Timer1 interrupts and clears out registers
+ *  Function is used to disable and reset Timer1.
  *  
  *  @param void: void
  *  @return void: void

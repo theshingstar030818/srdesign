@@ -19,66 +19,54 @@ void BasalDose_DoseTimingInitiate(void)
 {
 	LPC_TIM0->PR = 0x02; // Pre-scalar
 	LPC_TIM0->MR0 = 1 << 27; // Match number
-	LPC_TIM0->MCR |= 1 << 0; // Interrupt timer on match (MCR = 01)
-	LPC_TIM0->MCR |= 1 << 1; // Reset timer on match (MCR = 11)
-	LPC_TIM0->TCR |= 1 << 1; // Manually reset Timer0 (TCR = 10)
-	LPC_TIM0->TCR &=~(1 << 1); // Stop resetting the Timer0 (TCR = 00)
-
+	LPC_TIM0->MCR |= 3 << 0; // Interrupt and reset timer on match (MCR = 011)
 	NVIC_EnableIRQ(TIMER0_IRQn); // Enable Timer0, but don't start counting
 }
 
 void BasalDose_DoseTimingEnable(void)
 {
-	NVIC_EnableIRQ(TIMER0_IRQn); // Enable Timer0
 	BasalDose_DoseDisable(); // Disable and Reset Timer1
 	LPC_TIM0->TCR |= 1 << 0; // Start counting (TCR = 01)
 }
 
 void BasalDose_DoseTimingDisable(void)
 {
-	NVIC_DisableIRQ(TIMER0_IRQn); // Disable Timer0 IRQ
 	BasalDose_DoseTimingReset();
 }
 
 void BasalDose_DoseTimingReset(void)
 {
-	LPC_TIM0->TCR &=~(1 << 0);
-	LPC_TIM0->TCR |= 1 << 1;
-	LPC_TIM0->TCR &=~(1 << 1);
-	LPC_TIM0->IR |= 1 << 0; // Resets all pending Timer0 interrupts and clears out registers
-							// I only think we need this line here, but needs to be tested
+	LPC_TIM0->TCR &=~(1 << 0); // Stop Timer Counter (TCR = 00)
+	LPC_TIM0->TCR |= 1 << 1; // Reset Timer Counter (TCR = 10)
+	LPC_TIM0->TCR &=~(1 << 1); // Stop resetting Timer Counter (TCR = 00)
+	LPC_TIM0->IR |= 1 << 0; // Reset Timer0 Interrupt
 }
 
 void BasalDose_DoseInitiate(void)
 {
 	LPC_TIM1->PR = 0x02; // Pre-scalar
-	LPC_TIM1->MR0 = 1 << 17; // Match number
-	LPC_TIM1->MCR |= 1 << 0; // Interrupt timer on match (MCR = 01)
-	LPC_TIM1->MCR |= 1 << 1; // Reset timer on match (MCR = 11)
-	LPC_TIM1->TCR |= 1 << 1; // Manually reset Timer1 (TCR = 10)
-	LPC_TIM1->TCR &=~(1 << 1); // Stop resetting the Timer0 (TCR = 00)
+	LPC_TIM1->MR0 = 1 << 20; // Match number
+	LPC_TIM1->MCR |= 3 << 0; // Interrupt and reset timer on match (MCR = 011)
+	NVIC_EnableIRQ(TIMER1_IRQn);
 }
 
 void BasalDose_DoseEnable(void)
 {
-	NVIC_EnableIRQ(TIMER1_IRQn); // Enable Timer1 IRQ
 	BasalDose_DoseTimingDisable(); // Disable and Reset Timer0
 	LPC_TIM1->TCR |= 1 << 0; // Start counting (TCR = 01)
 }
 
 void BasalDose_DoseDisable(void)
 {
-	NVIC_DisableIRQ(TIMER1_IRQn); // Disable Timer1 IRQ
 	BasalDose_DoseReset();
 }
 
 void BasalDose_DoseReset(void)
 {
-	LPC_TIM1->TCR &=~(1 << 0);
-	LPC_TIM1->TCR |= 1 << 1;
-	LPC_TIM1->TCR &=~(1 << 1);
-	LPC_TIM1->IR |= 1 << 1; // Resets all pending Timer1 interrupts and clears out registers
-							// I only think we need this line here, but needs to be tested
+	LPC_TIM1->TCR &=~(1 << 0); // Stop Timer Counter (TCR = 00)
+	LPC_TIM1->TCR |= 1 << 1; // Reset Timer Counter (TCR = 10)
+	LPC_TIM1->TCR &=~(1 << 1); // Stop resetting Timer Counter (TCR = 00)
+	LPC_TIM1->IR |= 1 << 1; // Reset Timer1 Interrupt
 }
 
 void TIMER0_IRQHandler(void)
