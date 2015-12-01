@@ -32,6 +32,17 @@ typedef enum {Basal, Bolus, Backward, None} status;
 
 void Control_LEDInitiate(void);
 
+/** Function Control_LEDClear()
+ *
+ *	Clear out LEDs P1.28, P1.29, P1.31,
+ *	used as Basal, Bolus, and Backward indicators
+ *
+ *  @param void: void 
+ *  @return void: void
+ */
+ 
+void Control_LEDClear(void);
+
 /** Function Control_ClockInitiate()
  *
  *  Function is called in the main loop to initialize clock.

@@ -15,6 +15,7 @@ extern uint32_t StepperMotor_CurrentBolusDose;
 
 extern status Control_GlobalStatus;
 
+// Set and enable Timer0 for the time in between Basal doses
 void BasalDose_DoseTimingInitiate(void)
 {
 	LPC_TIM0->PR = 0x02; // Pre-scalar
@@ -30,11 +31,6 @@ void BasalDose_DoseTimingEnable(void)
 }
 
 void BasalDose_DoseTimingDisable(void)
-{
-	BasalDose_DoseTimingReset();
-}
-
-void BasalDose_DoseTimingReset(void)
 {
 	LPC_TIM0->TCR &=~(1 << 0); // Stop Timer Counter (TCR = 00)
 	LPC_TIM0->TCR |= 1 << 1; // Reset Timer Counter (TCR = 10)
@@ -58,11 +54,6 @@ void BasalDose_DoseEnable(void)
 
 void BasalDose_DoseDisable(void)
 {
-	BasalDose_DoseReset();
-}
-
-void BasalDose_DoseReset(void)
-{
 	LPC_TIM1->TCR &=~(1 << 0); // Stop Timer Counter (TCR = 00)
 	LPC_TIM1->TCR |= 1 << 1; // Reset Timer Counter (TCR = 10)
 	LPC_TIM1->TCR &=~(1 << 1); // Stop resetting Timer Counter (TCR = 00)
@@ -76,7 +67,6 @@ void TIMER0_IRQHandler(void)
 	 * TODO: Add additional state so that we inject until empty,
 	 * then retract syringe.
 	 */
-	 
 	if(StepperMotor_GlobalPosition + BASAL_STEPS <= SYRINGE_LENGTH)
 	{
 		Control_GlobalStatus = Basal;
@@ -110,10 +100,7 @@ void TIMER1_IRQHandler(void)
 			break;
 		case None:
 			BasalDose_DoseTimingEnable(); // Re-Enable Timer0
-			// Clear out LEDs because nothing is being administered
-			LPC_GPIO1->FIOCLR |= 1 << 28; 
-			LPC_GPIO1->FIOCLR |= 1 << 29;
-			LPC_GPIO1->FIOCLR |= 1 << 31;
+			Control_LEDClear(); // Clear out LEDs
 			break;
 	}
 	LPC_TIM1->IR |= 1 << 0; // Clear out Timer1 registers

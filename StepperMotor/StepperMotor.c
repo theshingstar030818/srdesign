@@ -7,7 +7,6 @@
 
 #include "..\Control.h"
 #include "StepperMotor.h"
-#include "..\BasalDose\BasalDose.h"
 
 extern status Control_GlobalStatus;
 
@@ -72,7 +71,6 @@ void StepperMotor_StepForward(void)
 	// Check to see if Basal or Bolus has completed.
 	if((StepperMotor_CurrentBasalDose >= BASAL_STEPS) || (StepperMotor_CurrentBolusDose >= BOLUS_STEPS))
 	{
-		// Reset relevant globals
 		StepperMotor_CurrentBasalDose = 0;
 		StepperMotor_CurrentBolusDose = 0;
 		Control_GlobalStatus = None;
@@ -121,7 +119,6 @@ void StepperMotor_StepBackward(void)
 	// Check to see if syringe is back to original spot
 	if(StepperMotor_GlobalPosition <= 0)
 	{
-		// Reset relevant globals
 		StepperMotor_GlobalPosition = 0;
 		Control_GlobalStatus = None;
 	}

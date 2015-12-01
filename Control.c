@@ -10,7 +10,6 @@
 #include ".\BolusDose\BolusDose.h"
 #include ".\StepperMotor\StepperMotor.h"
 
-
 status Control_GlobalStatus;
 
 int main(void)
@@ -48,6 +47,13 @@ void Control_LEDInitiate(void)
 	// Set pins P2.2, P2.3 as output
 	LPC_GPIO2->FIODIR |= (0x00000006);
 	LPC_GPIO2->FIOPIN &=~(0x00000006);
+}
+void Control_LEDClear(void)
+{
+	// Clear out LEDs used for Basal, Bolus, and Backward
+	LPC_GPIO1->FIOCLR |= 1 << 28; 
+	LPC_GPIO1->FIOCLR |= 1 << 29;
+	LPC_GPIO1->FIOCLR |= 1 << 31;
 }
 
 void Control_ClockInitiate(void)
