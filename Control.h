@@ -35,7 +35,7 @@ void Control_LEDInitiate(void);
 /** Function Control_ClockInitiate()
  *
  *  Function is called in the main loop to initialize clock.
- *	Powers up Timer0 and Timer1 and sets PCLK = CCLK
+ *  Powers up Timer0 and Timer1 and sets PCLK = CCLK
  *
  *  @param void: void 
  *  @return void: void

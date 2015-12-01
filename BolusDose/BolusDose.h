@@ -11,7 +11,7 @@
 /** Function:  BolusDose_DoseInitiate()
  * 
  *  Used to set P2.10 (INT0 button) as an falling-edge 
- *	external interrupt input that is mapped to EINT3.
+ *  external interrupt input that is mapped to EINT3.
  *  
  *  @param void: void
  *  @return void: void

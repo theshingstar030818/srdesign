@@ -22,8 +22,8 @@ void BasalDose_DoseTimingInitiate(void);
 /** Function: BasalDose_DoseTimingEnable()
  *  
  *  Function is used to enable Timer0,
- *	then Disables and Resets Timer1, and 
- *	starts counting Timer0
+ *  then Disables and Resets Timer1, and 
+ *  starts counting Timer0
  *  
  *  @param void: void
  *  @return void: void
@@ -64,8 +64,8 @@ void BasalDose_DoseInitiate(void);
 /** Function: BasalDose_DoseEnable()
  * 
  *  Function is used to enable Timer1,
- *	then Disables and Resets Timer0, and 
- *	starts counting Timer1
+ *  then Disables and Resets Timer0, and 
+ *  starts counting Timer1
  *	
  *	@param void: void
  *	@return void: void
