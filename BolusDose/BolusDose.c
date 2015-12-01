@@ -4,17 +4,17 @@
  *  Created on: Aug 31, 2015
  *      Author: sle
  */
-  
+
 #include "BolusDose.h"
-#include "Control.h"
+#include "..\Control.h"
+#include "..\BasalDose\BasalDose.h"
 
-// Global variable
-uint32_t BolusDose_DoseAmountCounter;
+extern uint32_t StepperMotor_GlobalPosition;
 
-// Set and enable External Interrupt 3
+extern status Control_GlobalStatus;
+
 void BolusDose_DoseInitiate(void)
 {
-
 	LPC_PINCON->PINSEL4 &=~ (3<<20); // P2.10 is GPIO
 	LPC_GPIO2->FIODIR &=~ (1<<10); // P2.10 in input
 
@@ -23,15 +23,22 @@ void BolusDose_DoseInitiate(void)
 	NVIC_EnableIRQ(EINT3_IRQn); // Enable External Interrupt 3
 }
 
-// Enable external interrupt
 void EINT3_IRQHandler(void)
 {
 	LPC_GPIOINT->IO2IntClr |= (1<<10); // Clear the status
 	
-	// Turn P1.31 LED on to indicate that the bolus dose is being administered
-	LPC_GPIO1->FIOSET |= 1 << 31; 
-	
-	Control_DosageAmount(BOLUS_STEPS); // Calculate the number of steps
-	
-	BasalDose_DoseEnable(); // Enable Timer1
+	/* Check to see if there is enough to do a bolus injection,
+	 * if not enough retract the syringe
+	 * TODO: Add additional state so that we inject until empty,
+	 * then retract syringe.
+	 */
+	if(StepperMotor_GlobalPosition + BOLUS_STEPS <= SYRINGE_LENGTH)
+	{
+		Control_GlobalStatus = Bolus;
+	}
+	else
+	{
+		Control_GlobalStatus = Backward;
+	}
+	BasalDose_DoseEnable();	
 }
