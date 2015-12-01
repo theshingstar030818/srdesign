@@ -2,11 +2,12 @@
 * Our goal is to implement real-time software controller to simulate an Insulin Pump
 * The project will be written in C, using many of the pre-defined ARM/LPC17xx libraries
 * Hardware:
+    * Keil MCB1760UME - Development board used, features Cortex-M3 ARM microprocessor
     * Linear Actuator - Used as the administration mechanism to deliver the insulin
     * Syringe - Used as the holder for the insulin that the Linear Actuator will push
 
 ## Primary Goals:
-  * Interface MCB1700 with Linear Actuator using GPIO
+  * Interface MCB Development Board with Linear Actuator using GPIO
   * Interface Linear Actuator with Syringe
   * Implement Functional Basal Dose (*Continuous Dose Over Time*)
   * Implement Functional Bolus Dose (*One Time User-Initiated Dose*)
