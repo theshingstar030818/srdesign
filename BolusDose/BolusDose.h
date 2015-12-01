@@ -10,10 +10,8 @@
 
 /** Function:  BolusDose_DoseInitiate()
  * 
- *  Must be called at the beginning of the main method.
- *  Function is used to set P2.10 (INT0 button) as an input.
- *  The function enables falling edge for P2.10.
- *	The funciton enables external interrupt 3.
+ *  Used to set P2.10 (INT0 button) as an falling-edge 
+ *	external interrupt input that is mapped to EINT3.
  *  
  *  @param void: void
  *  @return void: void
@@ -23,8 +21,8 @@ void BolusDose_DoseInitiate(void);
 
 /** Function: EINT3_IRQHandler()
  *
- *  The interrupt handler for the external
- *  interrupt connected to pin P2.10.
+ *  The interrupt handler for the external interrupt connected 
+ *  to pin P2.10. Generates a bolus dose.
  *  
  *  @param void: void
  *  @return void: void

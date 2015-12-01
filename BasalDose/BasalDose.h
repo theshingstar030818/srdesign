@@ -11,8 +11,7 @@
 
 /** Function: BasalDose_DoseTimingInitiate()
  * 
- *  Must be called at the beginning of the main method.
- *  Currently, set up and enables Timer0.
+ *  Sets up and enables Timer0.
  *  
  *  @param void: void
  *  @return void: void
@@ -22,8 +21,9 @@ void BasalDose_DoseTimingInitiate(void);
 
 /** Function: BasalDose_DoseTimingEnable()
  *  
- *  The function is called after BasalDose_DoseTimingInitiate().
- *  Function is used to enable TIMER0 IRQ Handler.
+ *  Function is used to enable Timer0,
+ *	then Disables and Resets Timer1, and 
+ *	starts counting Timer0
  *  
  *  @param void: void
  *  @return void: void
@@ -33,7 +33,7 @@ void BasalDose_DoseTimingEnable(void);
 
 /** Function: BasalDose_DoseTimingDisable()
  *  
- *  Function is used to disable TIMER0 IRQ Handler.
+ *  Function is used to disable and reset Timer0.
  *  
  *  @param void: void
  *  @return void: void
@@ -43,7 +43,7 @@ void BasalDose_DoseTimingDisable(void);
 
 /** Function: BasalDose_DoseTimingReset()
  *  
- *  Function is used to reset current TIMER0 counter.
+ *  Resets all pending Timer0 interrupts and clears out registers
  *  
  *  @param void: void
  *  @return void: void
@@ -51,18 +51,21 @@ void BasalDose_DoseTimingDisable(void);
  
 void BasalDose_DoseTimingReset(void);
 
-/** Function: BasalDose_DoseAmountInitiate()
+/** Function: BasalDose_DoseInitiate()
  * 
- *  The function is called at the beginning of the main function in Control.c.
  *  Function is used initialize Timer1, but not start counting.
+ *
+ *	@param void: void
+ *	@return void: void
  */
 
 void BasalDose_DoseInitiate(void);
 
-/** Function: BasalDose_DoseEnable().
+/** Function: BasalDose_DoseEnable()
  * 
- *  Called when MRO interrupt on Timer0.
- *  It disables Timer0, enables and resets Timer1.
+ *  Function is used to enable Timer1,
+ *	then Disables and Resets Timer0, and 
+ *	starts counting Timer1
  *	
  *	@param void: void
  *	@return void: void
@@ -72,8 +75,7 @@ void BasalDose_DoseEnable(void);
 
 /** Function: BasalDose_DoseDisable()
  *  
- *  The function is called after StepperMotor_StepForward() and StepperMotor_StepBackward().
- *  Function is used to disable TIMER1 IRQ Handler.
+ *  Resets all pending Timer1 interrupts and clears out registers
  *  
  *  @param void: void
  *  @return void: void
@@ -83,8 +85,7 @@ void BasalDose_DoseDisable(void);
 
 /** Function: BasalDose_DoseReset()
  *  
- *  The function is called after StepperMotor_StepForward() and StepperMotor_StepBackward().
- *  Function is used to disable TIMER1 IRQ Handler.
+ *  Function is used to disable and reset Timer1.
  *  
  *  @param void: void
  *  @return void: void
@@ -94,7 +95,7 @@ void BasalDose_DoseReset(void);
 
 /** Function: TIMER0_IRQHandler()
  *  
- *  The handler for Timer0 interrupt.
+ *  Sets the GlobalStatus depending on how much is left in the syringe.
  *  
  *  @param void: void
  *  @return void: void
@@ -103,7 +104,7 @@ void TIMER0_IRQHandler(void);
 
 /** Function: TIMER1_IRQHandler()
  *  
- *  The handler for Timer1 interrupt.
+ *  Depending on the GlobalStatus, administer dosages accordingly.
  *  
  *  @param void: void
  *  @return void: void

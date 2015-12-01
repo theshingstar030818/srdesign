@@ -19,19 +19,19 @@ void BasalDose_DoseTimingInitiate(void)
 {
 	LPC_TIM0->PR = 0x02; // Pre-scalar
 	LPC_TIM0->MR0 = 1 << 27; // Match number
-	LPC_TIM0->MCR |= 1 << 0; // Interrupt and reset
-	LPC_TIM0->MCR |= 1 << 1; // Reset timer on Match 0.
-	LPC_TIM0->TCR |= 1 << 1; // Manually Reset Timer0 (forced)
-	LPC_TIM0->TCR &=~(1 << 1); // Stop resetting the timer.
+	LPC_TIM0->MCR |= 1 << 0; // Interrupt timer on match (MCR = 01)
+	LPC_TIM0->MCR |= 1 << 1; // Reset timer on match (MCR = 11)
+	LPC_TIM0->TCR |= 1 << 1; // Manually reset Timer0 (TCR = 10)
+	LPC_TIM0->TCR &=~(1 << 1); // Stop resetting the Timer0 (TCR = 00)
 
-	NVIC_EnableIRQ(TIMER0_IRQn);
+	NVIC_EnableIRQ(TIMER0_IRQn); // Enable Timer0, but don't start counting
 }
 
 void BasalDose_DoseTimingEnable(void)
 {
-	NVIC_EnableIRQ(TIMER0_IRQn); // Enable Timer0 IRQ
-	BasalDose_DoseDisable();
-	LPC_TIM0->TCR |= 1 << 0;
+	NVIC_EnableIRQ(TIMER0_IRQn); // Enable Timer0
+	BasalDose_DoseDisable(); // Disable and Reset Timer1
+	LPC_TIM0->TCR |= 1 << 0; // Start counting (TCR = 01)
 }
 
 void BasalDose_DoseTimingDisable(void)
@@ -45,24 +45,25 @@ void BasalDose_DoseTimingReset(void)
 	LPC_TIM0->TCR &=~(1 << 0);
 	LPC_TIM0->TCR |= 1 << 1;
 	LPC_TIM0->TCR &=~(1 << 1);
-	LPC_TIM0->IR |= 1 << 0;
+	LPC_TIM0->IR |= 1 << 0; // Resets all pending Timer0 interrupts and clears out registers
+							// I only think we need this line here, but needs to be tested
 }
 
 void BasalDose_DoseInitiate(void)
 {
 	LPC_TIM1->PR = 0x02; // Pre-scalar
 	LPC_TIM1->MR0 = 1 << 17; // Match number
-	LPC_TIM1->MCR |= 1 << 0; // Interrupt and reset
-	LPC_TIM1->MCR |= 1 << 1; // Reset timer on Match 0.
-	LPC_TIM1->TCR |= 1 << 1; // Manually Reset Timer1 (forced)
-	LPC_TIM1->TCR &=~(1 << 1); // Stop resetting the timer.s
+	LPC_TIM1->MCR |= 1 << 0; // Interrupt timer on match (MCR = 01)
+	LPC_TIM1->MCR |= 1 << 1; // Reset timer on match (MCR = 11)
+	LPC_TIM1->TCR |= 1 << 1; // Manually reset Timer1 (TCR = 10)
+	LPC_TIM1->TCR &=~(1 << 1); // Stop resetting the Timer0 (TCR = 00)
 }
 
 void BasalDose_DoseEnable(void)
 {
 	NVIC_EnableIRQ(TIMER1_IRQn); // Enable Timer1 IRQ
-	BasalDose_DoseTimingDisable();
-	LPC_TIM1->TCR |= 1 << 0;
+	BasalDose_DoseTimingDisable(); // Disable and Reset Timer0
+	LPC_TIM1->TCR |= 1 << 0; // Start counting (TCR = 01)
 }
 
 void BasalDose_DoseDisable(void)
@@ -76,11 +77,18 @@ void BasalDose_DoseReset(void)
 	LPC_TIM1->TCR &=~(1 << 0);
 	LPC_TIM1->TCR |= 1 << 1;
 	LPC_TIM1->TCR &=~(1 << 1);
-	LPC_TIM1->IR |= 1 << 1;
+	LPC_TIM1->IR |= 1 << 1; // Resets all pending Timer1 interrupts and clears out registers
+							// I only think we need this line here, but needs to be tested
 }
 
 void TIMER0_IRQHandler(void)
 {
+	/* Check to see if there is enough to do a basal injection,
+	 * if not enough retract the syringe
+	 * TODO: Add additional state so that we inject until empty,
+	 * then retract syringe.
+	 */
+	 
 	if(StepperMotor_GlobalPosition + BASAL_STEPS <= SYRINGE_LENGTH)
 	{
 		Control_GlobalStatus = Basal;
@@ -94,29 +102,31 @@ void TIMER0_IRQHandler(void)
 
 void TIMER1_IRQHandler(void)
 {
+	// Switch on status defined by Timer0 and EINT3 IRQs
+	// case None defined within the StepperMotor_Step functions when adminstration is done
 	switch(Control_GlobalStatus)
 	{
-		case Basal:
-			LPC_GPIO1->FIOSET |= 1 << 28;
-			StepperMotor_CurrentBasalDose++;
+		case Basal: 
+			LPC_GPIO1->FIOSET |= 1 << 28; // Signal that Basal is being administered P1.28
+			StepperMotor_CurrentBasalDose++; // Keep track of current dosing
 			StepperMotor_StepForward();
 			break;
 		case Bolus:
-			LPC_GPIO1->FIOSET |= 1 << 29;
-			StepperMotor_CurrentBolusDose++;
+			LPC_GPIO1->FIOSET |= 1 << 29; // Signal that Bolus is being administered P1.29
+			StepperMotor_CurrentBolusDose++; 
 			StepperMotor_StepForward();
 			break;
 		case Backward:
-			LPC_GPIO1->FIOSET |= 1 << 31;
+			LPC_GPIO1->FIOSET |= 1 << 31; // Signal that Backward/Retraction is occuring P1.31
 			StepperMotor_StepBackward();
 			break;
 		case None:
-			BasalDose_DoseTimingEnable();
-			LPC_GPIO1->FIOCLR |= 1 << 28;
+			BasalDose_DoseTimingEnable(); // Re-Enable Timer0
+			// Clear out LEDs because nothing is being administered
+			LPC_GPIO1->FIOCLR |= 1 << 28; 
 			LPC_GPIO1->FIOCLR |= 1 << 29;
 			LPC_GPIO1->FIOCLR |= 1 << 31;
-			NVIC_EnableIRQ(EINT3_IRQn);
 			break;
 	}
-	LPC_TIM1->IR |= 1 << 0;
+	LPC_TIM1->IR |= 1 << 0; // Clear out Timer1 registers
 }

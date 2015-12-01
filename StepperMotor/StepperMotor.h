@@ -10,12 +10,9 @@
 
 /** Function: StepperMotor_Initiate()
  * 
- *  Must be called at the beginning of the main method.
- *  Function is used to set the GPIO0 pins 0, 1, 2, 3 to output,
- *  then masks bits 4,...,31 to maintain integrity of those pins.
- *  Currently, sets StepperMotor_GlobalPosition and StepperMotor_CurrentPosition to 0, which are
- *  variables that describe where the stepper motor is relative
- *  from where it starts.
+ *  Set pins P0.0 P0.1, P0.2, P0.3 as output.
+ *  Initializes globals used to keep track of current 
+ *	state of stepper motor and syringe.
  *  
  *  @param void: void
  *  @return void: void
@@ -25,8 +22,9 @@ void StepperMotor_Initiate(void);
 
 /** Function: StepperMotor_StepForward()
  * 
- *  Called when Timer1 is enabled.
- *  Function is used to make half steps on the stepper motor.
+ *  Uses the StepperMotor_CurrentPosition to determine the
+ *	next half-step in the forward motor sequence and assigns it.
+ *	Then checks to see if the current dosing has finished.
  *  
  *  @param void: void
  *  @return void: void
@@ -36,8 +34,9 @@ void StepperMotor_StepForward(void);
 
 /** Function: StepperMotor_StepBackward()
  * 
- *  Function makes half steps on the stepper motor.
- *  Currently, subtracts StepperMotor_GlobalPosition and StepperMotor_CurrentPosition by 1 with each half step.
+ *  Uses the StepperMotor_CurrentPosition to determine the
+ *	next half-step in the motor backward sequence and assigns it.
+ *	Then checks to see if the current retraction has finished.
  *  
  *  @param void: void
  *  @return void: void
