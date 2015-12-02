@@ -5,36 +5,32 @@
  *      Author: sle
  */
 
+#include "..\Control.h"
 #include "StepperMotor.h"
-#include "Control.h"
 
-extern uint32_t Control_AmountPerDose;
-extern uint32_t BasalDose_DoseAmountCounter;
+extern status Control_GlobalStatus;
 
-// Global variables
 uint32_t StepperMotor_CurrentPosition;
 uint32_t StepperMotor_GlobalPosition;
 
-// Initializes the stepper motor
+uint32_t StepperMotor_CurrentBasalDose;
+uint32_t StepperMotor_CurrentBolusDose;
+
 void StepperMotor_Initiate(void)
 {
-	// Initialize the pins P0.0 to P0.3
-	// These are the leads for the stepper motor
+	// Initialilze P0.0, P0.1, P0.2, P0.3 to output
 	LPC_GPIO0->FIODIR |= (0x0000000F);
 	LPC_GPIO0->FIOPIN &= ~(0x0000000F);
-	
-	// Declaring the global variables
+
+	// Initialize globals
 	StepperMotor_CurrentPosition = 0;
 	StepperMotor_GlobalPosition = 0;
-	BasalDose_DoseAmountCounter = 0;
+	StepperMotor_CurrentBasalDose = 0;
+	StepperMotor_CurrentBolusDose = 0;
 }
 
-// Function that will drive the stepper motor forward
 void StepperMotor_StepForward(void)
 {
-	BasalDose_DoseAmountCounter++; // Increase Basal counter
-	
-	// Compare and keep track of the current position of the stepper motor
 	switch(StepperMotor_CurrentPosition)
 	{
 		case 0:
@@ -70,33 +66,19 @@ void StepperMotor_StepForward(void)
 			StepperMotor_CurrentPosition = 0;
 			break;
 	}
+	StepperMotor_GlobalPosition++;
 	
-	StepperMotor_GlobalPosition++; // Increment stepper motors global variable
-	
-	// Compare if the amount injecfted is more than amount that is able to be recieved
-	if(BasalDose_DoseAmountCounter >= Control_AmountPerDose)
+	// Check to see if Basal or Bolus has completed.
+	if((StepperMotor_CurrentBasalDose >= BASAL_STEPS) || (StepperMotor_CurrentBolusDose >= BOLUS_STEPS))
 	{
-		/**
-		 * Turn off P1.28, P1.29, P1.30 LEDs to indicate that dosing is now over
-		 * GPIO1 P1.28 indicates stepper motor rotation
-		 * GPIO1 P1.29 indicates basal dose rotation
-		 * GPIO1 P1.31 indicates bolus dose rotation
-		 */
-		 
-		LPC_GPIO1->FIOCLR |= 1 << 28;
-		LPC_GPIO1->FIOCLR |= 1 << 29;
-		LPC_GPIO1->FIOCLR |= 1 << 31;
-		
-		BasalDose_DoseDisable(); // Disable Timer1 IRQ
-		BasalDose_DoseTimingEnable(); // Enable Timer0
-		BasalDose_DoseAmountCounter = 0; // Set to 0
+		StepperMotor_CurrentBasalDose = 0;
+		StepperMotor_CurrentBolusDose = 0;
+		Control_GlobalStatus = None;
 	}
 }
 
-// Function that will drive the stepper motor backward
 void StepperMotor_StepBackward(void)
 {
-	// Compare and keep track of the current position of the stepper motor
 	switch(StepperMotor_CurrentPosition)
 	{
 		case 0:
@@ -132,24 +114,12 @@ void StepperMotor_StepBackward(void)
 			StepperMotor_CurrentPosition--;
 			break;
 	}
+	StepperMotor_GlobalPosition--;
 	
-	StepperMotor_GlobalPosition--; // Decrement stepper motors global variable
-	
-	if(StepperMotor_GlobalPosition <= SYRINGE_LENGTH)
+	// Check to see if syringe is back to original spot
+	if(StepperMotor_GlobalPosition <= 0)
 	{
-		/**
-		 * Turn off P1.28, P1.29, P1.30 LEDs to indicate that retraction is now over
-		 * GPIO1 P1.28 indicates stepper motor rotation
-		 * GPIO1 P1.29 indicates basal dose rotation
-		 * GPIO1 P1.31 indicates bolus dose rotation
-		 */
-		 
-		LPC_GPIO1->FIOCLR |= 1 << 28;
-		LPC_GPIO1->FIOCLR |= 1 << 29;
-		LPC_GPIO1->FIOCLR |= 1 << 31;
-		
 		StepperMotor_GlobalPosition = 0;
-		BasalDose_DoseDisable(); // Disable Timer1 IRQ
-		BasalDose_DoseTimingEnable(); // Enable Timer0 IRQ
+		Control_GlobalStatus = None;
 	}
 }
