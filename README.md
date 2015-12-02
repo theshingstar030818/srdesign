@@ -18,3 +18,6 @@
   * Set-up MCB1700 to be able to read/write to micro SD Card
   * Implement Security Features that apply to the additional features
   
+## What to include when starting a new Project:
+  * GPDMA:
+  ** GPIO
