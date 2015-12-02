@@ -20,4 +20,4 @@
   
 ## What to include when starting a new Project:
   * GPDMA:
-  ** GPIO
+    * GPIO
