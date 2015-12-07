@@ -1,89 +1,84 @@
-/*
- * StepperMotor.c
+/**
+ *  StepperMotor.c
  *
  *  Created on: Sep 8, 2015
  *      Author: sle
  */
 
-#include "Control.c"
+#include "..\Control.h"
 #include "StepperMotor.h"
 
-// Global variables
+extern status Control_GlobalStatus;
+
 uint32_t StepperMotor_CurrentPosition;
 uint32_t StepperMotor_GlobalPosition;
 
-// Initializes the stepper motor
+uint32_t StepperMotor_CurrentBasalDose;
+uint32_t StepperMotor_CurrentBolusDose;
+
 void StepperMotor_Initiate(void)
 {
-	// Initialize the pins P0.0 to P0.3
-	// These are the leads for the stepper motor
+	// Initialilze P0.0, P0.1, P0.2, P0.3 to output
 	LPC_GPIO0->FIODIR |= (0x0000000F);
 	LPC_GPIO0->FIOPIN &= ~(0x0000000F);
-	
-	// Declaring the global variables
+
+	// Initialize globals
 	StepperMotor_CurrentPosition = 0;
 	StepperMotor_GlobalPosition = 0;
-	BasalDose_DoseAmountCounter = 0;
+	StepperMotor_CurrentBasalDose = 0;
+	StepperMotor_CurrentBolusDose = 0;
 }
 
-// Function that will drive the stepper motor forward
 void StepperMotor_StepForward(void)
 {
-	// Increase the BasalDose_DoseAmountCounter with each step forward
-	BasalDose_DoseAmountCounter++;
-	
-	// Compare and keep track of the current position of the stepper motor
 	switch(StepperMotor_CurrentPosition)
 	{
 		case 0:
 			LPC_GPIO0->FIOPIN = (0x00000003);
-			StepperMotor_CurrentPosition += 1;
+			StepperMotor_CurrentPosition++;
 			break;
 		case 1:
 			LPC_GPIO0->FIOPIN = (0x00000002);
-			StepperMotor_CurrentPosition += 1;
+			StepperMotor_CurrentPosition++;
 			break;
 		case 2:
 			LPC_GPIO0->FIOPIN = (0x00000006);
-			StepperMotor_CurrentPosition += 1;
+			StepperMotor_CurrentPosition++;
 			break;
 		case 3:
 			LPC_GPIO0->FIOPIN = (0x00000004);
-			StepperMotor_CurrentPosition += 1;
+			StepperMotor_CurrentPosition++;
 			break;
 		case 4:
 			LPC_GPIO0->FIOPIN = (0x0000000C);
-			StepperMotor_CurrentPosition += 1;
+			StepperMotor_CurrentPosition++;
 			break;
 		case 5:
 			LPC_GPIO0->FIOPIN = (0x00000008);
-			StepperMotor_CurrentPosition += 1;
+			StepperMotor_CurrentPosition++;
 			break;
 		case 6:
 			LPC_GPIO0->FIOPIN = (0x00000009);
-			StepperMotor_CurrentPosition += 1;
+			StepperMotor_CurrentPosition++;
 			break;
 		case 7:
 			LPC_GPIO0->FIOPIN = (0x00000001);
 			StepperMotor_CurrentPosition = 0;
 			break;
 	}
+	StepperMotor_GlobalPosition++;
 	
-	// Increment stepper motors global variable
-	StepperMotor_GlobalPosition += 1;
-	
-	// Compare if the amount injecfted is more than amount that is able to be recieved
-	if(BasalDose_DoseAmountCounter >= STEPS_PER_DOSE)
+	// Check to see if Basal or Bolus has completed.
+	if((StepperMotor_CurrentBasalDose >= BASAL_STEPS) || (StepperMotor_CurrentBolusDose >= BOLUS_STEPS))
 	{
-		NVIC_DisableIRQ(TIMER1_IRQn); // Disable Timer1
-		BasalDose_DoseAmountCounter = 0; // Set to 0
+		StepperMotor_CurrentBasalDose = 0;
+		StepperMotor_CurrentBolusDose = 0;
+		Control_GlobalStatus = None;
 	}
 }
 
-// Function that will drive the stepper motor backward
 void StepperMotor_StepBackward(void)
 {
-	// Compare and keep track of the current position of the stepper motor
 	switch(StepperMotor_CurrentPosition)
 	{
 		case 0:
@@ -119,7 +114,12 @@ void StepperMotor_StepBackward(void)
 			StepperMotor_CurrentPosition--;
 			break;
 	}
+	StepperMotor_GlobalPosition--;
 	
-	// Decrement stepper motors global variable
-	StepperMotor_GlobalPosition -= 1;
+	// Check to see if syringe is back to original spot
+	if(StepperMotor_GlobalPosition <= 0)
+	{
+		StepperMotor_GlobalPosition = 0;
+		Control_GlobalStatus = None;
+	}
 }

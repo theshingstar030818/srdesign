@@ -1,5 +1,5 @@
-/*
- * BasalDose.h
+/**
+ *  BasalDose.h
  *
  *  Created on: Aug 31, 2015
  *      Author: sle
@@ -9,40 +9,105 @@
 #define BASALDOSE_H_
 
 
-/* Function:  BasalDose_DoseTimingInitiate()
- *
- * Must be called at the beggining of the main method.
- * Function is used to set the GPIO pins 28, 29, 30, 31 to output,
- * then masks the bits 0,...,27 to maintain integrity of those pins.
- * Currently, set up and enables Timer0.
+/** Function: BasalDose_DoseTimingInitiate()
+ * 
+ *  Sets up and enables Timer0.
+ *  
+ *  @param void: void
+ *  @return void: void
  */
 
 void BasalDose_DoseTimingInitiate(void);
 
-/* Function: BasalDose_DoseEnable().
+/** Function: BasalDose_DoseTimingEnable()
+ *  
+ *  Function is used to enable Timer0 counter,
+ *  then disables and resets Timer1.
+ *  
+ *  @param void: void
+ *  @return void: void
+ */
+
+void BasalDose_DoseTimingEnable(void);
+
+/** Function: BasalDose_DoseTimingDisable()
+ *  
+ *  Function is used to disable and reset Timer0.
+ *  
+ *  @param void: void
+ *  @return void: void
+ */
+ 
+void BasalDose_DoseTimingDisable(void);
+
+/** Function: BasalDose_DoseTimingReset()
+ *  
+ *  Resets all pending Timer0 interrupts and clears out counters.
+ *  
+ *  @param void: void
+ *  @return void: void
+ */
+ 
+void BasalDose_DoseTimingReset(void);
+
+/** Function: BasalDose_DoseInitiate()
+ * 
+ *  Sets up and enables Timer1.
  *
- * Called when MRO interrupt on Timer0.
- * Function is used to enable Timer1.
- * It clears the MRO interrupt flag.
- * Toggles LED on pin P1.29.
+ *  @param void: void
+ *  @return void: void
+ */
+
+void BasalDose_DoseInitiate(void);
+
+/** Function: BasalDose_DoseEnable()
+ * 
+ *  Function is used to enable Timer1 counter,
+ *  then disables and resets Timer0.
+ *	
+ *  @param void: void
+ *  @return void: void
  */
 
 void BasalDose_DoseEnable(void);
 
-/* Function: BasalDose_DoseAmountInitiate()
- *
- * Called at the end of BasalDose_DoseAmountInitiate().
- * Function is used to set up Timer1.
+/** Function: BasalDose_DoseDisable()
+ *  
+ *  Function is used to disable and reset Timer1.
+ *  
+ *  @param void: void
+ *  @return void: void
  */
 
-void BasalDose_DoseAmountInitiate(void);
+void BasalDose_DoseDisable(void);
 
-/* Function: BasalDose_DoseInject()
- *
- * Called when MRO interrupt on Timer1.
- * Function is used to set up but not initialize Timer1.
+/** Function: BasalDose_DoseReset()
+ *  
+ *  Function is used to disable and reset Timer1.
+ *  
+ *  @param void: void
+ *  @return void: void
  */
 
-void BasalDose_DoseInject(void);
+void BasalDose_DoseReset(void);
+
+/** Function: TIMER0_IRQHandler()
+ *  
+ *  Sets the GlobalStatus depending on how much is left in the syringe.
+ *  
+ *  @param void: void
+ *  @return void: void
+ */
+void TIMER0_IRQHandler(void);
+
+/** Function: TIMER1_IRQHandler()
+ *  
+ *  Depending on the GlobalStatus, administer dosages accordingly.
+ *  
+ *  @param void: void
+ *  @return void: void
+ */
+
+void TIMER1_IRQHandler(void);
 
 #endif /* BASALDOSE_H_ */
