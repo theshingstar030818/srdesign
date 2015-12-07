@@ -10,9 +10,9 @@
 
 #include "lpc17xx.h" // Device header
 
-#define SYRINGE_LENGTH 400
-#define BASAL_STEPS 50
-#define BOLUS_STEPS 200
+#define SYRINGE_LENGTH 5000
+#define BASAL_STEPS 250
+#define BOLUS_STEPS 1000
 
 // Create bool enum
 typedef enum {false, true} bool;
