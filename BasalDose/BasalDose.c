@@ -7,6 +7,7 @@
 
 #include "BasalDose.h"
 #include "..\Control.h"
+#include "..\LCD\LCD.h"
 #include "..\StepperMotor\StepperMotor.h"
 
 extern uint32_t StepperMotor_GlobalPosition;
@@ -70,10 +71,12 @@ void TIMER0_IRQHandler(void)
 	if(StepperMotor_GlobalPosition + BASAL_STEPS <= SYRINGE_LENGTH)
 	{
 		Control_GlobalStatus = Basal;
+		LED_On(0); // Signal that Basal is being administered P1.28
 	}
 	else
 	{
 		Control_GlobalStatus = Backward;
+		LED_On(2); // Signal that Backward/Retraction is occuring P1.31
 	}
 	BasalDose_DoseEnable();	
 }
@@ -85,17 +88,14 @@ void TIMER1_IRQHandler(void)
 	switch(Control_GlobalStatus)
 	{
 		case Basal: 
-			LPC_GPIO1->FIOSET |= 1 << 28; // Signal that Basal is being administered P1.28
 			StepperMotor_CurrentBasalDose++; // Keep track of current dosing
 			StepperMotor_StepForward();
 			break;
 		case Bolus:
-			LPC_GPIO1->FIOSET |= 1 << 29; // Signal that Bolus is being administered P1.29
 			StepperMotor_CurrentBolusDose++; 
 			StepperMotor_StepForward();
 			break;
 		case Backward:
-			LPC_GPIO1->FIOSET |= 1 << 31; // Signal that Backward/Retraction is occuring P1.31
 			StepperMotor_StepBackward();
 			break;
 		case None:

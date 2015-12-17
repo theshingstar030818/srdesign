@@ -8,14 +8,15 @@
 #ifndef CONTROL_CONTROL_H_
 #define CONTROL_CONTROL_H_
 
-#include "lpc17xx.h" // Device header
+#include "lpc17xx.h"     // Device header
+#include "Board_LED.h"   // Board Support : LED
+#include "Board_GLCD.h"  // Board Support : Graphic LCD
+#include "GLCD_Config.h" // Board Support : Graphic LCD
+
 
 #define SYRINGE_LENGTH 5000
 #define BASAL_STEPS 250
 #define BOLUS_STEPS 1000
-
-// Create bool enum
-typedef enum {false, true} bool;
 
 // Create state machine enum
 typedef enum {Basal, Bolus, Backward, None} status;

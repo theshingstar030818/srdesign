@@ -7,6 +7,7 @@
 
 #include "BolusDose.h"
 #include "..\Control.h"
+#include "..\LCD\LCD.h"
 #include "..\BasalDose\BasalDose.h"
 
 extern uint32_t StepperMotor_GlobalPosition;
@@ -35,10 +36,12 @@ void EINT3_IRQHandler(void)
 	if(StepperMotor_GlobalPosition + BOLUS_STEPS <= SYRINGE_LENGTH)
 	{
 		Control_GlobalStatus = Bolus;
+		LED_On(1); // Signal that Bolus is being administered P1.29
 	}
 	else
 	{
 		Control_GlobalStatus = Backward;
+		LED_On(2); // Signal that Backward/Retraction is occuring P1.31
 	}
 	BasalDose_DoseEnable();	
 }
