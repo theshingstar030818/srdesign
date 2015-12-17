@@ -7,7 +7,6 @@
 
 #include "BolusDose.h"
 #include "..\Control.h"
-#include "..\LCD\LCD.h"
 #include "..\BasalDose\BasalDose.h"
 
 extern uint32_t StepperMotor_GlobalPosition;

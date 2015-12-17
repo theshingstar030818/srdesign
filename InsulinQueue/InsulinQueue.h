@@ -16,9 +16,8 @@ typedef struct InsulinQueue
 	uint32_t *insulinEntry;
 } InsulinQueue;
 
+InsulinQueue *InsulinQueue_Create(uint32_t maxEntries);
 
-InsulinQueue *createInsulinQueue(uint32_t maxEntries);
+void InsulinQueue_Pop(InsulinQueue *iq);
 
-void pop(InsulinQueue *iq);
-
-void push(InsulinQueue *iq, int currentInsulinAmount);
+void InsulinQueue_Push(InsulinQueue *iq, int currentInsulinAmount);
