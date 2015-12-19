@@ -1,11 +1,15 @@
 Senior Design Repository
 ========================
-* Our goal is to implement real-time software controller to simulate an Insulin Pump
-* The project will be written in C, using many of the pre-defined ARM/LPC17xx libraries
-* Hardware:
-    * Keil MCB1760UME - Development board used, features Cortex-M3 ARM microprocessor
-    * Linear Actuator - Used as the administration mechanism to deliver the insulin
-    * Syringe - Used as the holder for the insulin that the Linear Actuator will push
+Our goal is to implement real-time software controller to simulate an Insulin Pump. The project will be written in C, using many of the pre-defined ARM/LPC17xx libraries as a starting point.   
+   
+**Hardware:**
+   * Keil MCB1760UME - Development board used, features Cortex-M3 ARM microprocessor
+   * Linear Actuator - Used as the administration mechanism to deliver the insulin
+   * Syringe - Used as the holder for the insulin that the Linear Actuator will push
+   
+**Software:**
+   * Keil uVision 5 - IDE used for software development
+   * Git - VCS/SCM used to track and review development
 
 Primary Goals:
 --------------
