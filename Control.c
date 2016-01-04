@@ -10,6 +10,7 @@
 #include ".\BasalDose\BasalDose.h"
 #include ".\BolusDose\BolusDose.h"
 #include ".\StepperMotor\StepperMotor.h"
+#include ".\Speaker\Speaker.h"
 
 status Control_GlobalStatus;
 
@@ -32,6 +33,8 @@ int main(void)
 	// Built in LED function replaces what we were using before
 	LED_Initialize(); 
 	
+	// Built in Joystick initialization
+	Joystick_Initialize();
 	
 	// Initialize Timers 0, 1
 	BasalDose_DoseTimingInitiate();
@@ -39,6 +42,9 @@ int main(void)
 	
 	// Initialize External Interrupt 3
 	BolusDose_DoseInitiate();
+	
+	// Initialize Speaker
+	Speaker_Initiate();
 	
 	LPC_TIM0->TCR |= 1 << 0; // Start Counting Timer0
 	

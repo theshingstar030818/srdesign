@@ -8,6 +8,7 @@
 #include "BolusDose.h"
 #include "..\Control.h"
 #include "..\BasalDose\BasalDose.h"
+#include "..\Speaker\Speaker.h"
 
 extern uint32_t StepperMotor_GlobalPosition;
 
@@ -26,6 +27,8 @@ void BolusDose_DoseInitiate(void)
 void EINT3_IRQHandler(void)
 {
 	LPC_GPIOINT->IO2IntClr |= (1<<10); // Clear the status
+	
+	Speaker_Play();
 	
 	/* Check to see if there is enough to do a bolus injection,
 	 * if not enough retract the syringe

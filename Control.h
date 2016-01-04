@@ -12,7 +12,7 @@
 #include "Board_LED.h"   // Board Support : LED
 #include "Board_GLCD.h"  // Board Support : Graphic LCD
 #include "GLCD_Config.h" // Board Support : Graphic LCD
-
+#include "Board_Joystick.h" // Board Support : Joystick
 
 #define SYRINGE_LENGTH 5000
 #define BASAL_STEPS 250
