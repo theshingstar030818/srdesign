@@ -44,4 +44,55 @@ void StepperMotor_StepForward(void);
  
 void StepperMotor_StepBackward(void);
 
+/** Function: StepperMotor_SpeedInitiate()
+ * 
+ *  Sets up and enables Timer1.
+ *
+ *  @param void: void
+ *  @return void: void
+ */
+
+void StepperMotor_SpeedInitiate(void);
+
+/** Function: StepperMotor_SpeedEnable()
+ * 
+ *  Function is used to enable Timer1 counter,
+ *  then disables and resets Timer0.
+ *	
+ *  @param void: void
+ *  @return void: void
+ */
+
+void StepperMotor_SpeedEnable(void);
+
+/** Function: StepperMotor_SpeedDisable()
+ *  
+ *  Function is used to disable and reset Timer1.
+ *  
+ *  @param void: void
+ *  @return void: void
+ */
+
+void StepperMotor_SpeedDisable(void);
+
+/** Function: StepperMotor_DoseReset()
+ *  
+ *  Function is used to disable and reset Timer1.
+ *  
+ *  @param void: void
+ *  @return void: void
+ */
+
+void StepperMotor_SpeedReset(void);
+
+/** Function: TIMER1_IRQHandler()
+ *  
+ *  Depending on the GlobalStatus, administer dosages accordingly.
+ *  
+ *  @param void: void
+ *  @return void: void
+ */
+
+void TIMER1_IRQHandler(void);
+
 #endif /* STEPPERMOTOR_STEPPERMOTOR_H_ */

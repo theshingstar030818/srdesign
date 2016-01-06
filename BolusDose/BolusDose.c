@@ -8,6 +8,7 @@
 #include "BolusDose.h"
 #include "..\Control.h"
 #include "..\BasalDose\BasalDose.h"
+#include "..\StepperMotor\StepperMotor.h"
 #include "..\Speaker\Speaker.h"
 
 extern uint32_t StepperMotor_GlobalPosition;
@@ -28,8 +29,6 @@ void EINT3_IRQHandler(void)
 {
 	LPC_GPIOINT->IO2IntClr |= (1<<10); // Clear the status
 	
-	Speaker_Play();
-	
 	/* Check to see if there is enough to do a bolus injection,
 	 * if not enough retract the syringe
 	 * TODO: Add additional state so that we inject until empty,
@@ -45,5 +44,5 @@ void EINT3_IRQHandler(void)
 		Control_GlobalStatus = Backward;
 		LED_On(2); // Signal that Backward/Retraction is occuring P1.31
 	}
-	BasalDose_DoseEnable();	
+	StepperMotor_SpeedEnable();	
 }

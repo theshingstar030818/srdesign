@@ -37,8 +37,8 @@ int main(void)
 	Joystick_Initialize();
 	
 	// Initialize Timers 0, 1
-	BasalDose_DoseTimingInitiate();
-	BasalDose_DoseInitiate();
+	BasalDose_TimingInitiate();
+	StepperMotor_SpeedInitiate();
 	
 	// Initialize External Interrupt 3
 	BolusDose_DoseInitiate();

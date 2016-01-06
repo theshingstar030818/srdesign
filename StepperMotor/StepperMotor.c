@@ -7,6 +7,7 @@
 
 #include "..\Control.h"
 #include "StepperMotor.h"
+#include "..\BasalDose\BasalDose.h"
 
 extern status Control_GlobalStatus;
 
@@ -122,4 +123,51 @@ void StepperMotor_StepBackward(void)
 		StepperMotor_GlobalPosition = 0;
 		Control_GlobalStatus = None;
 	}
+}
+
+void StepperMotor_SpeedInitiate(void)
+{
+	LPC_TIM1->PR = 0x02; // Pre-scalar
+	LPC_TIM1->MR0 = 1 << 20; // Match number
+	LPC_TIM1->MCR |= 3 << 0; // Interrupt and reset timer on match (MCR = 011)
+	NVIC_EnableIRQ(TIMER1_IRQn);
+}
+
+void StepperMotor_SpeedEnable(void)
+{
+	BasalDose_TimingDisable(); // Disable and Reset Timer0
+	LPC_TIM1->TCR |= 1 << 0; // Start counting (TCR = 01)
+}
+
+void StepperMotor_SpeedDisable(void)
+{
+	LPC_TIM1->TCR &=~(1 << 0); // Stop Timer Counter (TCR = 00)
+	LPC_TIM1->TCR |= 1 << 1; // Reset Timer Counter (TCR = 10)
+	LPC_TIM1->TCR &=~(1 << 1); // Stop resetting Timer Counter (TCR = 00)
+	LPC_TIM1->IR |= 1 << 1; // Reset Timer1 Interrupt
+}
+
+void TIMER1_IRQHandler(void)
+{
+	// Switch on status defined by Timer0 and EINT3 IRQs
+	// case None defined within the StepperMotor_Step functions when adminstration is done
+	switch(Control_GlobalStatus)
+	{
+		case Basal: 
+			StepperMotor_CurrentBasalDose++; // Keep track of current dosing
+			StepperMotor_StepForward();
+			break;
+		case Bolus:
+			StepperMotor_CurrentBolusDose++; 
+			StepperMotor_StepForward();
+			break;
+		case Backward:
+			StepperMotor_StepBackward();
+			break;
+		case None:
+			BasalDose_TimingEnable(); // Re-Enable Timer0
+			Control_LEDClear(); // Clear out LEDs
+			break;
+	}
+	LPC_TIM1->IR |= 1 << 0; // Clear out Timer1 registers
 }
