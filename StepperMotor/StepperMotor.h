@@ -44,7 +44,7 @@ void StepperMotor_StepForward(void);
  
 void StepperMotor_StepBackward(void);
 
-/** Function: StepperMotor_SpeedInitiate()
+/** Function: StepperMotor_SpinInitiate()
  * 
  *  Sets up and enables Timer1.
  *
@@ -52,9 +52,9 @@ void StepperMotor_StepBackward(void);
  *  @return void: void
  */
 
-void StepperMotor_SpeedInitiate(void);
+void StepperMotor_SpinInitiate(void);
 
-/** Function: StepperMotor_SpeedEnable()
+/** Function: StepperMotor_SpinEnable()
  * 
  *  Function is used to enable Timer1 counter,
  *  then disables and resets Timer0.
@@ -63,9 +63,9 @@ void StepperMotor_SpeedInitiate(void);
  *  @return void: void
  */
 
-void StepperMotor_SpeedEnable(void);
+void StepperMotor_SpinEnable(void);
 
-/** Function: StepperMotor_SpeedDisable()
+/** Function: StepperMotor_SpinDisable()
  *  
  *  Function is used to disable and reset Timer1.
  *  
@@ -73,9 +73,9 @@ void StepperMotor_SpeedEnable(void);
  *  @return void: void
  */
 
-void StepperMotor_SpeedDisable(void);
+void StepperMotor_SpinDisable(void);
 
-/** Function: StepperMotor_DoseReset()
+/** Function: StepperMotor_SpinReset()
  *  
  *  Function is used to disable and reset Timer1.
  *  
@@ -83,7 +83,7 @@ void StepperMotor_SpeedDisable(void);
  *  @return void: void
  */
 
-void StepperMotor_SpeedReset(void);
+void StepperMotor_SpinReset(void);
 
 /** Function: TIMER1_IRQHandler()
  *  

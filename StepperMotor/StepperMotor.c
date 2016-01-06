@@ -125,7 +125,7 @@ void StepperMotor_StepBackward(void)
 	}
 }
 
-void StepperMotor_SpeedInitiate(void)
+void StepperMotor_SpinInitiate(void)
 {
 	LPC_TIM1->PR = 0x02; // Pre-scalar
 	LPC_TIM1->MR0 = 1 << 20; // Match number
@@ -133,13 +133,13 @@ void StepperMotor_SpeedInitiate(void)
 	NVIC_EnableIRQ(TIMER1_IRQn);
 }
 
-void StepperMotor_SpeedEnable(void)
+void StepperMotor_SpinEnable(void)
 {
 	BasalDose_TimingDisable(); // Disable and Reset Timer0
 	LPC_TIM1->TCR |= 1 << 0; // Start counting (TCR = 01)
 }
 
-void StepperMotor_SpeedDisable(void)
+void StepperMotor_SpinDisable(void)
 {
 	LPC_TIM1->TCR &=~(1 << 0); // Stop Timer Counter (TCR = 00)
 	LPC_TIM1->TCR |= 1 << 1; // Reset Timer Counter (TCR = 10)

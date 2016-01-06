@@ -44,5 +44,5 @@ void EINT3_IRQHandler(void)
 		Control_GlobalStatus = Backward;
 		LED_On(2); // Signal that Backward/Retraction is occuring P1.31
 	}
-	StepperMotor_SpeedEnable();	
+	StepperMotor_SpinEnable();	
 }

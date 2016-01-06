@@ -26,7 +26,7 @@ void BasalDose_TimingInitiate(void)
 
 void BasalDose_TimingEnable(void)
 {
-	StepperMotor_SpeedDisable(); // Disable and Reset Timer1
+	StepperMotor_SpinDisable(); // Disable and Reset Timer1
 	LPC_TIM0->TCR |= 1 << 0; // Start counting (TCR = 01)
 }
 
@@ -55,7 +55,7 @@ void TIMER0_IRQHandler(void)
 		Control_GlobalStatus = Backward;
 		LED_On(2); // Signal that Backward/Retraction is occuring P1.31
 	}
-	StepperMotor_SpeedEnable();	
+	StepperMotor_SpinEnable();	
 }
 
 

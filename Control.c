@@ -38,7 +38,7 @@ int main(void)
 	
 	// Initialize Timers 0, 1
 	BasalDose_TimingInitiate();
-	StepperMotor_SpeedInitiate();
+	StepperMotor_SpinInitiate();
 	
 	// Initialize External Interrupt 3
 	BolusDose_DoseInitiate();
