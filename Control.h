@@ -24,8 +24,8 @@ typedef enum {Basal, Bolus, Backward, None} status;
 /** Function Control_LEDInitiate()
  *
  *  Function is called in the main loop to initialize the LED pins,
- *  Set pins P1.28, P1.29, P1.30, P1.31 as output
- *  Set pins P2.2, P2.3 as output
+ *  Set pins P1.28, P1.29, P1.31 as output
+ *  Set pins P2.2, P2.3 as output (currently un-initiated)
  *
  *  @param void: void 
  *  @return void: void

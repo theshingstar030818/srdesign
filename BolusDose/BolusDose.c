@@ -35,12 +35,12 @@ void EINT3_IRQHandler(void)
 	if(StepperMotor_GlobalPosition + BOLUS_STEPS <= SYRINGE_LENGTH)
 	{
 		Control_GlobalStatus = Bolus;
-		LED_On(1); // Signal that Bolus is being administered P1.29
+		LPC_GPIO1->FIOSET |= 1 << 29; // Signal that Bolus is being administered P1.29
 	}
 	else
 	{
 		Control_GlobalStatus = Backward;
-		LED_On(2); // Signal that Backward/Retraction is occuring P1.31
+		LPC_GPIO1->FIOSET |= 1 << 31; // Signal that Backward/Retraction is occuring P1.31
 	}
 	BasalDose_DoseEnable();	
 }
