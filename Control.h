@@ -9,7 +9,6 @@
 #define CONTROL_CONTROL_H_
 
 #include "lpc17xx.h"     // Device header
-#include "Board_LED.h"   // Board Support : LED
 #include "Board_GLCD.h"  // Board Support : Graphic LCD
 #include "GLCD_Config.h" // Board Support : Graphic LCD
 
