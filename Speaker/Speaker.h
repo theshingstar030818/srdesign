@@ -27,6 +27,7 @@ void Speaker_Initiate(void);
  *  @param int: loops - number of loops to play sound
  *  @return void: void
  */
+
 void Speaker_Play(int loops);
 
 /** Speaker_Wait()
