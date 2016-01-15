@@ -9,7 +9,7 @@
 #define BASALDOSE_H_
 
 
-/** Function: BasalDose_DoseTimingInitiate()
+/** Function: BasalDose_TimingInitiate()
  * 
  *  Sets up and enables Timer0.
  *  
@@ -17,9 +17,9 @@
  *  @return void: void
  */
 
-void BasalDose_DoseTimingInitiate(void);
+void BasalDose_TimingInitiate(void);
 
-/** Function: BasalDose_DoseTimingEnable()
+/** Function: BasalDose_TimingEnable()
  *  
  *  Function is used to enable Timer0 counter,
  *  then disables and resets Timer1.
@@ -28,9 +28,9 @@ void BasalDose_DoseTimingInitiate(void);
  *  @return void: void
  */
 
-void BasalDose_DoseTimingEnable(void);
+void BasalDose_TimingEnable(void);
 
-/** Function: BasalDose_DoseTimingDisable()
+/** Function: BasalDose_TimingDisable()
  *  
  *  Function is used to disable and reset Timer0.
  *  
@@ -38,9 +38,9 @@ void BasalDose_DoseTimingEnable(void);
  *  @return void: void
  */
  
-void BasalDose_DoseTimingDisable(void);
+void BasalDose_TimingDisable(void);
 
-/** Function: BasalDose_DoseTimingReset()
+/** Function: BasalDose_TimingReset()
  *  
  *  Resets all pending Timer0 interrupts and clears out counters.
  *  
@@ -48,48 +48,7 @@ void BasalDose_DoseTimingDisable(void);
  *  @return void: void
  */
  
-void BasalDose_DoseTimingReset(void);
-
-/** Function: BasalDose_DoseInitiate()
- * 
- *  Sets up and enables Timer1.
- *
- *  @param void: void
- *  @return void: void
- */
-
-void BasalDose_DoseInitiate(void);
-
-/** Function: BasalDose_DoseEnable()
- * 
- *  Function is used to enable Timer1 counter,
- *  then disables and resets Timer0.
- *	
- *  @param void: void
- *  @return void: void
- */
-
-void BasalDose_DoseEnable(void);
-
-/** Function: BasalDose_DoseDisable()
- *  
- *  Function is used to disable and reset Timer1.
- *  
- *  @param void: void
- *  @return void: void
- */
-
-void BasalDose_DoseDisable(void);
-
-/** Function: BasalDose_DoseReset()
- *  
- *  Function is used to disable and reset Timer1.
- *  
- *  @param void: void
- *  @return void: void
- */
-
-void BasalDose_DoseReset(void);
+void BasalDose_TimingReset(void);
 
 /** Function: TIMER0_IRQHandler()
  *  
@@ -99,15 +58,5 @@ void BasalDose_DoseReset(void);
  *  @return void: void
  */
 void TIMER0_IRQHandler(void);
-
-/** Function: TIMER1_IRQHandler()
- *  
- *  Depending on the GlobalStatus, administer dosages accordingly.
- *  
- *  @param void: void
- *  @return void: void
- */
-
-void TIMER1_IRQHandler(void);
 
 #endif /* BASALDOSE_H_ */
