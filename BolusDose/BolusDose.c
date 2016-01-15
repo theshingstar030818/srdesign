@@ -9,11 +9,11 @@
 #include "..\Control.h"
 #include "..\BasalDose\BasalDose.h"
 #include "..\StepperMotor\StepperMotor.h"
-#include "..\Speaker\Speaker.h"
 
 extern uint32_t StepperMotor_GlobalPosition;
 
 extern status Control_GlobalStatus;
+extern state Control_GlobalState;
 
 void BolusDose_DoseInitiate(void)
 {
@@ -37,12 +37,14 @@ void EINT3_IRQHandler(void)
 	if(StepperMotor_GlobalPosition + BOLUS_STEPS <= SYRINGE_LENGTH)
 	{
 		Control_GlobalStatus = Bolus;
-		LED_On(1); // Signal that Bolus is being administered P1.29
+		Control_GlobalState = Administration;
+		LPC_GPIO1->FIOSET |= 1 << 29; // Signal that Bolus is being administered P1.29
 	}
 	else
 	{
-		Control_GlobalStatus = Backward;
-		LED_On(2); // Signal that Backward/Retraction is occuring P1.31
+		Control_GlobalStatus = None;
+		Control_GlobalState = Full;
+		LPC_GPIO2->FIOSET |= 1 << 2; // Signal that syringe is full P2.2
 	}
 	StepperMotor_SpinEnable();	
 }

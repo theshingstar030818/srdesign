@@ -34,7 +34,6 @@ Keil uVision Set-Up:
       * Board Support
          * Graphic LCD (API) -> Graphic LCD
 		 * Joystick (API) -> Joystick
-         * LED (API) -> LED
       * CMSIS
          * CORE
       * CMSIS Driver

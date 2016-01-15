@@ -16,6 +16,8 @@ extern uint32_t StepperMotor_GlobalPosition;
 
 extern status Control_GlobalStatus;
 
+extern state Control_GlobalState;
+
 // Used to hold string representation of StepperMotor_GlobalPosition
 char stringInsulin[6]; 
 
@@ -51,6 +53,25 @@ void LCD_UpdateScreenStatus()
 			break;
 		case None:
 			GLCD_DrawString(20, 20, "None\0");
+			break;
+	}
+}
+
+void LCD_UpdateScreenState(void)
+{
+	switch(Control_GlobalState)
+	{
+		case Administration:
+			GLCD_DrawString(20, 65, "Admin\0");
+			break;
+		case Empty:
+			GLCD_DrawString(20, 65, "Empty\0");
+			break;
+		case Full:
+			GLCD_DrawString(20, 65, "Full\0");
+			break;
+		case Undefined:
+			GLCD_DrawString(20, 65, "Undefined\0");
 			break;
 	}
 }
