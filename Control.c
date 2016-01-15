@@ -74,7 +74,8 @@ int main(void)
 				break;
 			case Empty:
 				do {
-					empty = Joystick_GetState();
+					empty = Joystick_GetState(); 
+					// the value from the debugger is 0x00000008
 				} while(empty != 0x00800000);
 				Control_GlobalStatus = Backward;
 				Control_GlobalState = Administration;
@@ -82,6 +83,7 @@ int main(void)
 			case Full:
 				do {
 					full = Joystick_GetState();
+					// the value from the debugger is 0x00000010
 				} while(full != 0x02000000);
 				BasalDose_TimingEnable();
 				Control_GlobalState = Undefined;
