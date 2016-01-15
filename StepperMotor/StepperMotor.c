@@ -124,7 +124,7 @@ void StepperMotor_StepBackward(void)
 	{
 		StepperMotor_GlobalPosition = 0;
 		Control_GlobalStatus = None;
-		Control_GlobalState = Empty;
+		Control_GlobalState =Full;
 	}
 }
 

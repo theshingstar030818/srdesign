@@ -55,8 +55,8 @@ void TIMER0_IRQHandler(void)
 	else
 	{
 		Control_GlobalStatus = None;
-		Control_GlobalState = Full;
-		LPC_GPIO2->FIOSET |= 1 << 2; // Signal that syringe is full P2.2
+		Control_GlobalState = Empty;
+		LPC_GPIO2->FIOSET |= 1 << 2; // Signal that syringe is empty P2.2
 	}
 	StepperMotor_SpinEnable();	
 }
