@@ -15,7 +15,7 @@ status Control_GlobalStatus;
 state Control_GlobalState;
 
 uint32_t i, j; // Used for wait loop in main
-uint32_t empty, full;
+uint32_t getStateVal;
 
 bool isEmpty;
 
@@ -61,10 +61,10 @@ int main(void)
 			case Undefined:
 			case Administration:
 				// Clear out the screen, and update
-			GLCD_ClearScreen();
-			LCD_UpdateScreenStatus();
-			LCD_UpdateScreenState();
-			LCD_UpdateScreenInsulin();
+				GLCD_ClearScreen();
+				LCD_UpdateScreenStatus();
+				LCD_UpdateScreenState();
+				LCD_UpdateScreenInsulin();
 			
 			// Wait for a short period of time before updating
 			for(i = 0; i < 150000; i++)
@@ -73,19 +73,28 @@ int main(void)
 			}
 				break;
 			case Empty:
+				// Clear out the screen, and update
+				GLCD_ClearScreen();
+				LCD_UpdateScreenStatus();
+				LCD_UpdateScreenState();
+				LCD_UpdateScreenInsulin();
 				do {
-					empty = Joystick_GetState(); 
-					// the value from the debugger is 0x00000008
-				} while(empty != 0x00800000);
+					getStateVal = Joystick_GetState(); 
+				} while((getStateVal & 0x00000008) != 0x00000008);
 				Control_GlobalStatus = Backward;
 				Control_GlobalState = Administration;
 				break;
 			case Full:
+				// Clear out the screen, and update
+				GLCD_ClearScreen();
+				LCD_UpdateScreenStatus();
+				LCD_UpdateScreenState();
+				LCD_UpdateScreenInsulin();
 				do {
-					full = Joystick_GetState();
-					// the value from the debugger is 0x00000010
-				} while(full != 0x02000000);
+					getStateVal = Joystick_GetState();
+				} while((getStateVal & 0x00000010) != 0x00000010);
 				BasalDose_TimingEnable();
+				Control_GlobalStatus = None;
 				Control_GlobalState = Undefined;
 				break;
 		}
