@@ -123,7 +123,7 @@ void StepperMotor_StepBackward(void)
 	if(StepperMotor_GlobalPosition <= 0)
 	{
 		StepperMotor_GlobalPosition = 0;
-		Control_GlobalStatus = None;
+		Control_GlobalStatus = Wait;
 		Control_GlobalState = Full;
 	}
 }
@@ -170,6 +170,10 @@ void TIMER1_IRQHandler(void)
 		case None:
 			BasalDose_TimingEnable(); // Re-Enable Timer0
 			Control_LEDClear(); // Clear out LEDs
+			break;
+		case Wait:
+			BasalDose_TimingDisable();
+			LPC_GPIO2->FIOSET |= 1 << 3; // Signal that syringe is replaced P2.3
 			break;
 	}
 	LPC_TIM1->IR |= 1 << 0; // Clear out Timer1 registers

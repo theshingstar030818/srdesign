@@ -51,46 +51,37 @@ int main(void)
 	
 	while(1)
 	{
+		// Clear out the screen, and update
+		GLCD_ClearScreen();
+		LCD_UpdateScreenStatus();
+		LCD_UpdateScreenState();
+		LCD_UpdateScreenInsulin();
 		switch(Control_GlobalState)
 		{
 			case Undefined:
 			case Administration:
-				// Clear out the screen, and update
-				GLCD_ClearScreen();
-				LCD_UpdateScreenStatus();
-				LCD_UpdateScreenState();
-				LCD_UpdateScreenInsulin();
-			
-			// Wait for a short period of time before updating
-			for(i = 0; i < 150000; i++)
-			{
-				for(j = 0; j < 25; j++);
-			}
+				// Wait for a short period of time before updating
+				for(i = 0; i < 150000; i++)
+				{
+					for(j = 0; j < 25; j++);
+				}
 				break;
 			case Empty:
-				// Clear out the screen, and update
-				GLCD_ClearScreen();
-				LCD_UpdateScreenStatus();
-				LCD_UpdateScreenState();
-				LCD_UpdateScreenInsulin();
 				do {
 					getStateVal = Joystick_GetState(); 
 				} while((getStateVal & 0x00000008) != 0x00000008);
 				Control_GlobalStatus = Backward;
 				Control_GlobalState = Administration;
+				Control_LEDClear();
 				break;
 			case Full:
-				// Clear out the screen, and update
-				GLCD_ClearScreen();
-				LCD_UpdateScreenStatus();
-				LCD_UpdateScreenState();
-				LCD_UpdateScreenInsulin();
 				do {
 					getStateVal = Joystick_GetState();
 				} while((getStateVal & 0x00000010) != 0x00000010);
 				BasalDose_TimingEnable();
 				Control_GlobalStatus = None;
 				Control_GlobalState = Undefined;
+				Control_LEDClear();
 				break;
 		}
 	}
