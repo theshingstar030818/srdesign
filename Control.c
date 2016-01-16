@@ -17,8 +17,6 @@ state Control_GlobalState;
 uint32_t i, j; // Used for wait loop in main
 uint32_t getStateVal;
 
-bool isEmpty;
-
 int main(void)
 {
 	SystemInit();
@@ -28,9 +26,6 @@ int main(void)
 	
 	// Set default state to Neither
 	Control_GlobalState = Undefined;
-	
-	// Set default bool to false
-	isEmpty = false;
 	
 	// Initialize Clock for Timers
 	Control_ClockInitiate();
