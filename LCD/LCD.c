@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include ".\LCD.h"
 #include "..\Control.h"
+#include "..\InsulinQueue\InsulinQueue.h"
 #include "..\StepperMotor\StepperMotor.h"
 
 extern GLCD_FONT GLCD_Font_16x24; // Font size
@@ -16,8 +17,11 @@ extern uint32_t StepperMotor_GlobalPosition;
 
 extern status Control_GlobalStatus;
 
+extern InsulinQueue *globalIQ;
+
 // Used to hold string representation of StepperMotor_GlobalPosition
 char stringInsulin[6]; 
+char inQueue[10];
 
 void LCD_Initiate(void)
 {
@@ -57,7 +61,14 @@ void LCD_UpdateScreenStatus()
 
 void LCD_UpdateScreenInsulin(void)
 {
+	int k;
 	// Format the integer into a string, display on LCD
 	sprintf(stringInsulin, "%d", StepperMotor_GlobalPosition);
 	GLCD_DrawString(20, 40, stringInsulin);
+	for(k = 0; k < 5; k++)
+	{
+		sprintf(inQueue, "%d", globalIQ->insulinEntry[k]);
+		GLCD_DrawString((20 + (k*20)), 60, inQueue);
+	}
+	
 }

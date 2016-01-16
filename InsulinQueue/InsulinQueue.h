@@ -10,11 +10,13 @@
 typedef struct InsulinQueue
 {
 	uint32_t maxNumEntries;
-	uint32_t currentNumEntries;
+	uint32_t curNumEntries;
 	int head;
 	int tail;
 	uint32_t *insulinEntry;
 } InsulinQueue;
+
+void InsulinQueue_Initiate(void);
 
 InsulinQueue *InsulinQueue_Create(uint32_t maxEntries);
 
