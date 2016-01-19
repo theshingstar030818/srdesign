@@ -67,12 +67,14 @@ int main(void)
 				}
 				break;
 			case Empty:
+				BasalDose_TimingDisable();
 				do {
 					getStateVal = Joystick_GetState(); 
 				} while((getStateVal & 0x00000008) != 0x00000008);
 				Control_GlobalStatus = Backward;
 				Control_GlobalState = Administration;
 				Control_LEDClear();
+				StepperMotor_SpinEnable();
 				break;
 			case Full:
 				do {
