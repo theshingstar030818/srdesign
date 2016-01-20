@@ -67,6 +67,7 @@ int main(void)
 				}
 				break;
 			case Empty:
+				LPC_GPIO2->FIOSET |= 1 << 2; // Signal that syringe is empty P2.2
 				BasalDose_TimingDisable();
 				do {
 					getStateVal = Joystick_GetState(); 
@@ -95,9 +96,9 @@ void Control_LEDInitiate(void)
 	LPC_GPIO1->FIODIR |= (0xB0000000);
 	LPC_GPIO1->FIOPIN &=~(0xB0000000);
 	
-	// Set pins P2.2, P2.3 as output
-	LPC_GPIO2->FIODIR |= (0x0000000C);
-	LPC_GPIO2->FIOPIN &=~(0x0000000C);
+	// Set pins P2.2 to p2.6 as output
+	LPC_GPIO2->FIODIR |= (0x0000007C);
+	LPC_GPIO2->FIOPIN &=~(0x0000007C);
 }
 
 void Control_LEDClear(void)
@@ -108,6 +109,9 @@ void Control_LEDClear(void)
 	LPC_GPIO1->FIOCLR |= 1 << 31;
 	LPC_GPIO2->FIOCLR |= 1 << 2;
 	LPC_GPIO2->FIOCLR |= 1 << 3;
+	LPC_GPIO2->FIOCLR |= 1 << 4;
+	LPC_GPIO2->FIOCLR |= 1 << 5;
+	LPC_GPIO2->FIOCLR |= 1 << 6;
 }
 
 void Control_ClockInitiate(void)
