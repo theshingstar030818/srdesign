@@ -57,6 +57,9 @@ void LCD_UpdateScreenStatus()
 		case Wait:
 			GLCD_DrawString(20, 20, "Wait\0");
 			break;
+		case Remaining:
+			GLCD_DrawString(20, 20, "Remaining\0");
+			break;
 	}
 }
 

@@ -52,6 +52,11 @@ void TIMER0_IRQHandler(void)
 		Control_GlobalState = Administration;
 		LPC_GPIO1->FIOSET |= 1 << 28; // Signal that Basal is being administered P1.28
 	}
+	else if(StepperMotor_GlobalPosition < SYRINGE_LENGTH)
+	{
+		Control_GlobalStatus = Remaining;
+		Control_GlobalState = Administration;
+	}
 	else
 	{
 		Control_GlobalStatus = None;
