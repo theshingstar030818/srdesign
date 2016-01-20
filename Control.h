@@ -14,7 +14,7 @@
 #include "Board_Joystick.h" // Board Support : Joystick
 #include <stdbool.h>
 
-#define SYRINGE_LENGTH 500
+#define SYRINGE_LENGTH 5000
 #define BASAL_STEPS 250
 #define BOLUS_STEPS 1000
 
@@ -36,7 +36,7 @@ void Control_LEDInitiate(void);
 
 /** Function Control_LEDClear()
  *
- *	Clear out LEDs P1.28, P1.29, P1.31,
+ *	Clear out LEDs P1.28, P1.29, P1.31, P2.2, P2.3, P2.4, P2.5, P2.6
  *	used as Basal, Bolus, and Backward indicators
  *
  *  @param void: void 
