@@ -122,6 +122,7 @@ void StepperMotor_StepBackward(void)
 	// Check to see if syringe is back to original spot
 	if(StepperMotor_GlobalPosition <= 0)
 	{
+		Control_LEDClear();
 		StepperMotor_GlobalPosition = 0;
 		Control_GlobalStatus = Wait;
 		Control_GlobalState = Full;
@@ -165,6 +166,7 @@ void TIMER1_IRQHandler(void)
 			StepperMotor_StepForward();
 			break;
 		case Backward:
+			LPC_GPIO1->FIOSET |= 1 << 31; // Signal that Backward is being administered P1.31
 			StepperMotor_StepBackward();
 			break;
 		case None:
