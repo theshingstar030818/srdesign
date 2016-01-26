@@ -5,76 +5,39 @@
  *      Author: sle
  */
  
+#include <stdlib.h>
 #include "./InsulinQueue.h"
 
 extern uint32_t StepperMotor_GlobalPosition;
 
-InsulinQueue *globalIQ;
+uint32_t InsulinQueue_Queue[INSULIN_QUEUE_SIZE];
+uint32_t *pInsulinQueue_Queue;
+uint32_t InsulinQueue_Head;
 
 void InsulinQueue_Initiate()
 {
 	LPC_TIM2->PR = 0x02; // Pre-scalar
-	LPC_TIM2->MR0 = 1 << 28; // Match number
+	LPC_TIM2->MR0 = 1 << 27; // Match number
 	LPC_TIM2->MCR |= 3 << 0; // Interrupt and reset timer on match (MCR = 011)
 	NVIC_EnableIRQ(TIMER2_IRQn);
 	LPC_TIM2->TCR |= 1 << 0;
+	InsulinQueue_Head = 0;
 }
 
-InsulinQueue *InsulinQueue_Create(uint32_t maxEntries)
+void InsulinQueue_Push(uint32_t currentInsulinAmount)
 {
-	InsulinQueue *iq;
-	int i;
-	iq = (InsulinQueue *)malloc(sizeof(InsulinQueue));
-	
-	iq->maxNumEntries = maxEntries;
-	iq->curNumEntries = 0;
-	iq->head = 0;
-	iq->tail = -1;
-	iq->insulinEntry = (uint32_t *)malloc(sizeof(uint32_t) * maxEntries);
-	
-	for(i = 0; i < maxEntries; i++)
+	// If queue is maxed, reset head first, then just insert element
+	if(InsulinQueue_Head == INSULIN_QUEUE_SIZE)
 	{
-		iq->insulinEntry[i] = 0;
+		InsulinQueue_Head = 0;
 	}
 	
-	return iq;
-}
-
-void InsulinQueue_Push(InsulinQueue *iq, int currentInsulinAmount)
-{
-	if(iq->curNumEntries == iq->maxNumEntries)
-	{
-		InsulinQueue_Pop(iq);
-		InsulinQueue_Push(iq, currentInsulinAmount);
-	}
-	else
-	{
-		iq->curNumEntries++;
-		iq->tail++;
-		
-		if(iq->tail == iq->maxNumEntries)
-			iq->tail =0;
-		
-		iq->insulinEntry[iq->tail] = currentInsulinAmount;
-	}
-	return;
-}
-
-void InsulinQueue_Pop(InsulinQueue *iq)
-{
-	if(iq->curNumEntries != 0)
-	{
-		iq->curNumEntries--;
-		iq->head++;
-		
-		if(iq->head == iq->maxNumEntries)
-			iq->head = 0;	
-	}
-	return;
+	*(pInsulinQueue_Queue + InsulinQueue_Head) = currentInsulinAmount;
+	InsulinQueue_Head++;
 }
 
 void TIMER2_IRQHandler(void)
 {
-	InsulinQueue_Push(globalIQ, StepperMotor_GlobalPosition);
+	InsulinQueue_Push(StepperMotor_GlobalPosition);
 	LPC_TIM2->IR |= 1 << 0; // Clear out Timer2 registers
 }

@@ -17,7 +17,7 @@ extern uint32_t StepperMotor_GlobalPosition;
 
 extern status Control_GlobalStatus;
 
-extern InsulinQueue *globalIQ;
+extern uint32_t *pInsulinQueue_Queue;
 
 // Used to hold string representation of StepperMotor_GlobalPosition
 char stringInsulin[6]; 
@@ -61,14 +61,17 @@ void LCD_UpdateScreenStatus()
 
 void LCD_UpdateScreenInsulin(void)
 {
-	int k;
+	int k,h;
 	// Format the integer into a string, display on LCD
 	sprintf(stringInsulin, "%d", StepperMotor_GlobalPosition);
 	GLCD_DrawString(20, 40, stringInsulin);
-	for(k = 0; k < 5; k++)
+	for(k = 0; k < INSULIN_QUEUE_SIZE / 4; k++)
 	{
-		sprintf(inQueue, "%d", globalIQ->insulinEntry[k]);
-		GLCD_DrawString((20 + (k*20)), 60, inQueue);
+		for(h = 0; h < 4; h++)
+		{
+			sprintf(inQueue, "%d", *(pInsulinQueue_Queue + (4 * k + h)));
+			GLCD_DrawString((10 + (h*75)), 60 + (k*30), inQueue);
+		}
 	}
 	
 }

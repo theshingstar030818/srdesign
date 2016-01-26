@@ -12,7 +12,8 @@
 #include ".\InsulinQueue\InsulinQueue.h"
 #include ".\StepperMotor\StepperMotor.h"
 
-extern InsulinQueue *globalIQ;
+extern uint32_t InsulinQueue_Queue[INSULIN_QUEUE_SIZE];
+extern uint32_t *pInsulinQueue_Queue;
 
 status Control_GlobalStatus;
 
@@ -39,8 +40,8 @@ int main(void)
 	BasalDose_DoseTimingInitiate();
 	BasalDose_DoseInitiate();
 	
-	// Initialize Timer2 and Insulin Queue
-	globalIQ = InsulinQueue_Create(5);
+	// Initialize Timer2 and set up pointer to InsulinQueue array
+	pInsulinQueue_Queue = InsulinQueue_Queue;
 	InsulinQueue_Initiate();
 
 	// Initialize External Interrupt 3
