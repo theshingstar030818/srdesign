@@ -19,8 +19,10 @@
 #define BOLUS_STEPS 1000
 
 // Create state machine enum
-typedef enum {Basal, Bolus, Backward, None, Wait, Remaining} status;
-typedef enum {Administration, Empty, Full, Undefined} state;
+typedef enum {None, Full, Empty, Backward, 
+							BasalComplete, BasalEmptyAfter, 
+							BasalEmptyDuring, BolusComplete, 
+							BolusEmptyAfter, BolusEmptyDuring} status;
 
 /** Function Control_LEDInitiate()
  *

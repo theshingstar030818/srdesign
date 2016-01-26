@@ -34,22 +34,19 @@ void EINT3_IRQHandler(void)
 	 * TODO: Add additional state so that we inject until empty,
 	 * then retract syringe.
 	 */
-	if(StepperMotor_GlobalPosition + BOLUS_STEPS <= SYRINGE_LENGTH)
+	LPC_GPIO1->FIOSET |= 1 << 29; // Signal that Bolus is being administered P1.29
+	if(StepperMotor_GlobalPosition + BOLUS_STEPS < SYRINGE_LENGTH)
 	{
-		Control_GlobalStatus = Bolus;
-		Control_GlobalState = Administration;
-		LPC_GPIO1->FIOSET |= 1 << 29; // Signal that Bolus is being administered P1.29
+		Control_GlobalStatus = BolusComplete;
+		
 	}
-	else if(StepperMotor_GlobalPosition < SYRINGE_LENGTH)
+	else if(StepperMotor_GlobalPosition  SYRINGE_LENGTH)
 	{
-		Control_GlobalStatus = Remaining;
-		Control_GlobalState = Administration;
+		Control_GlobalStatus = BolusEmptyDuring;
 	}
 	else
 	{
-		Control_GlobalStatus = None;
-		Control_GlobalState = Empty;
-		LPC_GPIO2->FIOSET |= 1 << 2; // Signal that syringe is empty P2.2
+		Control_GlobalStatus = BolusEmptyAfter;
 	}
 	StepperMotor_SpinEnable();	
 }
