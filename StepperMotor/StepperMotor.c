@@ -10,7 +10,6 @@
 #include "..\BasalDose\BasalDose.h"
 
 extern status Control_GlobalStatus;
-extern state Control_GlobalState;
 
 uint32_t StepperMotor_CurrentPosition;
 uint32_t StepperMotor_GlobalPosition;
@@ -72,21 +71,33 @@ void StepperMotor_StepForward(void)
 	}
 	StepperMotor_GlobalPosition++;
 	
-	if (StepperMotor_GlobalPosition == SYRINGE_LENGTH)
+	if(StepperMotor_GlobalPosition == SYRINGE_LENGTH)
 	{
-		StepperMotor_CurrentBasalDose = 0;
-		StepperMotor_CurrentBolusDose = 0;
-		Control_GlobalStatus = Wait;
-		Control_GlobalState = Empty;
+		if((StepperMotor_CurrentBasalDose  >= BASAL_STEPS) || (StepperMotor_CurrentBolusDose >= BOLUS_STEPS))
+		{
+			StepperMotor_CurrentBasalDose = 0;
+			StepperMotor_CurrentBolusDose = 0;
+			Control_GlobalStatus = Empty;
+		}
+		else if(StepperMotor_CurrentBasalDose > 0)
+		{
+			StepperMotor_CurrentBasalDose = BASAL_STEPS - StepperMotor_RemainingDosage;
+			StepperMotor_CurrentBolusDose = 0;
+			Control_GlobalStatus = EmptyBasal;
+		}
+		else if(StepperMotor_CurrentBolusDose > 0)
+		{
+			StepperMotor_CurrentBolusDose = BOLUS_STEPS - StepperMotor_RemainingDosage;
+			StepperMotor_CurrentBasalDose = 0;
+			Control_GlobalStatus = EmptyBolus;
+		}
 	}
-	
 	// Check to see if Basal or Bolus has completed.
-	if((StepperMotor_CurrentBasalDose  >= BASAL_STEPS) || (StepperMotor_CurrentBolusDose >= BOLUS_STEPS))
+	else if((StepperMotor_CurrentBasalDose  >= BASAL_STEPS) || (StepperMotor_CurrentBolusDose >= BOLUS_STEPS))
 	{
 		StepperMotor_CurrentBasalDose = 0;
 		StepperMotor_CurrentBolusDose = 0;
 		Control_GlobalStatus = None;
-		Control_GlobalState = Undefined;
 	}
 }
 
@@ -132,10 +143,20 @@ void StepperMotor_StepBackward(void)
 	// Check to see if syringe is back to original spot
 	if(StepperMotor_GlobalPosition <= 0)
 	{
+		if(StepperMotor_CurrentBasalDose > 0)
+		{
+			Control_GlobalStatus = FullBasal;
+		}
+		else if(StepperMotor_CurrentBolusDose > 0)
+		{
+			Control_GlobalStatus = FullBolus;
+		}
+		else
+		{
+			Control_GlobalStatus = Full;
+		}
 		Control_LEDClear();
 		StepperMotor_GlobalPosition = 0;
-		Control_GlobalStatus = Wait;
-		Control_GlobalState = Full;
 	}
 }
 
@@ -167,15 +188,21 @@ void TIMER1_IRQHandler(void)
 	// case None defined within the StepperMotor_Step functions when adminstration is done
 	switch(Control_GlobalStatus)
 	{
-		case Basal: 
+		case BasalComplete:
+		case BasalEmptyAfter:
+		case BasalEmptyDuring:
 			StepperMotor_CurrentBasalDose++; // Keep track of current dosing
 			StepperMotor_StepForward();
 			break;
-		case Bolus:
+		case BolusComplete:
+		case BolusEmptyAfter:
+		case BolusEmptyDuring:
 			StepperMotor_CurrentBolusDose++; 
 			StepperMotor_StepForward();
 			break;
 		case Backward:
+		case BackwardBasal:
+		case BackwardBolus:
 			LPC_GPIO1->FIOSET |= 1 << 31; // Signal that Backward is being administered P1.31
 			StepperMotor_StepBackward();
 			break;
@@ -183,9 +210,18 @@ void TIMER1_IRQHandler(void)
 			BasalDose_TimingEnable(); // Re-Enable Timer0
 			Control_LEDClear(); // Clear out LEDs
 			break;
-		case Wait:
+		case FullBasal:
+		case FullBolus:
+		case Full:
 			BasalDose_TimingDisable();
 			LPC_GPIO2->FIOSET |= 1 << 3; // Signal that syringe is replaced P2.3
+			break;
+		case Empty:
+		case EmptyBasal:
+		case EmptyBolus:
+			BasalDose_TimingDisable();
+			Control_LEDClear();
+			LPC_GPIO2->FIOSET |= 1 <<2; // Signal that syringe is empty P2.2
 			break;
 	}
 	LPC_TIM1->IR |= 1 << 0; // Clear out Timer1 registers

@@ -16,8 +16,6 @@ extern uint32_t StepperMotor_GlobalPosition;
 
 extern status Control_GlobalStatus;
 
-extern state Control_GlobalState;
-
 // Used to hold string representation of StepperMotor_GlobalPosition
 char stringInsulin[6]; 
 
@@ -42,39 +40,33 @@ void LCD_UpdateScreenStatus()
 	// Display on LCD
 	switch(Control_GlobalStatus)
 	{
-		case Basal:
-			GLCD_DrawString(20, 20, "Basal\0");
-			break;
-		case Bolus:
-			GLCD_DrawString(20, 20, "Bolus\0");
-			break;
-		case Backward:
-			GLCD_DrawString(20, 20, "Backward\0");
-			break;
 		case None:
 			GLCD_DrawString(20, 20, "None\0");
 			break;
-		case Wait:
-			GLCD_DrawString(20, 20, "Wait\0");
+		case Full:
+		case FullBasal:
+		case FullBolus:
+			GLCD_DrawString(20, 20, "Full\0");
 			break;
-	}
-}
-
-void LCD_UpdateScreenState(void)
-{
-	switch(Control_GlobalState)
-	{
-		case Administration:
-			GLCD_DrawString(20, 65, "Admin\0");
+		case Backward:
+		case BackwardBasal:
+		case BackwardBolus:
+			GLCD_DrawString(20, 20, "Backward\0");
 			break;
 		case Empty:
-			GLCD_DrawString(20, 65, "Empty\0");
+		case EmptyBasal:
+		case EmptyBolus:
+			GLCD_DrawString(20, 20, "Empty\0");
 			break;
-		case Full:
-			GLCD_DrawString(20, 65, "Full\0");
+		case BasalComplete:
+		case BasalEmptyAfter:
+		case BasalEmptyDuring:
+			GLCD_DrawString(20, 20, "Basal\0");
 			break;
-		case Undefined:
-			GLCD_DrawString(20, 65, "Undefined\0");
+		case BolusComplete:
+		case BolusEmptyAfter:
+		case BolusEmptyDuring:
+			GLCD_DrawString(20, 20, "Bolus\0");
 			break;
 	}
 }

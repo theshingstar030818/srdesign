@@ -12,7 +12,6 @@
 #include ".\StepperMotor\StepperMotor.h"
 
 status Control_GlobalStatus;
-state Control_GlobalState;
 
 uint32_t i, j; // Used for wait loop in main
 uint32_t getStateVal;
@@ -23,9 +22,6 @@ int main(void)
 	
 	// Set default status to None
 	Control_GlobalStatus = None;
-	
-	// Set default state to Neither
-	Control_GlobalState = Undefined;
 	
 	// Initialize Clock for Timers
 	Control_ClockInitiate();
@@ -54,12 +50,19 @@ int main(void)
 		// Clear out the screen, and update
 		GLCD_ClearScreen();
 		LCD_UpdateScreenStatus();
-		LCD_UpdateScreenState();
 		LCD_UpdateScreenInsulin();
-		switch(Control_GlobalState)
+		switch(Control_GlobalStatus)
 		{
-			case Undefined:
-			case Administration:
+			case None:
+			case Backward:
+			case BackwardBasal:
+			case BackwardBolus:
+			case BasalComplete:
+			case BasalEmptyAfter:
+			case BasalEmptyDuring:
+			case BolusComplete:
+			case BolusEmptyAfter:
+			case BolusEmptyDuring:
 				// Wait for a short period of time before updating
 				for(i = 0; i < 150000; i++)
 				{
@@ -73,7 +76,26 @@ int main(void)
 					getStateVal = Joystick_GetState(); 
 				} while((getStateVal & 0x00000008) != 0x00000008);
 				Control_GlobalStatus = Backward;
-				Control_GlobalState = Administration;
+				Control_LEDClear();
+				StepperMotor_SpinEnable();
+				break;
+			case EmptyBasal:
+				LPC_GPIO2->FIOSET |= 1 << 2; // Signal that syringe is empty P2.2
+				BasalDose_TimingDisable();
+				do {
+					getStateVal = Joystick_GetState(); 
+				} while((getStateVal & 0x00000008) != 0x00000008);
+				Control_GlobalStatus = BackwardBasal;
+				Control_LEDClear();
+				StepperMotor_SpinEnable();
+				break;
+			case EmptyBolus:
+				LPC_GPIO2->FIOSET |= 1 << 2; // Signal that syringe is empty P2.2
+				BasalDose_TimingDisable();
+				do {
+					getStateVal = Joystick_GetState(); 
+				} while((getStateVal & 0x00000008) != 0x00000008);
+				Control_GlobalStatus = BackwardBolus;
 				Control_LEDClear();
 				StepperMotor_SpinEnable();
 				break;
@@ -83,7 +105,20 @@ int main(void)
 				} while((getStateVal & 0x00000010) != 0x00000010);
 				BasalDose_TimingEnable();
 				Control_GlobalStatus = None;
-				Control_GlobalState = Undefined;
+				Control_LEDClear();
+				break;
+			case FullBasal:
+				do {
+					getStateVal = Joystick_GetState();
+				} while((getStateVal & 0x00000010) != 0x00000010);
+				Control_GlobalStatus = BasalComplete;
+				Control_LEDClear();
+				break;
+			case FullBolus:
+				do {
+					getStateVal = Joystick_GetState();
+				} while((getStateVal & 0x00000010) != 0x00000010);
+				Control_GlobalStatus = BolusComplete;
 				Control_LEDClear();
 				break;
 		}

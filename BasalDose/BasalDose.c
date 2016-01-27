@@ -12,9 +12,9 @@
 extern uint32_t StepperMotor_GlobalPosition;
 extern uint32_t StepperMotor_CurrentBasalDose;
 extern uint32_t StepperMotor_CurrentBolusDose;
+extern uint32_t StepperMotor_RemainingDosage;
 
 extern status Control_GlobalStatus;
-extern state Control_GlobalState;
 
 // Set and enable Timer0 for the time in between Basal doses
 void BasalDose_TimingInitiate(void)
@@ -49,17 +49,18 @@ void TIMER0_IRQHandler(void)
 	LPC_GPIO1->FIOSET |= 1 << 28; // Signal that Basal is being administered P1.28
 	if(StepperMotor_GlobalPosition  + BASAL_STEPS < SYRINGE_LENGTH)
 	{
+		StepperMotor_RemainingDosage = 0;
 		Control_GlobalStatus = BasalComplete;
 	}
-	else if(StepperMotor_GlobalPosition < SYRINGE_LENGTH)
+	else if(StepperMotor_GlobalPosition + BASAL_STEPS == SYRINGE_LENGTH)
 	{
-		Control_GlobalStatus = BasalEmptyDuring;
+		StepperMotor_RemainingDosage =0;
+		Control_GlobalStatus = BasalEmptyAfter;
 	}
 	else
 	{
-		Control_GlobalStatus = BasalEmptyAfter;
+		StepperMotor_RemainingDosage = BASAL_STEPS - (SYRINGE_LENGTH - StepperMotor_GlobalPosition);
+		Control_GlobalStatus = BasalEmptyDuring;
 	}
 	StepperMotor_SpinEnable();	
 }
-
-

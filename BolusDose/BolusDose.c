@@ -11,9 +11,8 @@
 #include "..\StepperMotor\StepperMotor.h"
 
 extern uint32_t StepperMotor_GlobalPosition;
-
 extern status Control_GlobalStatus;
-extern state Control_GlobalState;
+extern uint32_t StepperMotor_RemainingDosage;
 
 void BolusDose_DoseInitiate(void)
 {
@@ -37,16 +36,19 @@ void EINT3_IRQHandler(void)
 	LPC_GPIO1->FIOSET |= 1 << 29; // Signal that Bolus is being administered P1.29
 	if(StepperMotor_GlobalPosition + BOLUS_STEPS < SYRINGE_LENGTH)
 	{
+		StepperMotor_RemainingDosage = 0;
 		Control_GlobalStatus = BolusComplete;
 		
 	}
-	else if(StepperMotor_GlobalPosition  SYRINGE_LENGTH)
+	else if(StepperMotor_GlobalPosition + BOLUS_STEPS == SYRINGE_LENGTH)
 	{
-		Control_GlobalStatus = BolusEmptyDuring;
+		StepperMotor_RemainingDosage = 0;
+		Control_GlobalStatus = BolusEmptyAfter;
 	}
 	else
 	{
-		Control_GlobalStatus = BolusEmptyAfter;
+		StepperMotor_RemainingDosage = BOLUS_STEPS - (SYRINGE_LENGTH - StepperMotor_GlobalPosition);
+		Control_GlobalStatus = BolusEmptyDuring;
 	}
 	StepperMotor_SpinEnable();	
 }
