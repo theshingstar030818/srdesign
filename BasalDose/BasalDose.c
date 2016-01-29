@@ -68,5 +68,3 @@ void TIMER0_IRQHandler(void)
 	}
 	StepperMotor_SpinEnable();	
 }
-
-
