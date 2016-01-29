@@ -14,13 +14,14 @@
 #include "Board_Joystick.h" // Board Support : Joystick
 #include <stdbool.h>
 
-#define SYRINGE_LENGTH 5000
+#define SYRINGE_LENGTH 500
 #define BASAL_STEPS 250
-#define BOLUS_STEPS 1000
+#define BOLUS_STEPS 500
 
 // Create state machine enum
-typedef enum {Basal, Bolus, Backward, None, Wait, Remaining} status;
+typedef enum {Basal, Bolus, Backward, None, Wait} status;
 typedef enum {Administration, Empty, Full, Undefined} state;
+typedef enum {Neither, BasalDos, BolusDos} remaining;
 
 /** Function Control_LEDInitiate()
  *

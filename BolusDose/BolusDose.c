@@ -14,6 +14,7 @@ extern uint32_t StepperMotor_GlobalPosition;
 
 extern status Control_GlobalStatus;
 extern state Control_GlobalState;
+extern remaining Control_GlobalRemaining;
 
 void BolusDose_DoseInitiate(void)
 {
@@ -34,16 +35,20 @@ void EINT3_IRQHandler(void)
 	 * TODO: Add additional state so that we inject until empty,
 	 * then retract syringe.
 	 */
-	if(StepperMotor_GlobalPosition + BOLUS_STEPS <= SYRINGE_LENGTH)
+	if(StepperMotor_GlobalPosition <= SYRINGE_LENGTH)
 	{
 		Control_GlobalStatus = Bolus;
 		Control_GlobalState = Administration;
 		LPC_GPIO1->FIOSET |= 1 << 29; // Signal that Bolus is being administered P1.29
-	}
-	else if(StepperMotor_GlobalPosition < SYRINGE_LENGTH)
-	{
-		Control_GlobalStatus = Remaining;
-		Control_GlobalState = Administration;
+		
+		if(StepperMotor_GlobalPosition + BOLUS_STEPS > SYRINGE_LENGTH)
+		{
+			Control_GlobalRemaining = BolusDos;
+		}
+		else
+		{
+			Control_GlobalRemaining = Neither;
+		}
 	}
 	else
 	{

@@ -10,11 +10,10 @@
 #include "..\StepperMotor\StepperMotor.h"
 
 extern uint32_t StepperMotor_GlobalPosition;
-extern uint32_t StepperMotor_CurrentBasalDose;
-extern uint32_t StepperMotor_CurrentBolusDose;
 
 extern status Control_GlobalStatus;
 extern state Control_GlobalState;
+extern remaining Control_GlobalRemaining;
 
 // Set and enable Timer0 for the time in between Basal doses
 void BasalDose_TimingInitiate(void)
@@ -46,16 +45,20 @@ void TIMER0_IRQHandler(void)
 	 * TODO: Add additional state so that we inject until empty,
 	 * then retract syringe.
 	 */
-	if(StepperMotor_GlobalPosition + BASAL_STEPS <= SYRINGE_LENGTH)
+	if(StepperMotor_GlobalPosition <= SYRINGE_LENGTH)
 	{
 		Control_GlobalStatus = Basal;
 		Control_GlobalState = Administration;
 		LPC_GPIO1->FIOSET |= 1 << 28; // Signal that Basal is being administered P1.28
-	}
-	else if(StepperMotor_GlobalPosition < SYRINGE_LENGTH)
-	{
-		Control_GlobalStatus = Remaining;
-		Control_GlobalState = Administration;
+		
+		if(StepperMotor_GlobalPosition + BASAL_STEPS > SYRINGE_LENGTH)
+		{
+			Control_GlobalRemaining = BasalDos;
+		}
+		else
+		{
+			Control_GlobalRemaining = Neither;
+		}
 	}
 	else
 	{

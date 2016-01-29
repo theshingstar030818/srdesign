@@ -70,8 +70,13 @@ void StepperMotor_StepForward(void)
 	}
 	StepperMotor_GlobalPosition++;
 	
+	if(StepperMotor_GlobalPosition == SYRINGE_LENGTH)
+	{
+		Control_GlobalStatus = Wait;
+		Control_GlobalState = Empty;
+	}
 	// Check to see if Basal or Bolus has completed.
-	if((StepperMotor_CurrentBasalDose >= BASAL_STEPS) || (StepperMotor_CurrentBolusDose >= BOLUS_STEPS) || (StepperMotor_GlobalPosition == SYRINGE_LENGTH))
+	else if((StepperMotor_CurrentBasalDose >= BASAL_STEPS) || (StepperMotor_CurrentBolusDose >= BOLUS_STEPS))
 	{
 		StepperMotor_CurrentBasalDose = 0;
 		StepperMotor_CurrentBolusDose = 0;
@@ -175,11 +180,6 @@ void TIMER1_IRQHandler(void)
 			break;
 		case Wait:
 			BasalDose_TimingDisable();
-			LPC_GPIO2->FIOSET |= 1 << 3; // Signal that syringe is replaced P2.3
-			break;
-		case Remaining:
-			LPC_GPIO2->FIOSET |= 1 << 4; // Signal that syringe is replaced P2.4
-			StepperMotor_StepForward();
 			break;
 	}
 	LPC_TIM1->IR |= 1 << 0; // Clear out Timer1 registers

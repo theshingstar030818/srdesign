@@ -11,8 +11,12 @@
 #include ".\BolusDose\BolusDose.h"
 #include ".\StepperMotor\StepperMotor.h"
 
+extern uint32_t StepperMotor_CurrentBasalDose;
+extern uint32_t StepperMotor_CurrentBolusDose;
+
 status Control_GlobalStatus;
 state Control_GlobalState;
+remaining Control_GlobalRemaining;
 
 uint32_t i, j; // Used for wait loop in main
 uint32_t getStateVal;
@@ -24,8 +28,11 @@ int main(void)
 	// Set default status to None
 	Control_GlobalStatus = None;
 	
-	// Set default state to Neither
+	// Set default state to Undefined
 	Control_GlobalState = Undefined;
+	
+	// Set default remaining to Neither
+	Control_GlobalRemaining = Neither;
 	
 	// Initialize Clock for Timers
 	Control_ClockInitiate();
@@ -67,8 +74,8 @@ int main(void)
 				}
 				break;
 			case Empty:
+				Control_LEDClear();
 				LPC_GPIO2->FIOSET |= 1 << 2; // Signal that syringe is empty P2.2
-				BasalDose_TimingDisable();
 				do {
 					getStateVal = Joystick_GetState(); 
 				} while((getStateVal & 0x00000008) != 0x00000008);
@@ -78,13 +85,29 @@ int main(void)
 				StepperMotor_SpinEnable();
 				break;
 			case Full:
+				LPC_GPIO2->FIOSET |= 1 << 3; // Signal that syringe can be replaced P2.3
 				do {
 					getStateVal = Joystick_GetState();
 				} while((getStateVal & 0x00000010) != 0x00000010);
-				BasalDose_TimingEnable();
-				Control_GlobalStatus = None;
-				Control_GlobalState = Undefined;
 				Control_LEDClear();
+				switch(Control_GlobalRemaining)
+				{
+					case Neither:
+						BasalDose_TimingEnable();
+						Control_GlobalStatus = None;
+						Control_GlobalState = Undefined;
+						StepperMotor_CurrentBasalDose = 0;
+						StepperMotor_CurrentBolusDose = 0;
+						break;
+					case BasalDos:
+						Control_GlobalStatus = Basal;
+						Control_GlobalState = Administration;
+						break;
+					case BolusDos:
+						Control_GlobalStatus = Bolus;
+						Control_GlobalState = Administration;
+						break;
+				}
 				break;
 		}
 	}
