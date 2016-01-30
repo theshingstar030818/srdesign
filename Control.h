@@ -8,20 +8,20 @@
 #ifndef CONTROL_CONTROL_H_
 #define CONTROL_CONTROL_H_
 
+#include <stdbool.h>
 #include "lpc17xx.h"     // Device header
 #include "Board_GLCD.h"  // Board Support : Graphic LCD
 #include "GLCD_Config.h" // Board Support : Graphic LCD
 #include "Board_Joystick.h" // Board Support : Joystick
-#include <stdbool.h>
 
 #define SYRINGE_LENGTH 5000
 #define BASAL_STEPS 250
 #define BOLUS_STEPS 1000
 
 // Create state machine enum
-typedef enum {Basal, Bolus, Backward, None, Wait} status;
-typedef enum {Administration, Empty, Full, Undefined} state;
-typedef enum {Neither, BasalDos, BolusDos} remaining;
+typedef enum {None_Status, Basal_Status, Bolus_Status, Backward_Status, Wait_Status} STATUS;
+typedef enum {None_State, Administration_State, Empty_State, Full_State} STATE;
+typedef enum {None_Remaining, Basal_Remaining, Bolus_Remaining} REMAINING;
 
 /** Function Control_LEDInitiate()
  *

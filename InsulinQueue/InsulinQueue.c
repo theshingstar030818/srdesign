@@ -5,14 +5,15 @@
  *      Author: sle
  */
  
-#include "./InsulinQueue.h"
+#include "..\Control.h"
+#include ".\InsulinQueue.h"
 
 extern uint32_t StepperMotor_GlobalPosition;
 
-uint32_t InsulinQueue_Queue[INSULIN_QUEUE_SIZE];
-uint32_t InsulinQueue_CurrentEntryCount;
-uint32_t *pInsulinQueue_Queue;
 uint32_t InsulinQueue_Head;
+uint32_t *pInsulinQueue_Queue;
+uint32_t InsulinQueue_CurrentEntryCount;
+uint32_t InsulinQueue_Queue[INSULIN_QUEUE_SIZE];
 
 void InsulinQueue_Initiate()
 {

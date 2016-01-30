@@ -5,8 +5,8 @@
  *      Author: sle
  */
 
-#include "./Speaker.h"
-#include "../Control.h"
+#include ".\Speaker.h"
+#include "..\Control.h"
 
 void Speaker_Initiate(void)
 {

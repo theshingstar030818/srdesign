@@ -14,13 +14,13 @@
 extern GLCD_FONT GLCD_Font_6x8; // Font size 6x8
 extern GLCD_FONT GLCD_Font_16x24; // Font size 16x24
 
-extern uint32_t StepperMotor_GlobalPosition;
-
-extern state Control_GlobalState;
-extern status Control_GlobalStatus;
+extern STATE Control_GlobalState;
+extern STATUS Control_GlobalStatus;
 
 extern uint32_t InsulinQueue_Head;
 extern uint32_t *pInsulinQueue_Queue;
+
+extern uint32_t StepperMotor_GlobalPosition;
 
 // Used to hold string representation of our important numbers
 char LCD_StringInsulin[20]; 
@@ -47,19 +47,19 @@ void LCD_UpdateScreenStatus()
 	GLCD_SetFont(&GLCD_Font_16x24);
 	switch(Control_GlobalStatus)
 	{
-		case Basal:
+		case Basal_Status:
 			GLCD_DrawString(20, 20, "Basal\0");
 			break;
-		case Bolus:
+		case Bolus_Status:
 			GLCD_DrawString(20, 20, "Bolus\0");
 			break;
-		case Backward:
+		case Backward_Status:
 			GLCD_DrawString(20, 20, "Backward\0");
 			break;
-		case None:
+		case None_Status:
 			GLCD_DrawString(20, 20, "None\0");
 			break;
-		case Wait:
+		case Wait_Status:
 			GLCD_DrawString(20, 20, "Wait\0");
 			break;
 	}
@@ -70,16 +70,16 @@ void LCD_UpdateScreenState(void)
 	GLCD_SetFont(&GLCD_Font_16x24);
 	switch(Control_GlobalState)
 	{
-		case Administration:
+		case Administration_State:
 			GLCD_DrawString(150, 20, "Admin\0");
 			break;
-		case Empty:
+		case Empty_State:
 			GLCD_DrawString(150, 20, "Empty\0");
 			break;
-		case Full:
+		case Full_State:
 			GLCD_DrawString(150, 20, "Full\0");
 			break;
-		case Undefined:
+		case None_State:
 			GLCD_DrawString(150, 20, "Undefined\0");
 			break;
 	}

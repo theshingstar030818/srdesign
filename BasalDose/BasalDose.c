@@ -9,11 +9,11 @@
 #include "..\Control.h"
 #include "..\StepperMotor\StepperMotor.h"
 
-extern uint32_t StepperMotor_GlobalPosition;
+extern STATE Control_GlobalState;
+extern STATUS Control_GlobalStatus;
+extern REMAINING Control_GlobalRemaining;
 
-extern status Control_GlobalStatus;
-extern state Control_GlobalState;
-extern remaining Control_GlobalRemaining;
+extern uint32_t StepperMotor_GlobalPosition;
 
 // Set and enable Timer0 for the time in between Basal doses
 void BasalDose_TimingInitiate(void)
@@ -42,23 +42,23 @@ void TIMER0_IRQHandler(void)
 {
 	if(StepperMotor_GlobalPosition <= SYRINGE_LENGTH)
 	{
-		Control_GlobalStatus = Basal;
-		Control_GlobalState = Administration;
+		Control_GlobalStatus = Basal_Status;
+		Control_GlobalState = Administration_State;
 		LPC_GPIO1->FIOSET |= 1 << 28; // Signal that Basal is being administered P1.28
 		
 		if(StepperMotor_GlobalPosition + BASAL_STEPS > SYRINGE_LENGTH)
 		{
-			Control_GlobalRemaining = BasalDos;
+			Control_GlobalRemaining = Basal_Remaining;
 		}
 		else
 		{
-			Control_GlobalRemaining = Neither;
+			Control_GlobalRemaining = None_Remaining;
 		}
 	}
 	else
 	{
-		Control_GlobalStatus = None;
-		Control_GlobalState = Empty;
+		Control_GlobalStatus = None_Status;
+		Control_GlobalState = Empty_State;
 		LPC_GPIO2->FIOSET |= 1 << 2; // Signal that syringe is empty P2.2
 	}
 	StepperMotor_SpinEnable();	
