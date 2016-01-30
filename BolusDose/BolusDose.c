@@ -29,12 +29,6 @@ void BolusDose_DoseInitiate(void)
 void EINT3_IRQHandler(void)
 {
 	LPC_GPIOINT->IO2IntClr |= (1<<10); // Clear the status
-	
-	/* Check to see if there is enough to do a bolus injection,
-	 * if not enough retract the syringe
-	 * TODO: Add additional state so that we inject until empty,
-	 * then retract syringe.
-	 */
 	if(StepperMotor_GlobalPosition <= SYRINGE_LENGTH)
 	{
 		Control_GlobalStatus = Bolus;

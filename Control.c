@@ -9,10 +9,13 @@
 #include ".\LCD\LCD.h"
 #include ".\BasalDose\BasalDose.h"
 #include ".\BolusDose\BolusDose.h"
+#include ".\InsulinQueue\InsulinQueue.h"
 #include ".\StepperMotor\StepperMotor.h"
 
 extern uint32_t StepperMotor_CurrentBasalDose;
 extern uint32_t StepperMotor_CurrentBolusDose;
+extern uint32_t InsulinQueue_Queue[INSULIN_QUEUE_SIZE];
+extern uint32_t *pInsulinQueue_Queue;
 
 status Control_GlobalStatus;
 state Control_GlobalState;
@@ -41,16 +44,20 @@ int main(void)
 	LCD_Initiate();
 	StepperMotor_Initiate();
 	
-	// Built in LED function replaces what we were using before
-	Control_LEDInitiate(); 
-	
 	// Built in Joystick initialization
 	Joystick_Initialize();
+	
+	// Initialize LEDs for indication of current dosage
+	Control_LEDInitiate();
 	
 	// Initialize Timers 0, 1
 	BasalDose_TimingInitiate();
 	StepperMotor_SpinInitiate();
 	
+	// Initialize Timer2 and set up pointer to InsulinQueue array
+	pInsulinQueue_Queue = InsulinQueue_Queue;
+	InsulinQueue_Initiate();
+
 	// Initialize External Interrupt 3
 	BolusDose_DoseInitiate();
 	
@@ -119,7 +126,7 @@ void Control_LEDInitiate(void)
 	LPC_GPIO1->FIODIR |= (0xB0000000);
 	LPC_GPIO1->FIOPIN &=~(0xB0000000);
 	
-	// Set pins P2.2 to p2.6 as output
+	// Set pins P2.2, P2.3, P2.4, P2.5, P2.6 as output
 	LPC_GPIO2->FIODIR |= (0x0000007C);
 	LPC_GPIO2->FIOPIN &=~(0x0000007C);
 }
@@ -132,18 +139,20 @@ void Control_LEDClear(void)
 	LPC_GPIO1->FIOCLR |= 1 << 31;
 	LPC_GPIO2->FIOCLR |= 1 << 2;
 	LPC_GPIO2->FIOCLR |= 1 << 3;
-	LPC_GPIO2->FIOCLR |= 1 << 4;
-	LPC_GPIO2->FIOCLR |= 1 << 5;
-	LPC_GPIO2->FIOCLR |= 1 << 6;
+  //LPC_GPIO2->FIOCLR |= 1 << 4;
+  //LPC_GPIO2->FIOCLR |= 1 << 5;
+	//LPC_GPIO2->FIOCLR |= 1 << 6;
 }
 
 void Control_ClockInitiate(void)
 {
-	// Power up Timer0 and Timer1
+	// Power up Timer0, Timer1, and Timer2
 	LPC_SC->PCONP |= 1 << 1; 
 	LPC_SC->PCONP |= 1 << 2;
+	LPC_SC->PCONP |= 1 << 22;
 	
-	// Clock select Timer0 and Timer1 (PCLK = CCLK)
+	// Clock select Timer0, Timer1, and Timer2 (PCLK = CCLK)
 	LPC_SC->PCLKSEL0 |= 1 << 2;
 	LPC_SC->PCLKSEL0 |= 1 << 4;
+	LPC_SC->PCLKSEL1 |= 1 << 12;
 }

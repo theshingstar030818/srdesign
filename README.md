@@ -22,10 +22,8 @@ Primary Goals:
 Secondary Goals:
 ----------------
   * Interface MCB1700 with Continuous Glucose Monitor using GPIO
-  * Set-up MCB1700 to be able to read/write to micro SD Card
-  * Implement Security Features that apply to the additional features
+  * Implement Security Features that apply to the additional feature
   
-=======
 Keil uVision Set-Up:
 --------------------
    1. Project -> New uVision Project... 

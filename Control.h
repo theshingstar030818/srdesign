@@ -14,9 +14,9 @@
 #include "Board_Joystick.h" // Board Support : Joystick
 #include <stdbool.h>
 
-#define SYRINGE_LENGTH 500
+#define SYRINGE_LENGTH 5000
 #define BASAL_STEPS 250
-#define BOLUS_STEPS 500
+#define BOLUS_STEPS 1000
 
 // Create state machine enum
 typedef enum {Basal, Bolus, Backward, None, Wait} status;
@@ -26,8 +26,8 @@ typedef enum {Neither, BasalDos, BolusDos} remaining;
 /** Function Control_LEDInitiate()
  *
  *  Function is called in the main loop to initialize the LED pins,
- *  Set pins P1.28, P1.29, P1.30, P1.31 as output
- *  Set pins P2.2, P2.3 as output
+ *  Set pins P1.28, P1.29, P1.31 as output
+ *  Set pins P2.2, P2.3 as output (currently un-initiated)
  *
  *  @param void: void 
  *  @return void: void

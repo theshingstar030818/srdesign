@@ -40,11 +40,6 @@ void BasalDose_TimingDisable(void)
 
 void TIMER0_IRQHandler(void)
 {
-	/* Check to see if there is enough to do a basal injection,
-	 * if not enough retract the syringe
-	 * TODO: Add additional state so that we inject until empty,
-	 * then retract syringe.
-	 */
 	if(StepperMotor_GlobalPosition <= SYRINGE_LENGTH)
 	{
 		Control_GlobalStatus = Basal;
