@@ -25,20 +25,21 @@ void Speaker_Initiate(void);
  *  Parameter loops dictates how long the Speaker is on for
  *
  *  @param int: loops - number of loops to play sound
+ *	@param int: frequency - time in between oscillations
  *  @return void: void
  */
 
-void Speaker_Play(int loops);
+void Speaker_Play(int loops, int frequency);
 
 /** Speaker_Wait()
  *
  *  Function is called to wait between oscillations
  *
- *  @param void: void
+ *  @param int: frequency - time in between oscillations
  *  @return void: void
  */
 
-void Speaker_Wait(void);
+void Speaker_Wait(int frequency);
 
 #endif /* SPEAKER_SPEAKER_H_ */
 

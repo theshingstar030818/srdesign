@@ -11,6 +11,7 @@
 
 extern status Control_GlobalStatus;
 extern state Control_GlobalState;
+extern uint32_t InsulinQueue_CurrentEntryCount;
 
 uint32_t StepperMotor_CurrentPosition;
 uint32_t StepperMotor_GlobalPosition;
@@ -69,6 +70,7 @@ void StepperMotor_StepForward(void)
 			break;
 	}
 	StepperMotor_GlobalPosition++;
+	InsulinQueue_CurrentEntryCount++;
 	
 	if(StepperMotor_GlobalPosition == SYRINGE_LENGTH)
 	{

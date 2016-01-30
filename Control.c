@@ -15,7 +15,9 @@
 extern uint32_t StepperMotor_CurrentBasalDose;
 extern uint32_t StepperMotor_CurrentBolusDose;
 extern uint32_t InsulinQueue_Queue[INSULIN_QUEUE_SIZE];
+extern uint32_t InsulinQueue_CurrentEntryCount;
 extern uint32_t *pInsulinQueue_Queue;
+
 
 status Control_GlobalStatus;
 state Control_GlobalState;
