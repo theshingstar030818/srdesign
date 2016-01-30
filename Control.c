@@ -32,8 +32,8 @@ int main(void)
 	LCD_Initiate();
 	StepperMotor_Initiate();
 	
-	// Built in LED function replaces what we were using before
-	LED_Initialize();
+	// Initialize LEDs for indication of current dosage
+	Control_LEDInitiate();
 	
 	// Initialize Timers 0, 1
 	BasalDose_DoseTimingInitiate();
@@ -63,12 +63,23 @@ int main(void)
 	}
 }
 
+void Control_LEDInitiate(void)
+{
+	// Set pins P1.28, P1.29, P1.31 as output
+	LPC_GPIO1->FIODIR |= (0xD0000000);
+	LPC_GPIO1->FIOPIN &=~(0xD0000000);
+	
+	// Set pins P2.2, P2.3 as output
+	//LPC_GPIO2->FIODIR |= (0x00000006);
+	//LPC_GPIO2->FIOPIN &=~(0x00000006);
+}
+
 void Control_LEDClear(void)
 {
 	// Clear out LEDs used for Basal, Bolus, and Backward
-	LED_Off(0);
-	LED_Off(1);
-	LED_Off(2);
+	LPC_GPIO1->FIOCLR |= 1 << 28; 
+ 	LPC_GPIO1->FIOCLR |= 1 << 29;
+	LPC_GPIO1->FIOCLR |= 1 << 31;
 }
 
 void Control_ClockInitiate(void)
