@@ -4,6 +4,9 @@
  *  Created on: Dec 16, 2015
  *      Author: sle
  */
+ 
+#ifndef LCD_LCD_H_
+#define LCD_LCD_H_
 
 /** Function LCD_Initiate()
  *
@@ -44,3 +47,5 @@ void LCD_UpdateScreenState(void);
  */
 
 void LCD_UpdateScreenInsulin(void);
+
+#endif /* LCD_LCD_H_ */

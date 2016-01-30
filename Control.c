@@ -14,28 +14,30 @@
 
 extern uint32_t StepperMotor_CurrentBasalDose;
 extern uint32_t StepperMotor_CurrentBolusDose;
-extern uint32_t InsulinQueue_Queue[INSULIN_QUEUE_SIZE];
+
 extern uint32_t *pInsulinQueue_Queue;
+extern uint32_t InsulinQueue_CurrentEntryCount;
+extern uint32_t InsulinQueue_Queue[INSULIN_QUEUE_SIZE];
 
-status Control_GlobalStatus;
-state Control_GlobalState;
-remaining Control_GlobalRemaining;
+STATUS Control_GlobalStatus;
+STATE Control_GlobalState;
+REMAINING Control_GlobalRemaining;
 
-uint32_t i, j; // Used for wait loop in main
-uint32_t getStateVal;
+uint32_t Control_JoystickState;
 
 int main(void)
 {
+	uint32_t i, j;
 	SystemInit();
 	
 	// Set default status to None
-	Control_GlobalStatus = None;
+	Control_GlobalStatus = None_Status;
 	
-	// Set default state to Undefined
-	Control_GlobalState = Undefined;
+	// Set default state to None
+	Control_GlobalState = None_State;
 	
-	// Set default remaining to Neither
-	Control_GlobalRemaining = Neither;
+	// Set default remaining to None
+	Control_GlobalRemaining = None_Remaining;
 	
 	// Initialize Clock for Timers
 	Control_ClockInitiate();
@@ -72,47 +74,44 @@ int main(void)
 		LCD_UpdateScreenInsulin();
 		switch(Control_GlobalState)
 		{
-			case Undefined:
-			case Administration:
+			case None_State:
+			case Administration_State:
 				// Wait for a short period of time before updating
 				for(i = 0; i < 150000; i++)
 				{
-					for(j = 0; j < 25; j++);
+					for(j = 0; j < 50; j++);
 				}
 				break;
-			case Empty:
+			case Empty_State:
 				Control_LEDClear();
 				LPC_GPIO2->FIOSET |= 1 << 2; // Signal that syringe is empty P2.2
 				do {
-					getStateVal = Joystick_GetState(); 
-				} while((getStateVal & 0x00000008) != 0x00000008);
-				Control_GlobalStatus = Backward;
-				Control_GlobalState = Administration;
+					Control_JoystickState = Joystick_GetState(); 
+				} while((Control_JoystickState & 0x00000008) != 0x00000008);
+				Control_GlobalStatus = Backward_Status;
+				Control_GlobalState = Administration_State;
 				Control_LEDClear();
 				StepperMotor_SpinEnable();
 				break;
-			case Full:
+			case Full_State:
 				LPC_GPIO2->FIOSET |= 1 << 3; // Signal that syringe can be replaced P2.3
 				do {
-					getStateVal = Joystick_GetState();
-				} while((getStateVal & 0x00000010) != 0x00000010);
+					Control_JoystickState = Joystick_GetState();
+				} while((Control_JoystickState & 0x00000010) != 0x00000010);
 				Control_LEDClear();
 				switch(Control_GlobalRemaining)
 				{
-					case Neither:
+					case None_Remaining:
 						BasalDose_TimingEnable();
-						Control_GlobalStatus = None;
-						Control_GlobalState = Undefined;
-						StepperMotor_CurrentBasalDose = 0;
-						StepperMotor_CurrentBolusDose = 0;
+						Control_DosageReset();
 						break;
-					case BasalDos:
-						Control_GlobalStatus = Basal;
-						Control_GlobalState = Administration;
+					case Basal_Remaining:
+						Control_GlobalStatus = Basal_Status;
+						Control_GlobalState = Administration_State;
 						break;
-					case BolusDos:
-						Control_GlobalStatus = Bolus;
-						Control_GlobalState = Administration;
+					case Bolus_Remaining:
+						Control_GlobalStatus = Bolus_Status;
+						Control_GlobalState = Administration_State;
 						break;
 				}
 				break;
@@ -155,4 +154,12 @@ void Control_ClockInitiate(void)
 	LPC_SC->PCLKSEL0 |= 1 << 2;
 	LPC_SC->PCLKSEL0 |= 1 << 4;
 	LPC_SC->PCLKSEL1 |= 1 << 12;
+}
+
+void Control_DosageReset(void)
+{
+	Control_GlobalStatus = None_Status;
+	Control_GlobalState = None_State;
+	StepperMotor_CurrentBasalDose = 0;
+	StepperMotor_CurrentBolusDose = 0;
 }

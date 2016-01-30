@@ -8,7 +8,6 @@
 #ifndef BASALDOSE_H_
 #define BASALDOSE_H_
 
-
 /** Function: BasalDose_TimingInitiate()
  * 
  *  Sets up and enables Timer0.

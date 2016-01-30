@@ -11,15 +11,20 @@
 #include "..\InsulinQueue\InsulinQueue.h"
 #include "..\StepperMotor\StepperMotor.h"
 
-extern GLCD_FONT GLCD_Font_16x24; // Font size
-extern uint32_t StepperMotor_GlobalPosition;
-extern status Control_GlobalStatus;
-extern state Control_GlobalState;
+extern GLCD_FONT GLCD_Font_6x8; // Font size 6x8
+extern GLCD_FONT GLCD_Font_16x24; // Font size 16x24
+
+extern STATE Control_GlobalState;
+extern STATUS Control_GlobalStatus;
+
+extern uint32_t InsulinQueue_Head;
 extern uint32_t *pInsulinQueue_Queue;
 
-// Used to hold string representation of StepperMotor_GlobalPosition
-char stringInsulin[6]; 
-char inQueue[10];
+extern uint32_t StepperMotor_GlobalPosition;
+
+// Used to hold string representation of our important numbers
+char LCD_StringInsulin[20]; 
+char LCD_InsulinQueueEntry[10];
 
 void LCD_Initiate(void)
 {
@@ -39,21 +44,22 @@ void LCD_Initiate(void)
 
 void LCD_UpdateScreenStatus()
 {
+	GLCD_SetFont(&GLCD_Font_16x24);
 	switch(Control_GlobalStatus)
 	{
-		case Basal:
+		case Basal_Status:
 			GLCD_DrawString(20, 20, "Basal\0");
 			break;
-		case Bolus:
+		case Bolus_Status:
 			GLCD_DrawString(20, 20, "Bolus\0");
 			break;
-		case Backward:
+		case Backward_Status:
 			GLCD_DrawString(20, 20, "Backward\0");
 			break;
-		case None:
+		case None_Status:
 			GLCD_DrawString(20, 20, "None\0");
 			break;
-		case Wait:
+		case Wait_Status:
 			GLCD_DrawString(20, 20, "Wait\0");
 			break;
 	}
@@ -61,35 +67,49 @@ void LCD_UpdateScreenStatus()
 
 void LCD_UpdateScreenState(void)
 {
+	GLCD_SetFont(&GLCD_Font_16x24);
 	switch(Control_GlobalState)
 	{
-		case Administration:
-			GLCD_DrawString(120, 20, "Admin\0");
+		case Administration_State:
+			GLCD_DrawString(150, 20, "Admin\0");
 			break;
-		case Empty:
-			GLCD_DrawString(120, 20, "Empty\0");
+		case Empty_State:
+			GLCD_DrawString(150, 20, "Empty\0");
 			break;
-		case Full:
-			GLCD_DrawString(120, 20, "Full\0");
+		case Full_State:
+			GLCD_DrawString(150, 20, "Full\0");
 			break;
-		case Undefined:
-			GLCD_DrawString(120, 20, "Undefined\0");
+		case None_State:
+			GLCD_DrawString(150, 20, "Undefined\0");
 			break;
 	}
 }
 
 void LCD_UpdateScreenInsulin(void)
 {
-	int k,h;
-	// Format the integer into a string, display on LCD
-	sprintf(stringInsulin, "%d", StepperMotor_GlobalPosition);
-	GLCD_DrawString(20, 40, stringInsulin);
-	for(k = 0; k < INSULIN_QUEUE_SIZE / 4; k++)
+	int column, row;
+	
+	// Format GlobalPosition into string to display on LCD
+	GLCD_SetFont(&GLCD_Font_16x24);
+	sprintf(LCD_StringInsulin, "%.2f%% Remaining", (1 - (StepperMotor_GlobalPosition / (SYRINGE_LENGTH + 0.0))) * 100);
+	GLCD_DrawString(20, 40, LCD_StringInsulin);
+	
+	// Display current insulin queue on LCD
+	GLCD_SetFont(&GLCD_Font_6x8);
+	GLCD_DrawString(10, 140, "Current Insulin Queue\0");
+	for(column = 0; column < INSULIN_QUEUE_SIZE / 4; column++)
 	{
-		for(h = 0; h < 4; h++)
+		for(row = 0; row < 4; row++)
 		{
-			sprintf(inQueue, "%d", *(pInsulinQueue_Queue + (4 * k + h)));
-			GLCD_DrawString((10 + (h*75)), 60 + (k*30), inQueue);
+			if(InsulinQueue_Head != 4 * column + row)
+			{
+				sprintf(LCD_InsulinQueueEntry, "%d", *(pInsulinQueue_Queue + (4 * column + row)));
+			}
+			else
+			{
+				sprintf(LCD_InsulinQueueEntry, "*%d", *(pInsulinQueue_Queue + (4 * column + row)));
+			}
+			GLCD_DrawString((10 + (row * 30)), 150 + (column * 10), LCD_InsulinQueueEntry);
 		}
 	}
 	

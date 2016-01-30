@@ -5,13 +5,15 @@
  *      Author: sle
  */
  
-#include "./InsulinQueue.h"
+#include "..\Control.h"
+#include ".\InsulinQueue.h"
 
 extern uint32_t StepperMotor_GlobalPosition;
 
-uint32_t InsulinQueue_Queue[INSULIN_QUEUE_SIZE];
-uint32_t *pInsulinQueue_Queue;
 uint32_t InsulinQueue_Head;
+uint32_t *pInsulinQueue_Queue;
+uint32_t InsulinQueue_CurrentEntryCount;
+uint32_t InsulinQueue_Queue[INSULIN_QUEUE_SIZE];
 
 void InsulinQueue_Initiate()
 {
@@ -21,6 +23,8 @@ void InsulinQueue_Initiate()
 	NVIC_EnableIRQ(TIMER2_IRQn);
 	LPC_TIM2->TCR |= 1 << 0;
 	InsulinQueue_Head = 0;
+	
+	InsulinQueue_CurrentEntryCount = 0;
 }
 
 void InsulinQueue_Push(uint32_t currentInsulinAmount)
@@ -37,6 +41,7 @@ void InsulinQueue_Push(uint32_t currentInsulinAmount)
 
 void TIMER2_IRQHandler(void)
 {
-	InsulinQueue_Push(StepperMotor_GlobalPosition);
+	InsulinQueue_Push(InsulinQueue_CurrentEntryCount);
+	InsulinQueue_CurrentEntryCount = 0;
 	LPC_TIM2->IR |= 1 << 0; // Clear out Timer2 registers
 }
