@@ -25,7 +25,7 @@ void Speaker_Initiate(void);
  *  Parameter loops dictates how long the Speaker is on for
  *
  *  @param int: loops - number of loops to play sound
- *	@param int: frequency - time in between oscillations
+ *  @param int: frequency - time in between oscillations
  *  @return void: void
  */
 

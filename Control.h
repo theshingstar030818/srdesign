@@ -26,8 +26,8 @@ typedef enum {None_Remaining, Basal_Remaining, Bolus_Remaining} REMAINING;
 /** Function Control_LEDInitiate()
  *
  *  Function is called in the main loop to initialize the LED pins,
- *  Set pins P1.28, P1.29, P1.31 as output
- *  Set pins P2.2, P2.3 as output (currently un-initiated)
+ *  Set pins P1.28, P1.29, P1.31 as output.
+ *  Set pins P2.2, P2.3 as output.
  *
  *  @param void: void 
  *  @return void: void
@@ -49,12 +49,22 @@ void Control_LEDClear(void);
 /** Function Control_ClockInitiate()
  *
  *  Function is called in the main loop to initialize clock.
- *  Powers up Timer0 and Timer1 and sets PCLK = CCLK
+ *  Powers up Timer0 and Timer1 and sets PCLK = CCLK.
  *
  *  @param void: void 
  *  @return void: void
  */
  
 void Control_ClockInitiate(void);
+
+/** Function Control_DosageReset()
+ *
+ *  Function is called in the main loop and StepperMotor_StepForward.
+ *
+ *  @param void: void 
+ *  @return void: void
+ */
+ 
+void Control_DosageReset(void);
 
 #endif /* CONTROL_CONTROL_H_ */

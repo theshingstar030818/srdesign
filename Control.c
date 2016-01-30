@@ -103,10 +103,7 @@ int main(void)
 				{
 					case None_Remaining:
 						BasalDose_TimingEnable();
-						Control_GlobalStatus = None_Status;
-						Control_GlobalState = None_State;
-						StepperMotor_CurrentBasalDose = 0;
-						StepperMotor_CurrentBolusDose = 0;
+						Control_DosageReset();
 						break;
 					case Basal_Remaining:
 						Control_GlobalStatus = Basal_Status;
@@ -157,4 +154,12 @@ void Control_ClockInitiate(void)
 	LPC_SC->PCLKSEL0 |= 1 << 2;
 	LPC_SC->PCLKSEL0 |= 1 << 4;
 	LPC_SC->PCLKSEL1 |= 1 << 12;
+}
+
+void Control_DosageReset(void)
+{
+	Control_GlobalStatus = None_Status;
+	Control_GlobalState = None_State;
+	StepperMotor_CurrentBasalDose = 0;
+	StepperMotor_CurrentBolusDose = 0;
 }

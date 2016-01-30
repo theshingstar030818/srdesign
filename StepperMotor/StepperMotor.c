@@ -80,10 +80,7 @@ void StepperMotor_StepForward(void)
 	// Check to see if Basal or Bolus has completed.
 	else if((StepperMotor_CurrentBasalDose >= BASAL_STEPS) || (StepperMotor_CurrentBolusDose >= BOLUS_STEPS))
 	{
-		StepperMotor_CurrentBasalDose = 0;
-		StepperMotor_CurrentBolusDose = 0;
-		Control_GlobalStatus = None_Status;
-		Control_GlobalState = None_State;
+		Control_DosageReset();
 	}
 }
 
