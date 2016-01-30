@@ -7,8 +7,10 @@
 
 #include "..\Control.h"
 #include "StepperMotor.h"
+#include "..\BasalDose\BasalDose.h"
 
 extern status Control_GlobalStatus;
+extern state Control_GlobalState;
 
 uint32_t StepperMotor_CurrentPosition;
 uint32_t StepperMotor_GlobalPosition;
@@ -68,12 +70,18 @@ void StepperMotor_StepForward(void)
 	}
 	StepperMotor_GlobalPosition++;
 	
+	if(StepperMotor_GlobalPosition == SYRINGE_LENGTH)
+	{
+		Control_GlobalStatus = Wait;
+		Control_GlobalState = Empty;
+	}
 	// Check to see if Basal or Bolus has completed.
-	if((StepperMotor_CurrentBasalDose >= BASAL_STEPS) || (StepperMotor_CurrentBolusDose >= BOLUS_STEPS))
+	else if((StepperMotor_CurrentBasalDose >= BASAL_STEPS) || (StepperMotor_CurrentBolusDose >= BOLUS_STEPS))
 	{
 		StepperMotor_CurrentBasalDose = 0;
 		StepperMotor_CurrentBolusDose = 0;
 		Control_GlobalStatus = None;
+		Control_GlobalState = Undefined;
 	}
 }
 
@@ -119,7 +127,60 @@ void StepperMotor_StepBackward(void)
 	// Check to see if syringe is back to original spot
 	if(StepperMotor_GlobalPosition <= 0)
 	{
+		Control_LEDClear();
 		StepperMotor_GlobalPosition = 0;
-		Control_GlobalStatus = None;
+		Control_GlobalStatus = Wait;
+		Control_GlobalState = Full;
 	}
+}
+
+void StepperMotor_SpinInitiate(void)
+{
+	LPC_TIM1->PR = 0x02; // Pre-scalar
+	LPC_TIM1->MR0 = 1 << 20; // Match number
+	LPC_TIM1->MCR |= 3 << 0; // Interrupt and reset timer on match (MCR = 011)
+	NVIC_EnableIRQ(TIMER1_IRQn);
+}
+
+void StepperMotor_SpinEnable(void)
+{
+	BasalDose_TimingDisable(); // Disable and Reset Timer0
+	LPC_TIM1->TCR |= 1 << 0; // Start counting (TCR = 01)
+}
+
+void StepperMotor_SpinDisable(void)
+{
+	LPC_TIM1->TCR &=~(1 << 0); // Stop Timer Counter (TCR = 00)
+	LPC_TIM1->TCR |= 1 << 1; // Reset Timer Counter (TCR = 10)
+	LPC_TIM1->TCR &=~(1 << 1); // Stop resetting Timer Counter (TCR = 00)
+	LPC_TIM1->IR |= 1 << 1; // Reset Timer1 Interrupt
+}
+
+void TIMER1_IRQHandler(void)
+{
+	// Switch on status defined by Timer0 and EINT3 IRQs
+	// case None defined within the StepperMotor_Step functions when adminstration is done
+	switch(Control_GlobalStatus)
+	{
+		case Basal: 
+			StepperMotor_CurrentBasalDose++; // Keep track of current dosing
+			StepperMotor_StepForward();
+			break;
+		case Bolus:
+			StepperMotor_CurrentBolusDose++; 
+			StepperMotor_StepForward();
+			break;
+		case Backward:
+			LPC_GPIO1->FIOSET |= 1 << 31; // Signal that Backward is being administered P1.31
+			StepperMotor_StepBackward();
+			break;
+		case None:
+			BasalDose_TimingEnable(); // Re-Enable Timer0
+			Control_LEDClear(); // Clear out LEDs
+			break;
+		case Wait:
+			BasalDose_TimingDisable();
+			break;
+	}
+	LPC_TIM1->IR |= 1 << 0; // Clear out Timer1 registers
 }

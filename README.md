@@ -21,9 +21,8 @@ Primary Goals:
 
 Secondary Goals:
 ----------------
-  * Interface MCB1700 with Continuous Glucose Montior using GPIO
-  * Set-up MCB1700 to be able to read/write to micro SD Card
-  * Implement Security Features that apply to the additional features
+  * Interface MCB1700 with Continuous Glucose Monitor using GPIO
+  * Implement Security Features that apply to the additional feature
   
 Keil uVision Set-Up:
 --------------------
@@ -33,7 +32,7 @@ Keil uVision Set-Up:
    4. Choose the following Software Components in the Manage Run-Time Environment:
       * Board Support
          * Graphic LCD (API) -> Graphic LCD
-         * LED (API) -> LED
+		 * Joystick (API) -> Joystick
       * CMSIS
          * CORE
       * CMSIS Driver

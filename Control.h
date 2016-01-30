@@ -11,14 +11,17 @@
 #include "lpc17xx.h"     // Device header
 #include "Board_GLCD.h"  // Board Support : Graphic LCD
 #include "GLCD_Config.h" // Board Support : Graphic LCD
-
+#include "Board_Joystick.h" // Board Support : Joystick
+#include <stdbool.h>
 
 #define SYRINGE_LENGTH 5000
 #define BASAL_STEPS 250
 #define BOLUS_STEPS 1000
 
 // Create state machine enum
-typedef enum {Basal, Bolus, Backward, None} status;
+typedef enum {Basal, Bolus, Backward, None, Wait} status;
+typedef enum {Administration, Empty, Full, Undefined} state;
+typedef enum {Neither, BasalDos, BolusDos} remaining;
 
 /** Function Control_LEDInitiate()
  *
@@ -34,7 +37,7 @@ void Control_LEDInitiate(void);
 
 /** Function Control_LEDClear()
  *
- *	Clear out LEDs P1.28, P1.29, P1.31,
+ *	Clear out LEDs P1.28, P1.29, P1.31, P2.2, P2.3, P2.4, P2.5, P2.6
  *	used as Basal, Bolus, and Backward indicators
  *
  *  @param void: void 

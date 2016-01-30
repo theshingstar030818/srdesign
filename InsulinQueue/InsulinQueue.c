@@ -7,49 +7,36 @@
  
 #include "./InsulinQueue.h"
 
-InsulinQueue *InsulinQueue_Create(uint32_t maxEntries)
+extern uint32_t StepperMotor_GlobalPosition;
+
+uint32_t InsulinQueue_Queue[INSULIN_QUEUE_SIZE];
+uint32_t *pInsulinQueue_Queue;
+uint32_t InsulinQueue_Head;
+
+void InsulinQueue_Initiate()
 {
-	InsulinQueue *iq;
-	iq = (InsulinQueue *)malloc(sizeof(InsulinQueue));
-	
-	iq->maxNumEntries = maxEntries;
-	iq->currentNumEntries = 0;
-	iq->head = 0;
-	iq->tail = -1;
-	iq->insulinEntry = (uint32_t *)malloc(sizeof(uint32_t) * maxEntries);
-	
-	return iq;
+	LPC_TIM2->PR = 0x02; // Pre-scalar
+	LPC_TIM2->MR0 = 1 << 27; // Match number
+	LPC_TIM2->MCR |= 3 << 0; // Interrupt and reset timer on match (MCR = 011)
+	NVIC_EnableIRQ(TIMER2_IRQn);
+	LPC_TIM2->TCR |= 1 << 0;
+	InsulinQueue_Head = 0;
 }
 
-void InsulinQueue_Pop(InsulinQueue *iq)
+void InsulinQueue_Push(uint32_t currentInsulinAmount)
 {
-	if(iq->currentNumEntries == 0)
+	// If queue is maxed, reset head first, then just insert element
+	if(InsulinQueue_Head == INSULIN_QUEUE_SIZE)
 	{
-		return;
+		InsulinQueue_Head = 0;
 	}
-	else
-	{
-		iq->currentNumEntries--;
-		iq->head++;
-		
-		if(iq->head == iq->maxNumEntries)
-			iq->head = 0;
-		
-	}
-	return;
+	
+	*(pInsulinQueue_Queue + InsulinQueue_Head) = currentInsulinAmount;
+	InsulinQueue_Head++;
 }
 
-void InsulinQueue_Push(InsulinQueue *iq, int currentInsulinAmount)
+void TIMER2_IRQHandler(void)
 {
-	if(iq->currentNumEntries == iq->maxNumEntries)
-	{
-		InsulinQueue_Pop(iq);
-		InsulinQueue_Push(iq, currentInsulinAmount);
-	}
-	else
-	{
-		iq->currentNumEntries++;
-		iq->tail++;
-		iq->insulinEntry[iq->tail] = currentInsulinAmount;
-	}
+	InsulinQueue_Push(StepperMotor_GlobalPosition);
+	LPC_TIM2->IR |= 1 << 0; // Clear out Timer2 registers
 }

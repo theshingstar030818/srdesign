@@ -26,6 +26,15 @@ void LCD_Initiate(void);
 
 void LCD_UpdateScreenStatus(void);
 
+/** Function LCD_UpdateScreenState()
+ *
+ *  Updates the LCD with current state of the controller.
+ *
+ *  @param void: void 
+ *  @return void: void
+ */
+void LCD_UpdateScreenState(void);
+
 /** Function LCD_UpdateScreenInsulin()
  *
  *  Updates the LCD with current insulin count.

@@ -8,10 +8,13 @@
 #include "BolusDose.h"
 #include "..\Control.h"
 #include "..\BasalDose\BasalDose.h"
+#include "..\StepperMotor\StepperMotor.h"
 
 extern uint32_t StepperMotor_GlobalPosition;
 
 extern status Control_GlobalStatus;
+extern state Control_GlobalState;
+extern remaining Control_GlobalRemaining;
 
 void BolusDose_DoseInitiate(void)
 {
@@ -26,21 +29,26 @@ void BolusDose_DoseInitiate(void)
 void EINT3_IRQHandler(void)
 {
 	LPC_GPIOINT->IO2IntClr |= (1<<10); // Clear the status
-	
-	/* Check to see if there is enough to do a bolus injection,
-	 * if not enough retract the syringe
-	 * TODO: Add additional state so that we inject until empty,
-	 * then retract syringe.
-	 */
-	if(StepperMotor_GlobalPosition + BOLUS_STEPS <= SYRINGE_LENGTH)
+	if(StepperMotor_GlobalPosition <= SYRINGE_LENGTH)
 	{
 		Control_GlobalStatus = Bolus;
+		Control_GlobalState = Administration;
 		LPC_GPIO1->FIOSET |= 1 << 29; // Signal that Bolus is being administered P1.29
+		
+		if(StepperMotor_GlobalPosition + BOLUS_STEPS > SYRINGE_LENGTH)
+		{
+			Control_GlobalRemaining = BolusDos;
+		}
+		else
+		{
+			Control_GlobalRemaining = Neither;
+		}
 	}
 	else
 	{
-		Control_GlobalStatus = Backward;
-		LPC_GPIO1->FIOSET |= 1 << 31; // Signal that Backward/Retraction is occuring P1.31
+		Control_GlobalStatus = None;
+		Control_GlobalState = Empty;
+		LPC_GPIO2->FIOSET |= 1 << 2; // Signal that syringe is empty P2.2
 	}
-	BasalDose_DoseEnable();	
+	StepperMotor_SpinEnable();	
 }
