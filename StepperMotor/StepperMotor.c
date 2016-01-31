@@ -165,17 +165,14 @@ void TIMER1_IRQHandler(void)
 	switch(Control_GlobalStatus)
 	{
 		case Basal_Status:
-      BasalDose_TimingDisable();
 			StepperMotor_CurrentBasalDose++; // Keep track of current dosing
 			StepperMotor_StepForward();
 			break;
 		case Bolus_Status:
-      BasalDose_TimingDisable();
 			StepperMotor_CurrentBolusDose++; 
 			StepperMotor_StepForward();
 			break;
 		case Backward_Status:
-      BasalDose_TimingDisable();
 			LPC_GPIO1->FIOSET |= 1 << 31; // Signal that Backward is being administered P1.31
 			StepperMotor_StepBackward();
 			break;
@@ -184,7 +181,6 @@ void TIMER1_IRQHandler(void)
 			Control_LEDClear(); // Clear out LEDs
 			break;
 		case Wait_Status:
-			BasalDose_TimingDisable();
 			break;
 	}
 	LPC_TIM1->IR |= 1 << 0; // Clear out Timer1 registers
