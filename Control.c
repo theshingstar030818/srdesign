@@ -83,7 +83,6 @@ int main(void)
 				}
 				break;
 			case Empty_State:
-				Control_LEDClear();
 				LPC_GPIO2->FIOSET |= 1 << 2; // Signal that syringe is empty P2.2
 				do {
 					Control_JoystickState = Joystick_GetState(); 
