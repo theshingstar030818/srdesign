@@ -99,7 +99,7 @@ int main(void)
 				do {
 					Control_JoystickState = Joystick_GetState();
 				} while((Control_JoystickState & 0x00000010) != 0x00000010);
-				Control_LEDClear();
+				Control_LEDClearAll();
 				switch(Control_GlobalRemaining)
 				{
 					case None_Remaining:
@@ -139,9 +139,19 @@ void Control_LEDClear(void)
 	LPC_GPIO1->FIOCLR |= 1 << 31;
 	LPC_GPIO2->FIOCLR |= 1 << 2;
 	LPC_GPIO2->FIOCLR |= 1 << 3;
-  //LPC_GPIO2->FIOCLR |= 1 << 4;
-  //LPC_GPIO2->FIOCLR |= 1 << 5;
-	//LPC_GPIO2->FIOCLR |= 1 << 6;
+}
+
+void Control_LEDClearAll(void)
+{
+	// Clear out LEDs for all indicitions 
+	LPC_GPIO1->FIOCLR |= 1 << 28; 
+ 	LPC_GPIO1->FIOCLR |= 1 << 29;
+	LPC_GPIO1->FIOCLR |= 1 << 31;
+	LPC_GPIO2->FIOCLR |= 1 << 2;
+	LPC_GPIO2->FIOCLR |= 1 << 3;
+  LPC_GPIO2->FIOCLR |= 1 << 4;
+  LPC_GPIO2->FIOCLR |= 1 << 5;
+	LPC_GPIO2->FIOCLR |= 1 << 6;
 }
 
 void Control_ClockInitiate(void)

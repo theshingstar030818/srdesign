@@ -72,6 +72,19 @@ void StepperMotor_StepForward(void)
 	StepperMotor_GlobalPosition++;
 	InsulinQueue_CurrentEntryCount++;
 	
+	if((1 - (StepperMotor_GlobalPosition / (SYRINGE_LENGTH + 0.0))) * 100 <= 5.02)
+	{
+		LPC_GPIO2->FIOSET |= 1 << 6;
+	}
+	else if((1 - (StepperMotor_GlobalPosition / (SYRINGE_LENGTH + 0.0))) * 100 <= 10)
+	{
+		LPC_GPIO2->FIOSET |= 1 << 5;
+	}
+	else if((1 - (StepperMotor_GlobalPosition / (SYRINGE_LENGTH + 0.0))) * 100 <= 20)
+	{
+		LPC_GPIO2->FIOSET |= 1 << 4;
+	}
+	
 	if(StepperMotor_GlobalPosition == SYRINGE_LENGTH)
 	{
     Control_LEDClear();

@@ -37,7 +37,7 @@ void Control_LEDInitiate(void);
 
 /** Function Control_LEDClear()
  *
- *	Clear out LEDs P1.28, P1.29, P1.31, P2.2, P2.3, P2.4, P2.5, P2.6
+ *	Clear out LEDs P1.28, P1.29, P1.31, P2.2, P2.3
  *	used as Basal, Bolus, and Backward indicators
  *
  *  @param void: void 
@@ -45,6 +45,17 @@ void Control_LEDInitiate(void);
  */
  
 void Control_LEDClear(void);
+
+/** Function Control_LEDClearAll()
+ *
+ *	Clear out LEDs P1.28, P1.29, P1.31, P2.2, P2.3, P2.4, P2.5, P2.6
+ *	used as Basal, Bolus, and Backward indicators
+ *
+ *  @param void: void 
+ *  @return void: void
+ */
+ 
+void Control_LEDClearAll(void);
 
 /** Function Control_ClockInitiate()
  *
