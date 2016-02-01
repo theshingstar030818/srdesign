@@ -83,7 +83,7 @@ int main(void)
 				}
 				break;
 			case Empty_State:
-				Control_LEDClear();
+        BasalDose_TimingDisable();
 				LPC_GPIO2->FIOSET |= 1 << 2; // Signal that syringe is empty P2.2
 				do {
 					Control_JoystickState = Joystick_GetState(); 
@@ -94,6 +94,7 @@ int main(void)
 				StepperMotor_SpinEnable();
 				break;
 			case Full_State:
+        BasalDose_TimingDisable();
 				LPC_GPIO2->FIOSET |= 1 << 3; // Signal that syringe can be replaced P2.3
 				do {
 					Control_JoystickState = Joystick_GetState();

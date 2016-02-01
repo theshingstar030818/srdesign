@@ -74,13 +74,16 @@ void StepperMotor_StepForward(void)
 	
 	if(StepperMotor_GlobalPosition == SYRINGE_LENGTH)
 	{
+    Control_LEDClear();
 		Control_GlobalStatus = Wait_Status;
 		Control_GlobalState = Empty_State;
 	}
 	// Check to see if Basal or Bolus has completed.
 	else if((StepperMotor_CurrentBasalDose >= BASAL_STEPS) || (StepperMotor_CurrentBolusDose >= BOLUS_STEPS))
 	{
+    Control_LEDClear();
 		Control_DosageReset();
+    BasalDose_TimingEnable();
 	}
 }
 
@@ -161,7 +164,7 @@ void TIMER1_IRQHandler(void)
 	// case None defined within the StepperMotor_Step* functions when adminstration is done
 	switch(Control_GlobalStatus)
 	{
-		case Basal_Status: 
+		case Basal_Status:
 			StepperMotor_CurrentBasalDose++; // Keep track of current dosing
 			StepperMotor_StepForward();
 			break;
@@ -178,7 +181,6 @@ void TIMER1_IRQHandler(void)
 			Control_LEDClear(); // Clear out LEDs
 			break;
 		case Wait_Status:
-			BasalDose_TimingDisable();
 			break;
 	}
 	LPC_TIM1->IR |= 1 << 0; // Clear out Timer1 registers
