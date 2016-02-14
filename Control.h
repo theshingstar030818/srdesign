@@ -17,6 +17,19 @@
 #define SYRINGE_LENGTH 5000
 #define BASAL_STEPS 250
 #define BOLUS_STEPS 1000
+#define WARNING_20 80
+#define WARNING_10 90
+#define WARNING_05 95
+#define SPEAKER_LOOP_20 10000
+#define SPEKAER_LOOP_10 15000
+#define SPEKAER_LOOP_05 20000
+#define SPEAKER_FREQ_20 1000
+#define SPEAKER_FREQ_10 1500
+#define SPEAKER_FREQ_05 2000
+#define SPEAKER_EMPTY_LOOP 30000
+#define SPEAKER_EMPTY_FREQ 2500
+#define SPEAKER_FULL_LOOP 17500
+#define SPEAKER_FULL_FREQ 1750
 
 // Create state machine enum
 typedef enum {None_Status, Basal_Status, Bolus_Status, Backward_Status, Wait_Status} STATUS;

@@ -7,6 +7,7 @@
 
 #include "Control.h"
 #include ".\LCD\LCD.h"
+#include ".\Speaker\Speaker.h"
 #include ".\BasalDose\BasalDose.h"
 #include ".\BolusDose\BolusDose.h"
 #include ".\InsulinQueue\InsulinQueue.h"
@@ -23,6 +24,10 @@ STATUS Control_GlobalStatus;
 STATE Control_GlobalState;
 REMAINING Control_GlobalRemaining;
 
+bool Control_Warning_20;
+bool Control_Warning_10;
+bool Control_Warning_05;
+
 uint32_t Control_JoystickState;
 
 int main(void)
@@ -38,6 +43,11 @@ int main(void)
 	
 	// Set default remaining to None
 	Control_GlobalRemaining = None_Remaining;
+	
+	// Set bools to false
+	Control_Warning_20 = false;
+	Control_Warning_10 = false;
+	Control_Warning_05 = false;
 	
 	// Initialize Clock for Timers
 	Control_ClockInitiate();
@@ -63,6 +73,9 @@ int main(void)
 	// Initialize External Interrupt 3
 	BolusDose_DoseInitiate();
 	
+	// Initialize Speaker
+	Speaker_Initiate();
+	
 	LPC_TIM0->TCR |= 1 << 0; // Start Counting Timer0
 	
 	while(1)
@@ -84,6 +97,7 @@ int main(void)
 				break;
 			case Empty_State:
         BasalDose_TimingDisable();
+				Speaker_Play(SPEAKER_EMPTY_LOOP, SPEAKER_EMPTY_FREQ);
 				LPC_GPIO2->FIOSET |= 1 << 2; // Signal that syringe is empty P2.2
 				do {
 					Control_JoystickState = Joystick_GetState(); 
@@ -95,11 +109,15 @@ int main(void)
 				break;
 			case Full_State:
         BasalDose_TimingDisable();
+				Speaker_Play(SPEAKER_FULL_LOOP, SPEAKER_FULL_FREQ);
 				LPC_GPIO2->FIOSET |= 1 << 3; // Signal that syringe can be replaced P2.3
 				do {
 					Control_JoystickState = Joystick_GetState();
 				} while((Control_JoystickState & 0x00000010) != 0x00000010);
 				Control_LEDClearAll();
+				Control_Warning_20 = false;
+				Control_Warning_10 = false;
+				Control_Warning_05 = false;
 				switch(Control_GlobalRemaining)
 				{
 					case None_Remaining:

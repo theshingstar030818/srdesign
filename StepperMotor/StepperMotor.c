@@ -7,12 +7,17 @@
 
 #include "..\Control.h"
 #include "StepperMotor.h"
+#include "..\Speaker\Speaker.h"
 #include "..\BasalDose\BasalDose.h"
 
 extern STATE Control_GlobalState;
 extern STATUS Control_GlobalStatus;
 
 extern uint32_t InsulinQueue_CurrentEntryCount;
+
+extern bool Control_Warning_20;
+extern bool Control_Warning_10;
+extern bool Control_Warning_05;
 
 uint32_t StepperMotor_GlobalPosition;
 uint32_t StepperMotor_CurrentPosition;
@@ -72,17 +77,32 @@ void StepperMotor_StepForward(void)
 	StepperMotor_GlobalPosition++;
 	InsulinQueue_CurrentEntryCount++;
 	
-	if((1 - (StepperMotor_GlobalPosition / (SYRINGE_LENGTH + 0.0))) * 100 <= 5.02)
+	if(100*StepperMotor_GlobalPosition/SYRINGE_LENGTH >= WARNING_05)
 	{
 		LPC_GPIO2->FIOSET |= 1 << 6;
+		if(!Control_Warning_05)
+		{
+			Speaker_Play(SPEKAER_LOOP_05, SPEAKER_FREQ_05);
+			Control_Warning_05 = true;
+		}
 	}
-	else if((1 - (StepperMotor_GlobalPosition / (SYRINGE_LENGTH + 0.0))) * 100 <= 10)
+	else if(100*StepperMotor_GlobalPosition/SYRINGE_LENGTH >= WARNING_10)
 	{
 		LPC_GPIO2->FIOSET |= 1 << 5;
+		if(!Control_Warning_10)
+		{
+			Speaker_Play(SPEKAER_LOOP_10, SPEAKER_FREQ_10);
+			Control_Warning_10 = true;
+		}
 	}
-	else if((1 - (StepperMotor_GlobalPosition / (SYRINGE_LENGTH + 0.0))) * 100 <= 20)
+	else if(100*StepperMotor_GlobalPosition/SYRINGE_LENGTH >= WARNING_20)
 	{
 		LPC_GPIO2->FIOSET |= 1 << 4;
+		if(!Control_Warning_20)
+		{
+			Speaker_Play(SPEAKER_LOOP_20, SPEAKER_FREQ_20);
+			Control_Warning_20 = true;
+		}
 	}
 	
 	if(StepperMotor_GlobalPosition == SYRINGE_LENGTH)
