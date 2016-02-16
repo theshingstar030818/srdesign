@@ -77,32 +77,20 @@ void StepperMotor_StepForward(void)
 	StepperMotor_GlobalPosition++;
 	InsulinQueue_CurrentEntryCount++;
 	
-	if(100*StepperMotor_GlobalPosition/SYRINGE_LENGTH >= WARNING_05)
+	if(StepperMotor_GlobalPosition == WARNING_05)
 	{
 		LPC_GPIO2->FIOSET |= 1 << 6;
-		if(!Control_Warning_05)
-		{
-			Speaker_Play(SPEKAER_LOOP_05, SPEAKER_FREQ_05);
-			Control_Warning_05 = true;
-		}
+		Speaker_Play(SPEKAER_LOOP_05, SPEAKER_FREQ_05);
 	}
-	else if(100*StepperMotor_GlobalPosition/SYRINGE_LENGTH >= WARNING_10)
+	else if(StepperMotor_GlobalPosition == WARNING_10)
 	{
 		LPC_GPIO2->FIOSET |= 1 << 5;
-		if(!Control_Warning_10)
-		{
-			Speaker_Play(SPEKAER_LOOP_10, SPEAKER_FREQ_10);
-			Control_Warning_10 = true;
-		}
+		Speaker_Play(SPEKAER_LOOP_10, SPEAKER_FREQ_10);
 	}
-	else if(100*StepperMotor_GlobalPosition/SYRINGE_LENGTH >= WARNING_20)
+	else if(StepperMotor_GlobalPosition == WARNING_20)
 	{
 		LPC_GPIO2->FIOSET |= 1 << 4;
-		if(!Control_Warning_20)
-		{
-			Speaker_Play(SPEAKER_LOOP_20, SPEAKER_FREQ_20);
-			Control_Warning_20 = true;
-		}
+		Speaker_Play(SPEAKER_LOOP_20, SPEAKER_FREQ_20);
 	}
 	
 	if(StepperMotor_GlobalPosition == SYRINGE_LENGTH)
