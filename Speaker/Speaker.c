@@ -6,29 +6,45 @@
  */
 
 #include ".\Speaker.h"
-#include "..\Control.h"
 
 void Speaker_Initiate(void)
 {
 	// Initialize pin P0.26 to output
 	LPC_GPIO0->FIODIR |= 1 << 26;
+	
+	LPC_TIM3->PR = 1 << 2;
+	LPC_TIM3->MR0 = Low_Freq;
+	LPC_TIM3->MCR |= 3 << 0;
+	
+	NVIC_EnableIRQ(TIMER3_IRQn);
 }
 
-void Speaker_Play(int loops, int frequency)
+void Speaker_ChangeFrequency(FREQ frequency)
 {
-	// Turn the speaker on and off no. of times specified
-	while(loops >= 0)
-	{
-		LPC_GPIO0->FIOSET |= 1 << 26; // Set P0.26
-		Speaker_Wait(frequency);
-		LPC_GPIO0->FIOCLR |= 1 << 26; // Clear P0.26
-		Speaker_Wait(frequency);
-		loops--; // Decrement
-	}
+	LPC_TIM3->MR0 = frequency;
 }
 
-void Speaker_Wait(int frequency) // This could possibly be moved straight into control and used as a universal wait
-{												// instead of a class specific wait loop, with parameters that define the number of loops
-	int i;
-	for(i = 0; i < frequency; i++);
+void Speaker_Play(void)
+{
+	LPC_TIM3->TCR |= 1 << 0;
+}
+
+void Speaker_Stop(void)
+{
+	LPC_TIM3->TCR &=~(1 << 0);
+	LPC_TIM3->TCR |= 1 << 1;
+	LPC_TIM3->TCR &=~(1 << 1);
+	LPC_TIM3->IR |= 1 << 1;
+}
+
+void TIMER3_IRQHandler(void)
+{
+	uint32_t before, after;
+	before = LPC_GPIO0->FIOPIN;
+	if((LPC_GPIO0->FIOPIN & 0x04000000) == 0x04000000)
+		LPC_GPIO0->FIOCLR |= 1 << 26;
+	else
+		LPC_GPIO0->FIOSET |= 1 << 26;
+	after = LPC_GPIO0->FIOPIN;
+
 }

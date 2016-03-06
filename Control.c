@@ -7,8 +7,10 @@
 
 #include "Control.h"
 #include ".\LCD\LCD.h"
+#include ".\Speaker\Speaker.h"
 #include ".\BasalDose\BasalDose.h"
 #include ".\BolusDose\BolusDose.h"
+#include ".\Glucometer\Glucometer.h"
 #include ".\InsulinQueue\InsulinQueue.h"
 #include ".\StepperMotor\StepperMotor.h"
 
@@ -49,8 +51,16 @@ int main(void)
 	// Built in Joystick initialization
 	Joystick_Initialize();
 	
+	// Initialize ADC for glucometer
+	Glucometer_Initiate();
+	
 	// Initialize LEDs for indication of current dosage
 	Control_LEDInitiate();
+	
+	// Initialize Speaker
+	Speaker_Initiate();
+	Speaker_Play();
+	while(1);
 	
 	// Initialize Timers 0, 1
 	BasalDose_TimingInitiate();
@@ -75,6 +85,11 @@ int main(void)
 		switch(Control_GlobalState)
 		{
 			case None_State:
+				for(i = 0; i < 150000; i++)
+				{
+					for(j = 0; j < 50; j++);
+				}
+				break;
 			case Administration_State:
 				// Wait for a short period of time before updating
 				for(i = 0; i < 150000; i++)
@@ -146,15 +161,17 @@ void Control_LEDClear(void)
 
 void Control_ClockInitiate(void)
 {
-	// Power up Timer0, Timer1, and Timer2
+	// Power up Timer0, Timer1, Timer2, and Timer3
 	LPC_SC->PCONP |= 1 << 1; 
 	LPC_SC->PCONP |= 1 << 2;
 	LPC_SC->PCONP |= 1 << 22;
+	LPC_SC->PCONP |= 1 << 23;
 	
 	// Clock select Timer0, Timer1, and Timer2 (PCLK = CCLK)
 	LPC_SC->PCLKSEL0 |= 1 << 2;
 	LPC_SC->PCLKSEL0 |= 1 << 4;
 	LPC_SC->PCLKSEL1 |= 1 << 12;
+	LPC_SC->PCLKSEL1 |= 1 << 14;
 }
 
 void Control_DosageReset(void)

@@ -23,4 +23,6 @@ void Glucometer_Initiate(void);
  *  @return void: void
  */
  
-void Glucometer_GetValue(void);
+uint32_t Glucometer_GetADCReading(void);
+
+uint32_t Glucometer_GetADCResolution(void);

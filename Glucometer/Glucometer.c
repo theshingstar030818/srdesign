@@ -12,7 +12,13 @@ void Glucometer_Initiate(void)
 	ADC_Initialize();
 }
 
-void Glucometer_GetValue(void)
+uint32_t Glucometer_GetADCReading(void)
 {
-	
+	return ADC_GetValue();
 }
+
+uint32_t Glucometer_GetADCResolution(void)
+{
+	return ADC_GetResolution();
+}
+
