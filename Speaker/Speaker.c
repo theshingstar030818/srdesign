@@ -13,7 +13,7 @@ void Speaker_Initiate(void)
 	LPC_GPIO0->FIODIR |= 1 << 26;
 	
 	LPC_TIM3->PR = 1 << 2;
-	LPC_TIM3->MR0 = Low_Freq;
+	LPC_TIM3->MR0 = Hz_500;
 	LPC_TIM3->MCR |= 3 << 0;
 	
 	NVIC_EnableIRQ(TIMER3_IRQn);
