@@ -22,7 +22,7 @@
 typedef enum {None_Status, Basal_Status, Bolus_Status, Backward_Status, Wait_Status} STATUS;
 typedef enum {None_State, Administration_State, Empty_State, Full_State} STATE;
 typedef enum {None_Remaining, Basal_Remaining, Bolus_Remaining} REMAINING;
-typedef enum {Low_Freq = 3545454, Med_Freq = 5000, High_Freq = 1000} FREQ;
+typedef enum {Low_Freq = 22727, Med_Freq = 10000, High_Freq = 5000} FREQ; // Low = 440 Hz, Med = 1 kHz, High = 2 kHz
 
 /** Function Control_LEDInitiate()
  *

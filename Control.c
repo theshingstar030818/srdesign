@@ -59,6 +59,7 @@ int main(void)
 	
 	// Initialize Speaker
 	Speaker_Initiate();
+	Speaker_ChangeFrequency(High_Freq);
 	Speaker_Play();
 	while(1);
 	

@@ -39,12 +39,10 @@ void Speaker_Stop(void)
 
 void TIMER3_IRQHandler(void)
 {
-	uint32_t before, after;
-	before = LPC_GPIO0->FIOPIN;
+	LPC_TIM3->IR |= 1 << 0;
 	if((LPC_GPIO0->FIOPIN & 0x04000000) == 0x04000000)
 		LPC_GPIO0->FIOCLR |= 1 << 26;
 	else
 		LPC_GPIO0->FIOSET |= 1 << 26;
-	after = LPC_GPIO0->FIOPIN;
 
 }
