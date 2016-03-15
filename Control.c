@@ -74,8 +74,11 @@ int main(void)
 	// Initialize External Interrupt 3
 	BolusDose_DoseInitiate();
 	
-	LPC_TIM0->TCR |= 1 << 0; // Start Counting Timer0
+	// Initialize Speaker
+	Speaker_Initiate();
 	
+	LPC_TIM0->TCR |= 1 << 0; // Start Counting Timer0
+
 	while(1)
 	{
 		// Clear out the screen, and update
@@ -106,7 +109,7 @@ int main(void)
 				} while((Control_JoystickState & 0x00000008) != 0x00000008);
 				Control_GlobalStatus = Backward_Status;
 				Control_GlobalState = Administration_State;
-				Control_LEDClear();
+				Control_LEDClearAdmin();
 				StepperMotor_SpinEnable();
 				break;
 			case Full_State:
@@ -115,7 +118,7 @@ int main(void)
 				do {
 					Control_JoystickState = Joystick_GetState();
 				} while((Control_JoystickState & 0x00000010) != 0x00000010);
-				Control_LEDClear();
+				Control_LEDClearAll();
 				switch(Control_GlobalRemaining)
 				{
 					case None_Remaining:
@@ -147,7 +150,7 @@ void Control_LEDInitiate(void)
 	LPC_GPIO2->FIOPIN &=~(0x0000007C);
 }
 
-void Control_LEDClear(void)
+void Control_LEDClearAdmin(void)
 {
 	// Clear out LEDs used for Basal, Bolus, and Backward
 	LPC_GPIO1->FIOCLR |= 1 << 28; 
@@ -155,9 +158,14 @@ void Control_LEDClear(void)
 	LPC_GPIO1->FIOCLR |= 1 << 31;
 	LPC_GPIO2->FIOCLR |= 1 << 2;
 	LPC_GPIO2->FIOCLR |= 1 << 3;
-  //LPC_GPIO2->FIOCLR |= 1 << 4;
-  //LPC_GPIO2->FIOCLR |= 1 << 5;
-	//LPC_GPIO2->FIOCLR |= 1 << 6;
+}
+
+void Control_LEDClearAll(void)
+{
+	Control_LEDClearAdmin();
+  LPC_GPIO2->FIOCLR |= 1 << 4;
+  LPC_GPIO2->FIOCLR |= 1 << 5;
+	LPC_GPIO2->FIOCLR |= 1 << 6;
 }
 
 void Control_ClockInitiate(void)

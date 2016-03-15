@@ -112,5 +112,4 @@ void LCD_UpdateScreenInsulin(void)
 			GLCD_DrawString((10 + (row * 30)), 150 + (column * 10), LCD_InsulinQueueEntry);
 		}
 	}
-	
 }

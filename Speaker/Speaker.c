@@ -46,3 +46,4 @@ void TIMER3_IRQHandler(void)
 		LPC_GPIO0->FIOSET |= 1 << 26;
 
 }
+

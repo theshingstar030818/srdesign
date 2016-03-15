@@ -7,12 +7,17 @@
 
 #include "..\Control.h"
 #include "StepperMotor.h"
+#include "..\Speaker\Speaker.h"
 #include "..\BasalDose\BasalDose.h"
 
 extern STATE Control_GlobalState;
 extern STATUS Control_GlobalStatus;
 
 extern uint32_t InsulinQueue_CurrentEntryCount;
+
+extern bool Control_Warning_20;
+extern bool Control_Warning_10;
+extern bool Control_Warning_05;
 
 uint32_t StepperMotor_GlobalPosition;
 uint32_t StepperMotor_CurrentPosition;
@@ -72,16 +77,29 @@ void StepperMotor_StepForward(void)
 	StepperMotor_GlobalPosition++;
 	InsulinQueue_CurrentEntryCount++;
 	
+	if(StepperMotor_GlobalPosition == WARNING_05)
+	{
+		LPC_GPIO2->FIOSET |= 1 << 6;
+	}
+	else if(StepperMotor_GlobalPosition == WARNING_10)
+	{
+		LPC_GPIO2->FIOSET |= 1 << 5;
+	}
+	else if(StepperMotor_GlobalPosition == WARNING_20)
+	{
+		LPC_GPIO2->FIOSET |= 1 << 4;
+	}
+	
 	if(StepperMotor_GlobalPosition == SYRINGE_LENGTH)
 	{
-    Control_LEDClear();
+    Control_LEDClearAdmin();
 		Control_GlobalStatus = Wait_Status;
 		Control_GlobalState = Empty_State;
 	}
 	// Check to see if Basal or Bolus has completed.
 	else if((StepperMotor_CurrentBasalDose >= BASAL_STEPS) || (StepperMotor_CurrentBolusDose >= BOLUS_STEPS))
 	{
-    Control_LEDClear();
+    Control_LEDClearAdmin();
 		Control_DosageReset();
     BasalDose_TimingEnable();
 	}
@@ -129,7 +147,7 @@ void StepperMotor_StepBackward(void)
 	// Check to see if syringe is back to original spot
 	if(StepperMotor_GlobalPosition <= 0)
 	{
-		Control_LEDClear();
+		Control_LEDClearAdmin();
 		StepperMotor_GlobalPosition = 0;
 		Control_GlobalStatus = Wait_Status;
 		Control_GlobalState = Full_State;
@@ -178,7 +196,7 @@ void TIMER1_IRQHandler(void)
 			break;
 		case None_Status:
 			BasalDose_TimingEnable(); // Re-Enable Timer0
-			Control_LEDClear(); // Clear out LEDs
+			Control_LEDClearAdmin(); // Clear out LEDs
 			break;
 		case Wait_Status:
 			break;

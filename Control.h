@@ -17,6 +17,9 @@
 #define SYRINGE_LENGTH 3750
 #define BASAL_STEPS 250
 #define BOLUS_STEPS 1000
+#define WARNING_20 (SYRINGE_LENGTH * .8)
+#define WARNING_10 (SYRINGE_LENGTH * .9)
+#define WARNING_05 (SYRINGE_LENGTH * .95)
 
 // Create state machine enum
 typedef enum {None_Status, Basal_Status, Bolus_Status, Backward_Status, Wait_Status} STATUS;
@@ -36,7 +39,18 @@ typedef enum {Hz_250 = 40000, Hz_440 = 22727, Hz_500 = 20000, kHz_1 = 10000, kHz
 
 void Control_LEDInitiate(void);
 
-/** Function Control_LEDClear()
+/** Function Control_LEDClearAdmin()
+ *
+ *	Clear out LEDs P1.28, P1.29, P1.31, P2.2, P2.3
+ *	used as Basal, Bolus, and Backward indicators
+ *
+ *  @param void: void 
+ *  @return void: void
+ */
+ 
+void Control_LEDClearAdmin(void);
+
+/** Function Control_LEDClearAll()
  *
  *	Clear out LEDs P1.28, P1.29, P1.31, P2.2, P2.3, P2.4, P2.5, P2.6
  *	used as Basal, Bolus, and Backward indicators
@@ -45,7 +59,7 @@ void Control_LEDInitiate(void);
  *  @return void: void
  */
  
-void Control_LEDClear(void);
+void Control_LEDClearAll(void);
 
 /** Function Control_ClockInitiate()
  *

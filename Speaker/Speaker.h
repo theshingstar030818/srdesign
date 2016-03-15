@@ -14,6 +14,7 @@
  *
  *  Function is called in the main loop to initialize the Speaker pin
  *  Set pins P0.26 as output
+ *	Initiates Timer3 but not enable
  *
  *  @param void: void
  *  @return void: void
@@ -37,6 +38,36 @@ void Speaker_ChangeFrequency(FREQ frequency);
 void Speaker_Play(void);
 void Speaker_Stop(void);
 
+
+/** Function: Speaker_Enable()
+ *  
+ *  Function is used to enable Timer3 counter.
+ *  
+ *  @param void: void
+ *  @return void: void
+ */
+
+void Speaker_Enable(void);
+
+/** Function: Speaker_Disable()
+ *  
+ *  Function is used to disable and reset Timer3.
+ *  
+ *  @param void: void
+ *  @return void: void
+ */
+ 
+void Speaker_Disable(void);
+
+/** Function: TIMER3_IRQHandler()
+ *  
+ *  Sets the timing for the speaker.
+ *  
+ *  @param void: void
+ *  @return void: void
+ */
+
+void TIMER3_IRQHandler(void);
 
 #endif /* SPEAKER_SPEAKER_H_ */
 
