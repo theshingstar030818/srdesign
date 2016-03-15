@@ -51,20 +51,6 @@ int main(void)
 	LCD_Initiate();
 	StepperMotor_Initiate();
 	
-	Control_BaseDisplay = Control_CreateBaseDisplay("Age Group", "Child", "Adolescent", "Adult", "Elderly");
-	pControl_BaseDisplay = &Control_BaseDisplay;
-	LCD_Options(Control_BaseDisplay);
-	GLCD_ClearScreen();
-	
-	Control_UpdateBaseDisplay(pControl_BaseDisplay, "Activity Level", "", "Moderately Active", "Very Active", "Mostly Inactive");
-	LCD_Options(Control_BaseDisplay);
-	GLCD_ClearScreen();
-	
-	Control_UpdateBaseDisplay(pControl_BaseDisplay, "Bolus Amount", "1 Unit", "2 Units", "4 Units", "8 Units");
-	LCD_Options(Control_BaseDisplay);
-	
-	while(1);
-	
 	// Built in Joystick initialization
 	Joystick_Initialize();
 	
@@ -92,6 +78,19 @@ int main(void)
 	
 	// Initialize Speaker
 	Speaker_Initiate();
+	
+	Control_BaseDisplay = Control_CreateBaseDisplay("Age Group", "Child", "Adolescent", "Adult", "Elderly");
+	pControl_BaseDisplay = &Control_BaseDisplay;
+	LCD_Options(Control_BaseDisplay);
+	
+	GLCD_ClearScreen();
+	
+	Control_UpdateBaseDisplay(pControl_BaseDisplay, "Activity Level", "", "Moderately Active", "Very Active", "Mostly Inactive");
+	LCD_Options(Control_BaseDisplay);
+	GLCD_ClearScreen();
+	
+	Control_UpdateBaseDisplay(pControl_BaseDisplay, "Bolus Amount", "1 Unit", "2 Units", "4 Units", "8 Units");
+	LCD_Options(Control_BaseDisplay);
 	
 	LPC_TIM0->TCR |= 1 << 0; // Start Counting Timer0
 
@@ -219,10 +218,10 @@ BaseDisplay Control_CreateBaseDisplay(char *cat, char *opt1, char *opt2,
 	strcpy(temp.ProfileOption3, opt3);
 	strcpy(temp.ProfileOption4, opt4);
 	
-	temp.Size1 = sizeof(opt1);
-	temp.Size2 = sizeof(opt2);
-	temp.Size3 = sizeof(opt3);
-	temp.Size4 = sizeof(opt4);
+	temp.Size1 = strlen(opt1);
+	temp.Size2 = strlen(opt2);
+	temp.Size3 = strlen(opt3);
+	temp.Size4 = strlen(opt4);
 	
 	return temp;
 }
@@ -242,10 +241,10 @@ BaseDisplay* Control_UpdateBaseDisplay(BaseDisplay *temp, char *cat, char *opt1,
 	strcpy(temp->ProfileOption3, opt3);
 	strcpy(temp->ProfileOption4, opt4);
 	
-	temp->Size1 = sizeof(opt1);
-	temp->Size2 = sizeof(opt2);
-	temp->Size3 = sizeof(opt3);
-	temp->Size4 = sizeof(opt4);
+	temp->Size1 = strlen(opt1);
+	temp->Size2 = strlen(opt2);
+	temp->Size3 = strlen(opt3);
+	temp->Size4 = strlen(opt4);
 	
 	return temp;
 }
