@@ -5,6 +5,8 @@
  *      Author: sle
  */
 
+#include "../Control.h"
+
 #ifndef SPEAKER_SPEAKER_H_
 #define SPEAKER_SPEAKER_H_
 
@@ -19,6 +21,9 @@
 
 void Speaker_Initiate(void);
 
+
+void Speaker_ChangeFrequency(FREQ frequency);
+
 /** Speaker_Play()
  *
  *  Function is called to activate the Speaker
@@ -29,17 +34,9 @@ void Speaker_Initiate(void);
  *  @return void: void
  */
 
-void Speaker_Play(int loops, int frequency);
+void Speaker_Play(void);
+void Speaker_Stop(void);
 
-/** Speaker_Wait()
- *
- *  Function is called to wait between oscillations
- *
- *  @param int: frequency - time in between oscillations
- *  @return void: void
- */
-
-void Speaker_Wait(int frequency);
 
 #endif /* SPEAKER_SPEAKER_H_ */
 

@@ -139,7 +139,7 @@ void StepperMotor_StepBackward(void)
 void StepperMotor_SpinInitiate(void)
 {
 	LPC_TIM1->PR = 0x02; // Pre-scalar
-	LPC_TIM1->MR0 = 1 << 20; // Match number
+	LPC_TIM1->MR0 = 1 << 18; // Match number
 	LPC_TIM1->MCR |= 3 << 0; // Interrupt and reset timer on match (MCR = 011)
 	NVIC_EnableIRQ(TIMER1_IRQn);
 }
