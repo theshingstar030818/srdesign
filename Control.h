@@ -26,6 +26,33 @@ typedef enum {None_Status, Basal_Status, Bolus_Status, Backward_Status, Wait_Sta
 typedef enum {None_State, Administration_State, Empty_State, Full_State} STATE;
 typedef enum {None_Remaining, Basal_Remaining, Bolus_Remaining} REMAINING;
 typedef enum {Hz_250 = 40000, Hz_440 = 22727, Hz_500 = 20000, kHz_1 = 10000, kHz_2 = 5000, kHz_4 = 2500} FREQ;
+typedef enum {Child, Adolescent, Adult, Elderly} AGE;
+typedef enum {Inactive, Moderate, Active} ACTIVITY;
+
+// Structure for LCD base display
+typedef struct
+{
+	char ProfileCategory[25];
+	char ProfileOption1[25];
+	char ProfileOption2[25];
+	char ProfileOption3[25];
+	char ProfileOption4[25];
+	int Size1, Size2, Size3, Size4;
+}BaseDisplay;
+
+typedef struct
+{
+	int BasOpt1, BasOpt2, BasOpt3, BasOpt4;
+}BasalRate;
+
+typedef struct
+{
+	AGE Age;
+	ACTIVITY Activity;
+	BasalRate Basal;
+	
+	uint32_t BasalSteps;
+}ProfileOptions;
 
 /** Function Control_LEDInitiate()
  *
@@ -81,5 +108,11 @@ void Control_ClockInitiate(void);
  */
  
 void Control_DosageReset(void);
+
+BaseDisplay Control_CreateBaseDisplay(char *cat, char *opt1, char *opt2,
+																			char *opt3, char *opt4);
+
+BaseDisplay* Control_UpdateBaseDisplay(BaseDisplay *temp, char *cat, char *opt1, 
+																			char *opt2, char *opt3, char *opt4);
 
 #endif /* CONTROL_CONTROL_H_ */

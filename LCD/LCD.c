@@ -115,26 +115,22 @@ void LCD_UpdateScreenInsulin(void)
 	}
 }
 
-
-
-void LCD_AgeGroup(void)
+void LCD_Options(BaseDisplay current)
 {
-	int temp;
 	LCD_SetUpCommon();
 	
 	GLCD_SetFont(&GLCD_Font_6x8);
-	GLCD_DrawString(186, 30, "Age Group\0");
+	GLCD_DrawString(186, 30, current.ProfileCategory);
 	
-	temp = sizeof("Child\0");
-	GLCD_DrawString(140-(temp*6), 121, "Child\0");
+	GLCD_DrawString(140-((current.Size1 + 3)*6), 121, current.ProfileOption1);
 	
-	GLCD_DrawString(204, 121, "Adolescent\0");
+	GLCD_DrawString(204, 121, current.ProfileOption2);
 	
-	temp = sizeof("Adult\0") / 2;
-	GLCD_DrawString(160 - ((temp-2)*6), 85, "Adult\0");
+	GLCD_DrawString(160 - ((current.Size3 / 2) * 6), 85, current.ProfileOption3);
 	
-	temp = sizeof("Elderly\0") / 2;
-	GLCD_DrawString(160 - ((temp-2)*6), 160, "Elderly\0");
+	GLCD_DrawString(160 - ((current.Size4 / 2) * 6), 160, current.ProfileOption4);
+	
+	GLCD_DrawString(90, 185, "Push Down: Glucose Reading\0");
 	
 }
 

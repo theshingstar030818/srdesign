@@ -5,6 +5,7 @@
  *      Author: sle
  */
 
+#include <string.h>
 #include "Control.h"
 #include ".\LCD\LCD.h"
 #include ".\Speaker\Speaker.h"
@@ -30,6 +31,8 @@ uint32_t Control_JoystickState;
 int main(void)
 {
 	uint32_t i, j;
+	BaseDisplay Control_BaseDisplay;
+	BaseDisplay* pControl_BaseDisplay;
 	SystemInit();
 	
 	// Set default status to None
@@ -48,7 +51,18 @@ int main(void)
 	LCD_Initiate();
 	StepperMotor_Initiate();
 	
-	LCD_AgeGroup();
+	Control_BaseDisplay = Control_CreateBaseDisplay("Age Group", "Child", "Adolescent", "Adult", "Elderly");
+	pControl_BaseDisplay = &Control_BaseDisplay;
+	LCD_Options(Control_BaseDisplay);
+	GLCD_ClearScreen();
+	
+	Control_UpdateBaseDisplay(pControl_BaseDisplay, "Activity Level", "", "Moderately Active", "Very Active", "Mostly Inactive");
+	LCD_Options(Control_BaseDisplay);
+	GLCD_ClearScreen();
+	
+	Control_UpdateBaseDisplay(pControl_BaseDisplay, "Bolus Amount", "1 Unit", "2 Units", "4 Units", "8 Units");
+	LCD_Options(Control_BaseDisplay);
+	
 	while(1);
 	
 	// Built in Joystick initialization
@@ -62,7 +76,7 @@ int main(void)
 	
 	// Initialize Speaker
 	Speaker_Initiate();
-	Speaker_ChangeFrequency(Hz_250);
+	Speaker_SetFrequency(Hz_250);
 	//Speaker_Play();
 	
 	// Initialize Timers 0, 1
@@ -110,6 +124,7 @@ int main(void)
 				do {
 					Control_JoystickState = Joystick_GetState(); 
 				} while((Control_JoystickState & 0x00000008) != 0x00000008);
+				Speaker_Stop();
 				Control_GlobalStatus = Backward_Status;
 				Control_GlobalState = Administration_State;
 				Control_LEDClearAdmin();
@@ -192,4 +207,45 @@ void Control_DosageReset(void)
 	Control_GlobalState = None_State;
 	StepperMotor_CurrentBasalDose = 0;
 	StepperMotor_CurrentBolusDose = 0;
+}
+
+BaseDisplay Control_CreateBaseDisplay(char *cat, char *opt1, char *opt2,
+																			char *opt3, char *opt4)
+{
+	BaseDisplay temp;
+	strcpy(temp.ProfileCategory, cat);
+	strcpy(temp.ProfileOption1, opt1);
+	strcpy(temp.ProfileOption2, opt2);
+	strcpy(temp.ProfileOption3, opt3);
+	strcpy(temp.ProfileOption4, opt4);
+	
+	temp.Size1 = sizeof(opt1);
+	temp.Size2 = sizeof(opt2);
+	temp.Size3 = sizeof(opt3);
+	temp.Size4 = sizeof(opt4);
+	
+	return temp;
+}
+
+BaseDisplay* Control_UpdateBaseDisplay(BaseDisplay *temp, char *cat, char *opt1, 
+																			char *opt2, char *opt3, char *opt4)
+{
+	memset(temp->ProfileCategory, 0, 25);
+	memset(temp->ProfileOption1, 0, 25);
+	memset(temp->ProfileOption2, 0, 25);
+	memset(temp->ProfileOption3, 0, 25);
+	memset(temp->ProfileOption4, 0, 25);
+	
+	strcpy(temp->ProfileCategory, cat);
+	strcpy(temp->ProfileOption1, opt1);
+	strcpy(temp->ProfileOption2, opt2);
+	strcpy(temp->ProfileOption3, opt3);
+	strcpy(temp->ProfileOption4, opt4);
+	
+	temp->Size1 = sizeof(opt1);
+	temp->Size2 = sizeof(opt2);
+	temp->Size3 = sizeof(opt3);
+	temp->Size4 = sizeof(opt4);
+	
+	return temp;
 }

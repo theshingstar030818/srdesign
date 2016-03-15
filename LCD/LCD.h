@@ -8,6 +8,8 @@
 #ifndef LCD_LCD_H_
 #define LCD_LCD_H_
 
+#include "..\Control.h"
+
 /** Function LCD_Initiate()
  *
  *  Initializes LCD screen with Font Size, Background, and
@@ -59,6 +61,6 @@ void LCD_UpdateScreenInsulin(void);
  
  void LCD_SetUpCommon(void);
  
- void LCD_AgeGroup(void);
+ void LCD_Options(BaseDisplay current);
 
 #endif /* LCD_LCD_H_ */
