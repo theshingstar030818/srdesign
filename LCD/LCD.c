@@ -5,9 +5,9 @@
  *      Author: sle
  */
  
-#include <stdint.h>
 #include <stdio.h>
 #include ".\LCD.h"
+#include <stdint.h>
 #include "..\Control.h"
 #include "..\InsulinQueue\InsulinQueue.h"
 #include "..\StepperMotor\StepperMotor.h"
@@ -92,7 +92,7 @@ void LCD_UpdateScreenInsulin(void)
 	
 	// Format GlobalPosition into string to display on LCD
 	GLCD_SetFont(&GLCD_Font_16x24);
-	sprintf(LCD_StringInsulin, "%.2f%% Remaining", (1 - (StepperMotor_GlobalPosition / (SYRINGE_LENGTH + 0.0))) * 100);
+	sprintf(LCD_StringInsulin, "%d%% Remaining", 100 - ((StepperMotor_GlobalPosition * 100) / SYRINGE_LENGTH));
 	GLCD_DrawString(20, 40, LCD_StringInsulin);
 	
 	// Display current insulin queue on LCD
