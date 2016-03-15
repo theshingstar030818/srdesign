@@ -39,16 +39,6 @@ void BasalDose_TimingEnable(void);
  
 void BasalDose_TimingDisable(void);
 
-/** Function: BasalDose_TimingReset()
- *  
- *  Resets all pending Timer0 interrupts and clears out counters.
- *  
- *  @param void: void
- *  @return void: void
- */
- 
-void BasalDose_TimingReset(void);
-
 /** Function: TIMER0_IRQHandler()
  *  
  *  Sets the GlobalStatus depending on how much is left in the syringe.

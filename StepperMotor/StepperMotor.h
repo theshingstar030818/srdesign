@@ -75,15 +75,6 @@ void StepperMotor_SpinEnable(void);
 
 void StepperMotor_SpinDisable(void);
 
-/** Function: StepperMotor_SpinReset()
- *  
- *  Function is used to disable and reset Timer1.
- *  
- *  @param void: void
- *  @return void: void
- */
-
-void StepperMotor_SpinReset(void);
 
 /** Function: TIMER1_IRQHandler()
  *  

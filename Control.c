@@ -61,7 +61,6 @@ int main(void)
 	Speaker_Initiate();
 	Speaker_ChangeFrequency(Hz_250);
 	Speaker_Play();
-	while(1);
 	
 	// Initialize Timers 0, 1
 	BasalDose_TimingInitiate();
@@ -96,6 +95,7 @@ int main(void)
 				break;
 			case Administration_State:
 				// Wait for a short period of time before updating
+				Speaker_Stop();
 				for(i = 0; i < 150000; i++)
 				{
 					for(j = 0; j < 50; j++);
