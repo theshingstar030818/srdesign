@@ -56,5 +56,9 @@ void LCD_UpdateScreenInsulin(void);
  *  @param void: void 
  *  @return void: void
  */
+ 
+ void LCD_SetUpCommon(void);
+ 
+ void LCD_AgeGroup(void);
 
 #endif /* LCD_LCD_H_ */

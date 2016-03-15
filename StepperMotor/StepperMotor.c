@@ -77,15 +77,15 @@ void StepperMotor_StepForward(void)
 	StepperMotor_GlobalPosition++;
 	InsulinQueue_CurrentEntryCount++;
 	
-	if(StepperMotor_GlobalPosition == WARNING_05)
+	if(StepperMotor_GlobalPosition >= WARNING_05)
 	{
 		LPC_GPIO2->FIOSET |= 1 << 6;
 	}
-	else if(StepperMotor_GlobalPosition == WARNING_10)
+	if(StepperMotor_GlobalPosition >= WARNING_10)
 	{
 		LPC_GPIO2->FIOSET |= 1 << 5;
 	}
-	else if(StepperMotor_GlobalPosition == WARNING_20)
+	if(StepperMotor_GlobalPosition >= WARNING_20)
 	{
 		LPC_GPIO2->FIOSET |= 1 << 4;
 	}
