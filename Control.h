@@ -25,8 +25,6 @@
 typedef enum {None_Status, Basal_Status, Bolus_Status, Backward_Status, Wait_Status} STATUS;
 typedef enum {None_State, Administration_State, Empty_State, Full_State} STATE;
 typedef enum {None_Remaining, Basal_Remaining, Bolus_Remaining} REMAINING;
-//typedef enum {Basal_Low = 150, Basal_Medium = 200, Basal_High = 250} BASALSTEPS;
-//typedef enum (Bolus_Low = 800, Bolus_Medium = 900, Bolus_High = 1000} BOLUSSTEPS;
 
 /** Function Control_LEDInitiate()
  *
@@ -40,7 +38,7 @@ typedef enum {None_Remaining, Basal_Remaining, Bolus_Remaining} REMAINING;
 
 void Control_LEDInitiate(void);
 
-/** Function Control_LEDClear()
+/** Function Control_LEDClearAdmin()
  *
  *	Clear out LEDs P1.28, P1.29, P1.31, P2.2, P2.3
  *	used as Basal, Bolus, and Backward indicators
@@ -49,7 +47,7 @@ void Control_LEDInitiate(void);
  *  @return void: void
  */
  
-void Control_LEDClear(void);
+void Control_LEDClearAdmin(void);
 
 /** Function Control_LEDClearAll()
  *

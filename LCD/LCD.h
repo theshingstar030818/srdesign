@@ -49,24 +49,12 @@ void LCD_UpdateScreenState(void);
 
 void LCD_UpdateScreenInsulin(void);
 
-/** Function LCD_Basal()
+/** Function LCD_BasalRate()
  *
  *  Allows user to select Basal profile.
  *
  *  @param void: void 
  *  @return void: void
  */
- 
-void LCD_Basal(void);
-
-/** Function LCD_Bolus()
- *
- *  Allows user to select Bolus profile.
- *
- *  @param void: void 
- *  @return void: void
- */
-
-void LCD_Bolus(void);
 
 #endif /* LCD_LCD_H_ */

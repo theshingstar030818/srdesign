@@ -24,10 +24,6 @@ STATUS Control_GlobalStatus;
 STATE Control_GlobalState;
 REMAINING Control_GlobalRemaining;
 
-bool Control_Warning_20;
-bool Control_Warning_10;
-bool Control_Warning_05;
-
 uint32_t Control_JoystickState;
 
 int main(void)
@@ -44,11 +40,6 @@ int main(void)
 	// Set default remaining to None
 	Control_GlobalRemaining = None_Remaining;
 	
-	// Set bools to false
-	Control_Warning_20 = false;
-	Control_Warning_10 = false;
-	Control_Warning_05 = false;
-	
 	// Initialize Clock for Timers
 	Control_ClockInitiate();
 	
@@ -58,12 +49,6 @@ int main(void)
 	
 	// Built in Joystick initialization
 	Joystick_Initialize();
-	
-	// User select Basal Profile
-	LCD_Basal();
-	do {
-		Control_JoystickState = Joystick_GetState();
-	} while((Control_JoystickState & 0x00000008) != 0x00000008);
 	
 	// Initialize LEDs for indication of current dosage
 	Control_LEDInitiate();
@@ -109,7 +94,7 @@ int main(void)
 				} while((Control_JoystickState & 0x00000008) != 0x00000008);
 				Control_GlobalStatus = Backward_Status;
 				Control_GlobalState = Administration_State;
-				Control_LEDClear();
+				Control_LEDClearAdmin();
 				StepperMotor_SpinEnable();
 				break;
 			case Full_State:
@@ -119,9 +104,6 @@ int main(void)
 					Control_JoystickState = Joystick_GetState();
 				} while((Control_JoystickState & 0x00000010) != 0x00000010);
 				Control_LEDClearAll();
-				Control_Warning_20 = false;
-				Control_Warning_10 = false;
-				Control_Warning_05 = false;
 				switch(Control_GlobalRemaining)
 				{
 					case None_Remaining:
@@ -153,7 +135,7 @@ void Control_LEDInitiate(void)
 	LPC_GPIO2->FIOPIN &=~(0x0000007C);
 }
 
-void Control_LEDClear(void)
+void Control_LEDClearAdmin(void)
 {
 	// Clear out LEDs used for Basal, Bolus, and Backward
 	LPC_GPIO1->FIOCLR |= 1 << 28; 
@@ -165,12 +147,7 @@ void Control_LEDClear(void)
 
 void Control_LEDClearAll(void)
 {
-	// Clear out LEDs for all indicitions 
-	LPC_GPIO1->FIOCLR |= 1 << 28; 
- 	LPC_GPIO1->FIOCLR |= 1 << 29;
-	LPC_GPIO1->FIOCLR |= 1 << 31;
-	LPC_GPIO2->FIOCLR |= 1 << 2;
-	LPC_GPIO2->FIOCLR |= 1 << 3;
+	Control_LEDClearAdmin();
   LPC_GPIO2->FIOCLR |= 1 << 4;
   LPC_GPIO2->FIOCLR |= 1 << 5;
 	LPC_GPIO2->FIOCLR |= 1 << 6;

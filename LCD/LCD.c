@@ -113,19 +113,3 @@ void LCD_UpdateScreenInsulin(void)
 		}
 	}
 }
-
-void LCD_Basal(void)
-{
-	GLCD_SetFont(&GLCD_Font_16x24);
-	GLCD_DrawString(20, 20, "Basal Profile\0");
-	GLCD_DrawString(20, 40, "Use Arrows for\0");
-	GLCD_DrawString(20, 60, "Set Up\0");
-	GLCD_DrawString(20, 80, "Up for Low\0");
-	GLCD_DrawString(20, 105, "Right for Medium\0");
-	GLCD_DrawString(20, 130, "Down for High");
-}
-
-void LCD_Bolus(void)
-{
-	
-}
