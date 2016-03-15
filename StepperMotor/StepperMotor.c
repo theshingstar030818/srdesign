@@ -76,20 +76,23 @@ void StepperMotor_StepForward(void)
 	}
 	StepperMotor_GlobalPosition++;
 	InsulinQueue_CurrentEntryCount++;
-	
+
 	if(StepperMotor_GlobalPosition >= WARNING_05)
 	{
 		LPC_GPIO2->FIOSET |= 1 << 6;
+    Speaker_SetFrequency(Hz_500)
 	}
 	if(StepperMotor_GlobalPosition >= WARNING_10)
 	{
 		LPC_GPIO2->FIOSET |= 1 << 5;
+    Speaker_SetFrequency(kHz_1)
 	}
 	if(StepperMotor_GlobalPosition >= WARNING_20)
 	{
 		LPC_GPIO2->FIOSET |= 1 << 4;
+    Speaker_SetFrequency(kHz_2)
 	}
-	
+
 	if(StepperMotor_GlobalPosition == SYRINGE_LENGTH)
 	{
     Control_LEDClearAdmin();
@@ -143,7 +146,7 @@ void StepperMotor_StepBackward(void)
 			break;
 	}
 	StepperMotor_GlobalPosition--;
-	
+
 	// Check to see if syringe is back to original spot
 	if(StepperMotor_GlobalPosition <= 0)
 	{
@@ -187,7 +190,7 @@ void TIMER1_IRQHandler(void)
 			StepperMotor_StepForward();
 			break;
 		case Bolus_Status:
-			StepperMotor_CurrentBolusDose++; 
+			StepperMotor_CurrentBolusDose++;
 			StepperMotor_StepForward();
 			break;
 		case Backward_Status:

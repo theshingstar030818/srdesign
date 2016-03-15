@@ -11,15 +11,15 @@ void Speaker_Initiate(void)
 {
 	// Initialize pin P0.26 to output
 	LPC_GPIO0->FIODIR |= 1 << 26;
-	
+
 	LPC_TIM3->PR = 1 << 2;
 	LPC_TIM3->MR0 = Hz_500;
 	LPC_TIM3->MCR |= 3 << 0;
-	
+
 	NVIC_EnableIRQ(TIMER3_IRQn);
 }
 
-void Speaker_ChangeFrequency(FREQ frequency)
+void Speaker_SetFrequency(FREQ frequency)
 {
 	LPC_TIM3->MR0 = frequency;
 }
