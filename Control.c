@@ -48,6 +48,9 @@ int main(void)
 	LCD_Initiate();
 	StepperMotor_Initiate();
 	
+	LCD_AgeGroup();
+	while(1);
+	
 	// Built in Joystick initialization
 	Joystick_Initialize();
 	
@@ -60,7 +63,7 @@ int main(void)
 	// Initialize Speaker
 	Speaker_Initiate();
 	Speaker_ChangeFrequency(Hz_250);
-	Speaker_Play();
+	//Speaker_Play();
 	
 	// Initialize Timers 0, 1
 	BasalDose_TimingInitiate();
