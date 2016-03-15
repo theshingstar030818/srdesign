@@ -59,6 +59,12 @@ int main(void)
 	// Built in Joystick initialization
 	Joystick_Initialize();
 	
+	// User select Basal Profile
+	LCD_Basal();
+	do {
+		Control_JoystickState = Joystick_GetState();
+	} while((Control_JoystickState & 0x00000008) != 0x00000008);
+	
 	// Initialize LEDs for indication of current dosage
 	Control_LEDInitiate();
 	
@@ -77,7 +83,7 @@ int main(void)
 	Speaker_Initiate();
 	
 	LPC_TIM0->TCR |= 1 << 0; // Start Counting Timer0
-	
+
 	while(1)
 	{
 		// Clear out the screen, and update
@@ -97,7 +103,6 @@ int main(void)
 				break;
 			case Empty_State:
         BasalDose_TimingDisable();
-				Speaker_Play(SPEAKER_EMPTY_LOOP, SPEAKER_EMPTY_FREQ);
 				LPC_GPIO2->FIOSET |= 1 << 2; // Signal that syringe is empty P2.2
 				do {
 					Control_JoystickState = Joystick_GetState(); 
@@ -109,7 +114,6 @@ int main(void)
 				break;
 			case Full_State:
         BasalDose_TimingDisable();
-				Speaker_Play(SPEAKER_FULL_LOOP, SPEAKER_FULL_FREQ);
 				LPC_GPIO2->FIOSET |= 1 << 3; // Signal that syringe can be replaced P2.3
 				do {
 					Control_JoystickState = Joystick_GetState();

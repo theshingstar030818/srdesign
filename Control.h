@@ -20,21 +20,13 @@
 #define WARNING_20 (SYRINGE_LENGTH * .8)
 #define WARNING_10 (SYRINGE_LENGTH * .9)
 #define WARNING_05 (SYRINGE_LENGTH * .95)
-#define SPEAKER_LOOP_20 10000
-#define SPEKAER_LOOP_10 15000
-#define SPEKAER_LOOP_05 20000
-#define SPEAKER_FREQ_20 1000
-#define SPEAKER_FREQ_10 1500
-#define SPEAKER_FREQ_05 2000
-#define SPEAKER_EMPTY_LOOP 30000
-#define SPEAKER_EMPTY_FREQ 2500
-#define SPEAKER_FULL_LOOP 17500
-#define SPEAKER_FULL_FREQ 1750
 
 // Create state machine enum
 typedef enum {None_Status, Basal_Status, Bolus_Status, Backward_Status, Wait_Status} STATUS;
 typedef enum {None_State, Administration_State, Empty_State, Full_State} STATE;
 typedef enum {None_Remaining, Basal_Remaining, Bolus_Remaining} REMAINING;
+//typedef enum {Basal_Low = 150, Basal_Medium = 200, Basal_High = 250} BASALSTEPS;
+//typedef enum (Bolus_Low = 800, Bolus_Medium = 900, Bolus_High = 1000} BOLUSSTEPS;
 
 /** Function Control_LEDInitiate()
  *

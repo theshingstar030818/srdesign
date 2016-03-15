@@ -80,17 +80,14 @@ void StepperMotor_StepForward(void)
 	if(StepperMotor_GlobalPosition == WARNING_05)
 	{
 		LPC_GPIO2->FIOSET |= 1 << 6;
-		Speaker_Play(SPEKAER_LOOP_05, SPEAKER_FREQ_05);
 	}
 	else if(StepperMotor_GlobalPosition == WARNING_10)
 	{
 		LPC_GPIO2->FIOSET |= 1 << 5;
-		Speaker_Play(SPEKAER_LOOP_10, SPEAKER_FREQ_10);
 	}
 	else if(StepperMotor_GlobalPosition == WARNING_20)
 	{
 		LPC_GPIO2->FIOSET |= 1 << 4;
-		Speaker_Play(SPEAKER_LOOP_20, SPEAKER_FREQ_20);
 	}
 	
 	if(StepperMotor_GlobalPosition == SYRINGE_LENGTH)
