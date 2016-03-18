@@ -8,6 +8,7 @@
 #ifndef CONTROL_CONTROL_H_
 #define CONTROL_CONTROL_H_
 
+#include <string.h>
 #include <stdbool.h>
 #include "lpc17xx.h"     // Device header
 #include "Board_GLCD.h"  // Board Support : Graphic LCD
@@ -108,11 +109,5 @@ void Control_ClockInitiate(void);
  */
  
 void Control_DosageReset(void);
-
-BaseDisplay Control_CreateBaseDisplay(char *cat, char *opt1, char *opt2,
-																			char *opt3, char *opt4);
-
-BaseDisplay* Control_UpdateBaseDisplay(BaseDisplay *temp, char *cat, char *opt1, 
-																			char *opt2, char *opt3, char *opt4);
 
 #endif /* CONTROL_CONTROL_H_ */

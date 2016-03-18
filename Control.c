@@ -5,10 +5,10 @@
  *      Author: sle
  */
 
-#include <string.h>
 #include "Control.h"
 #include ".\LCD\LCD.h"
 #include ".\Speaker\Speaker.h"
+#include ".\Profile\Profile.h"
 #include ".\BasalDose\BasalDose.h"
 #include ".\BolusDose\BolusDose.h"
 #include ".\Glucometer\Glucometer.h"
@@ -25,14 +25,14 @@ extern uint32_t InsulinQueue_Queue[INSULIN_QUEUE_SIZE];
 STATUS Control_GlobalStatus;
 STATE Control_GlobalState;
 REMAINING Control_GlobalRemaining;
+AGE Control_AgeGroup;
+ACTIVITY Control_ActivityGroup;
 
 uint32_t Control_JoystickState;
 
 int main(void)
 {
 	uint32_t i, j;
-	BaseDisplay Control_BaseDisplay;
-	BaseDisplay* pControl_BaseDisplay;
 	SystemInit();
 	
 	// Set default status to None
@@ -72,25 +72,15 @@ int main(void)
 	// Initialize Timer2 and set up pointer to InsulinQueue array
 	pInsulinQueue_Queue = InsulinQueue_Queue;
 	InsulinQueue_Initiate();
-
-	// Initialize External Interrupt 3
-	BolusDose_DoseInitiate();
 	
 	// Initialize Speaker
 	Speaker_Initiate();
+
+	// Initialize User-Profile
+	Profile_Initiate();
 	
-	Control_BaseDisplay = Control_CreateBaseDisplay("Age Group", "Child", "Adolescent", "Adult", "Elderly");
-	pControl_BaseDisplay = &Control_BaseDisplay;
-	LCD_Options(Control_BaseDisplay);
-	
-	GLCD_ClearScreen();
-	
-	Control_UpdateBaseDisplay(pControl_BaseDisplay, "Activity Level", "", "Moderately Active", "Very Active", "Mostly Inactive");
-	LCD_Options(Control_BaseDisplay);
-	GLCD_ClearScreen();
-	
-	Control_UpdateBaseDisplay(pControl_BaseDisplay, "Bolus Amount", "1 Unit", "2 Units", "4 Units", "8 Units");
-	LCD_Options(Control_BaseDisplay);
+	// Initialize External Interrupt 3
+	BolusDose_DoseInitiate();
 	
 	LPC_TIM0->TCR |= 1 << 0; // Start Counting Timer0
 
@@ -122,7 +112,7 @@ int main(void)
 				LPC_GPIO2->FIOSET |= 1 << 2; // Signal that syringe is empty P2.2
 				do {
 					Control_JoystickState = Joystick_GetState(); 
-				} while((Control_JoystickState & 0x00000008) != 0x00000008);
+				} while((Control_JoystickState & JOYSTICK_UP) != JOYSTICK_UP);
 				Speaker_Stop();
 				Control_GlobalStatus = Backward_Status;
 				Control_GlobalState = Administration_State;
@@ -134,7 +124,7 @@ int main(void)
 				LPC_GPIO2->FIOSET |= 1 << 3; // Signal that syringe can be replaced P2.3
 				do {
 					Control_JoystickState = Joystick_GetState();
-				} while((Control_JoystickState & 0x00000010) != 0x00000010);
+				} while((Control_JoystickState & JOYSTICK_DOWN) != JOYSTICK_DOWN);
 				Control_LEDClearAll();
 				switch(Control_GlobalRemaining)
 				{
@@ -206,45 +196,4 @@ void Control_DosageReset(void)
 	Control_GlobalState = None_State;
 	StepperMotor_CurrentBasalDose = 0;
 	StepperMotor_CurrentBolusDose = 0;
-}
-
-BaseDisplay Control_CreateBaseDisplay(char *cat, char *opt1, char *opt2,
-																			char *opt3, char *opt4)
-{
-	BaseDisplay temp;
-	strcpy(temp.ProfileCategory, cat);
-	strcpy(temp.ProfileOption1, opt1);
-	strcpy(temp.ProfileOption2, opt2);
-	strcpy(temp.ProfileOption3, opt3);
-	strcpy(temp.ProfileOption4, opt4);
-	
-	temp.Size1 = strlen(opt1);
-	temp.Size2 = strlen(opt2);
-	temp.Size3 = strlen(opt3);
-	temp.Size4 = strlen(opt4);
-	
-	return temp;
-}
-
-BaseDisplay* Control_UpdateBaseDisplay(BaseDisplay *temp, char *cat, char *opt1, 
-																			char *opt2, char *opt3, char *opt4)
-{
-	memset(temp->ProfileCategory, 0, 25);
-	memset(temp->ProfileOption1, 0, 25);
-	memset(temp->ProfileOption2, 0, 25);
-	memset(temp->ProfileOption3, 0, 25);
-	memset(temp->ProfileOption4, 0, 25);
-	
-	strcpy(temp->ProfileCategory, cat);
-	strcpy(temp->ProfileOption1, opt1);
-	strcpy(temp->ProfileOption2, opt2);
-	strcpy(temp->ProfileOption3, opt3);
-	strcpy(temp->ProfileOption4, opt4);
-	
-	temp->Size1 = strlen(opt1);
-	temp->Size2 = strlen(opt2);
-	temp->Size3 = strlen(opt3);
-	temp->Size4 = strlen(opt4);
-	
-	return temp;
 }

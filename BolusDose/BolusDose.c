@@ -6,7 +6,9 @@
  */
 
 #include "BolusDose.h"
+#include "..\LCD\LCD.h"
 #include "..\Control.h"
+#include "..\Profile\Profile.h"
 #include "..\StepperMotor\StepperMotor.h"
 
 extern STATE Control_GlobalState;
@@ -49,5 +51,7 @@ void EINT3_IRQHandler(void)
 		Control_GlobalState = Empty_State;
 		LPC_GPIO2->FIOSET |= 1 << 2; // Signal that syringe is empty P2.2
 	}
+	GLCD_ClearScreen();
+	Profile_Bolus();
 	StepperMotor_SpinEnable();	
 }
