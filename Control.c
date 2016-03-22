@@ -54,6 +54,9 @@ int main(void)
 	// Built in Joystick initialization
 	Joystick_Initialize();
 	
+	// Initialize User-Profile
+	Profile_Initiate();
+	
 	// Initialize ADC for glucometer
 	Glucometer_Initiate();
 	
@@ -72,12 +75,6 @@ int main(void)
 	// Initialize Timer2 and set up pointer to InsulinQueue array
 	pInsulinQueue_Queue = InsulinQueue_Queue;
 	InsulinQueue_Initiate();
-	
-	// Initialize Speaker
-	Speaker_Initiate();
-
-	// Initialize User-Profile
-	Profile_Initiate();
 	
 	// Initialize External Interrupt 3
 	BolusDose_DoseInitiate();
@@ -101,7 +98,7 @@ int main(void)
 				break;
 			case Administration_State:
 				// Wait for a short period of time before updating
-				Speaker_Stop();
+				//Speaker_Stop();
 				for(i = 0; i < 150000; i++)
 				{
 					for(j = 0; j < 50; j++);

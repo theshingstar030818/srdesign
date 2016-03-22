@@ -16,6 +16,7 @@ BaseDisplay Profile_BaseDisplay;
 BaseDisplay* pProfile_BaseDisplay;
 uint32_t Profil_BasalRate;
 uint32_t Profile_BasalSteps;
+uint32_t Profile_BolusSteps;
 
 void Profile_Initiate(void)
 {
@@ -80,19 +81,19 @@ void Profile_Initiate(void)
 					/*
 					if ((Control_JoystickState & JOYSTICK_LEFT) == JOYSTICK_LEFT)
 					{
-						Control_BasalRate = ;
+						Profil_BasalRate = ;
 					}
 					if ((Control_JoystickState & JOYSTICK_UP) == JOYSTICK_UP)
 					{
-						Control_BasalRate = ;
+						Profil_BasalRate = ;
 					}
 					if ((Control_JoystickState & JOYSTICK_RIGHT) == JOYSTICK_RIGHT)
 					{
-						Control_BasalRate = ;
+						Profil_BasalRate = ;
 					}
 					if ((Control_JoystickState & JOYSTICK_DOWN) == JOYSTICK_DOWN)
 					{
-						Control_BasalRate = ;
+						Profil_BasalRate = ;
 					}
 					*/
 					break;
@@ -103,6 +104,24 @@ void Profile_Initiate(void)
 						Control_JoystickState = Joystick_GetState(); 
 					} while (!(((Control_JoystickState & JOYSTICK_LEFT) == JOYSTICK_LEFT) || ((Control_JoystickState & JOYSTICK_UP) == JOYSTICK_UP) || 
 									((Control_JoystickState & JOYSTICK_RIGHT) == JOYSTICK_RIGHT) || ((Control_JoystickState & JOYSTICK_DOWN) == JOYSTICK_DOWN)));
+					/*
+					if ((Control_JoystickState & JOYSTICK_LEFT) == JOYSTICK_LEFT)
+					{
+						Profil_BasalRate = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_UP) == JOYSTICK_UP)
+					{
+						Profil_BasalRate = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_RIGHT) == JOYSTICK_RIGHT)
+					{
+						Profil_BasalRate = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_DOWN) == JOYSTICK_DOWN)
+					{
+						Profil_BasalRate = ;
+					}
+					*/
 					break;
 				case Active:
 					Profile_UpdateBaseDisplay(pProfile_BaseDisplay, "Basal Rate", "4 Unit/Day", "6 Unit/Day", "8 Unit/Day", "10 Unit/Day");
@@ -111,6 +130,24 @@ void Profile_Initiate(void)
 						Control_JoystickState = Joystick_GetState(); 
 					} while (!(((Control_JoystickState & JOYSTICK_LEFT) == JOYSTICK_LEFT) || ((Control_JoystickState & JOYSTICK_UP) == JOYSTICK_UP) || 
 									((Control_JoystickState & JOYSTICK_RIGHT) == JOYSTICK_RIGHT) || ((Control_JoystickState & JOYSTICK_DOWN) == JOYSTICK_DOWN)));
+					/*
+					if ((Control_JoystickState & JOYSTICK_LEFT) == JOYSTICK_LEFT)
+					{
+						Profil_BasalRate = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_UP) == JOYSTICK_UP)
+					{
+						Profil_BasalRate = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_RIGHT) == JOYSTICK_RIGHT)
+					{
+						Profil_BasalRate = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_DOWN) == JOYSTICK_DOWN)
+					{
+						Profil_BasalRate = ;
+					}
+					*/
 					break;
 			}
 			break;
@@ -124,6 +161,24 @@ void Profile_Initiate(void)
 						Control_JoystickState = Joystick_GetState(); 
 					} while (!(((Control_JoystickState & JOYSTICK_LEFT) == JOYSTICK_LEFT) || ((Control_JoystickState & JOYSTICK_UP) == JOYSTICK_UP) || 
 									((Control_JoystickState & JOYSTICK_RIGHT) == JOYSTICK_RIGHT) || ((Control_JoystickState & JOYSTICK_DOWN) == JOYSTICK_DOWN)));
+					/*
+					if ((Control_JoystickState & JOYSTICK_LEFT) == JOYSTICK_LEFT)
+					{
+						Profil_BasalRate = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_UP) == JOYSTICK_UP)
+					{
+						Profil_BasalRate = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_RIGHT) == JOYSTICK_RIGHT)
+					{
+						Profil_BasalRate = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_DOWN) == JOYSTICK_DOWN)
+					{
+						Profil_BasalRate = ;
+					}
+					*/
 					break;
 				case Moderate:
 					Profile_UpdateBaseDisplay(pProfile_BaseDisplay, "Basal Rate", "17 Unit/Day", "25 Unit/Day", "33 Unit/Day", "40 Unit/Day");
@@ -132,6 +187,24 @@ void Profile_Initiate(void)
 						Control_JoystickState = Joystick_GetState(); 
 					} while (!(((Control_JoystickState & JOYSTICK_LEFT) == JOYSTICK_LEFT) || ((Control_JoystickState & JOYSTICK_UP) == JOYSTICK_UP) || 
 									((Control_JoystickState & JOYSTICK_RIGHT) == JOYSTICK_RIGHT) || ((Control_JoystickState & JOYSTICK_DOWN) == JOYSTICK_DOWN)));
+					/*
+					if ((Control_JoystickState & JOYSTICK_LEFT) == JOYSTICK_LEFT)
+					{
+						Profil_BasalRate = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_UP) == JOYSTICK_UP)
+					{
+						Profil_BasalRate = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_RIGHT) == JOYSTICK_RIGHT)
+					{
+						Profil_BasalRate = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_DOWN) == JOYSTICK_DOWN)
+					{
+						Profil_BasalRate = ;
+					}
+					*/
 					break;
 				case Active:
 					Profile_UpdateBaseDisplay(pProfile_BaseDisplay, "Basal Rate", "13 Unit/Day", "19 Unit/Day", "25 Unit/Day", "32 Unit/Day");
@@ -140,6 +213,24 @@ void Profile_Initiate(void)
 						Control_JoystickState = Joystick_GetState(); 
 					} while (!(((Control_JoystickState & JOYSTICK_LEFT) == JOYSTICK_LEFT) || ((Control_JoystickState & JOYSTICK_UP) == JOYSTICK_UP) || 
 									((Control_JoystickState & JOYSTICK_RIGHT) == JOYSTICK_RIGHT) || ((Control_JoystickState & JOYSTICK_DOWN) == JOYSTICK_DOWN)));
+					/*
+					if ((Control_JoystickState & JOYSTICK_LEFT) == JOYSTICK_LEFT)
+					{
+						Profil_BasalRate = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_UP) == JOYSTICK_UP)
+					{
+						Profil_BasalRate = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_RIGHT) == JOYSTICK_RIGHT)
+					{
+						Profil_BasalRate = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_DOWN) == JOYSTICK_DOWN)
+					{
+						Profil_BasalRate = ;
+					}
+					*/
 					break;
 			}
 			break;
@@ -153,6 +244,24 @@ void Profile_Initiate(void)
 						Control_JoystickState = Joystick_GetState(); 
 					} while (!(((Control_JoystickState & JOYSTICK_LEFT) == JOYSTICK_LEFT) || ((Control_JoystickState & JOYSTICK_UP) == JOYSTICK_UP) || 
 									((Control_JoystickState & JOYSTICK_RIGHT) == JOYSTICK_RIGHT) || ((Control_JoystickState & JOYSTICK_DOWN) == JOYSTICK_DOWN)));
+					/*
+					if ((Control_JoystickState & JOYSTICK_LEFT) == JOYSTICK_LEFT)
+					{
+						Profil_BasalRate = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_UP) == JOYSTICK_UP)
+					{
+						Profil_BasalRate = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_RIGHT) == JOYSTICK_RIGHT)
+					{
+						Profil_BasalRate = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_DOWN) == JOYSTICK_DOWN)
+					{
+						Profil_BasalRate = ;
+					}
+					*/
 					break;
 				case Moderate:
 					Profile_UpdateBaseDisplay(pProfile_BaseDisplay, "Basal Rate", "14 Unit/Day", "21 Unit/Day", "28 Unit/Day", "34 Unit/Day");
@@ -161,6 +270,24 @@ void Profile_Initiate(void)
 						Control_JoystickState = Joystick_GetState(); 
 					} while (!(((Control_JoystickState & JOYSTICK_LEFT) == JOYSTICK_LEFT) || ((Control_JoystickState & JOYSTICK_UP) == JOYSTICK_UP) || 
 									((Control_JoystickState & JOYSTICK_RIGHT) == JOYSTICK_RIGHT) || ((Control_JoystickState & JOYSTICK_DOWN) == JOYSTICK_DOWN)));
+					/*
+					if ((Control_JoystickState & JOYSTICK_LEFT) == JOYSTICK_LEFT)
+					{
+						Profil_BasalRate = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_UP) == JOYSTICK_UP)
+					{
+						Profil_BasalRate = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_RIGHT) == JOYSTICK_RIGHT)
+					{
+						Profil_BasalRate = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_DOWN) == JOYSTICK_DOWN)
+					{
+						Profil_BasalRate = ;
+					}
+					*/
 					break;
 				case Active:
 					Profile_UpdateBaseDisplay(pProfile_BaseDisplay, "Basal Rate", "10 Unit/Day", "16 Unit/Day", "22 Unit/Day", "27 Unit/Day");
@@ -169,6 +296,24 @@ void Profile_Initiate(void)
 						Control_JoystickState = Joystick_GetState(); 
 					} while (!(((Control_JoystickState & JOYSTICK_LEFT) == JOYSTICK_LEFT) || ((Control_JoystickState & JOYSTICK_UP) == JOYSTICK_UP) || 
 									((Control_JoystickState & JOYSTICK_RIGHT) == JOYSTICK_RIGHT) || ((Control_JoystickState & JOYSTICK_DOWN) == JOYSTICK_DOWN)));
+					/*
+					if ((Control_JoystickState & JOYSTICK_LEFT) == JOYSTICK_LEFT)
+					{
+						Profil_BasalRate = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_UP) == JOYSTICK_UP)
+					{
+						Profil_BasalRate = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_RIGHT) == JOYSTICK_RIGHT)
+					{
+						Profil_BasalRate = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_DOWN) == JOYSTICK_DOWN)
+					{
+						Profil_BasalRate = ;
+					}
+					*/
 					break;
 			}
 			break;
@@ -182,6 +327,24 @@ void Profile_Initiate(void)
 						Control_JoystickState = Joystick_GetState(); 
 					} while (!(((Control_JoystickState & JOYSTICK_LEFT) == JOYSTICK_LEFT) || ((Control_JoystickState & JOYSTICK_UP) == JOYSTICK_UP) || 
 									((Control_JoystickState & JOYSTICK_RIGHT) == JOYSTICK_RIGHT) || ((Control_JoystickState & JOYSTICK_DOWN) == JOYSTICK_DOWN)));
+					/*
+					if ((Control_JoystickState & JOYSTICK_LEFT) == JOYSTICK_LEFT)
+					{
+						Profil_BasalRate = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_UP) == JOYSTICK_UP)
+					{
+						Profil_BasalRate = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_RIGHT) == JOYSTICK_RIGHT)
+					{
+						Profil_BasalRate = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_DOWN) == JOYSTICK_DOWN)
+					{
+						Profil_BasalRate = ;
+					}
+					*/
 					break;
 				case Moderate:
 					Profile_UpdateBaseDisplay(pProfile_BaseDisplay, "Basal Rate", "10 Unit", "16 Units", "22 Units", "27 Units");
@@ -190,6 +353,24 @@ void Profile_Initiate(void)
 						Control_JoystickState = Joystick_GetState(); 
 					} while (!(((Control_JoystickState & JOYSTICK_LEFT) == JOYSTICK_LEFT) || ((Control_JoystickState & JOYSTICK_UP) == JOYSTICK_UP) || 
 									((Control_JoystickState & JOYSTICK_RIGHT) == JOYSTICK_RIGHT) || ((Control_JoystickState & JOYSTICK_DOWN) == JOYSTICK_DOWN)));
+					/*
+					if ((Control_JoystickState & JOYSTICK_LEFT) == JOYSTICK_LEFT)
+					{
+						Profil_BasalRate = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_UP) == JOYSTICK_UP)
+					{
+						Profil_BasalRate = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_RIGHT) == JOYSTICK_RIGHT)
+					{
+						Profil_BasalRate = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_DOWN) == JOYSTICK_DOWN)
+					{
+						Profil_BasalRate = ;
+					}
+					*/
 					break;
 				case Active:
 					Profile_UpdateBaseDisplay(pProfile_BaseDisplay, "Basal Rate", "7 Unit", "11 Units", "15 Units", "20 Units");
@@ -198,6 +379,24 @@ void Profile_Initiate(void)
 						Control_JoystickState = Joystick_GetState(); 
 					} while (!(((Control_JoystickState & JOYSTICK_LEFT) == JOYSTICK_LEFT) || ((Control_JoystickState & JOYSTICK_UP) == JOYSTICK_UP) || 
 									((Control_JoystickState & JOYSTICK_RIGHT) == JOYSTICK_RIGHT) || ((Control_JoystickState & JOYSTICK_DOWN) == JOYSTICK_DOWN)));
+					/*
+					if ((Control_JoystickState & JOYSTICK_LEFT) == JOYSTICK_LEFT)
+					{
+						Profil_BasalRate = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_UP) == JOYSTICK_UP)
+					{
+						Profil_BasalRate = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_RIGHT) == JOYSTICK_RIGHT)
+					{
+						Profil_BasalRate = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_DOWN) == JOYSTICK_DOWN)
+					{
+						Profil_BasalRate = ;
+					}
+					*/
 					break;
 			}
 			break;
@@ -213,6 +412,24 @@ void Profile_Bolus(void)
 		Control_JoystickState = Joystick_GetState(); 
 	} while (!(((Control_JoystickState & JOYSTICK_LEFT) == JOYSTICK_LEFT) || ((Control_JoystickState & JOYSTICK_UP) == JOYSTICK_UP) || 
 					((Control_JoystickState & JOYSTICK_RIGHT) == JOYSTICK_RIGHT) || ((Control_JoystickState & JOYSTICK_DOWN) == JOYSTICK_DOWN)));
+	/*
+					if ((Control_JoystickState & JOYSTICK_LEFT) == JOYSTICK_LEFT)
+					{
+						Profile_BolusSteps = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_UP) == JOYSTICK_UP)
+					{
+						Profile_BolusSteps = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_RIGHT) == JOYSTICK_RIGHT)
+					{
+						Profile_BolusSteps = ;
+					}
+					if ((Control_JoystickState & JOYSTICK_DOWN) == JOYSTICK_DOWN)
+					{
+						Profile_BolusSteps = ;
+					}
+					*/
 }
 
 BaseDisplay Profile_CreateBaseDisplay(char *cat, char *opt1, char *opt2,
@@ -256,7 +473,7 @@ BaseDisplay* Profile_UpdateBaseDisplay(BaseDisplay *temp, char *cat, char *opt1,
 	return temp;
 }
 
-ProfileOptions Control_CreateProfile(AGE AgeRange, ACTIVITY ActivityGroup)
+ProfileOptions Profile_CreateProfile(AGE AgeRange, ACTIVITY ActivityGroup)
 {
 	ProfileOptions temp;
 	temp.Age = AgeRange;
@@ -265,7 +482,7 @@ ProfileOptions Control_CreateProfile(AGE AgeRange, ACTIVITY ActivityGroup)
 	return temp;
 }
 
-ProfileOptions* Control_UpdateProfile(ProfileOptions *temp, BasalRate Basal)
+ProfileOptions* Profile_UpdateProfile(ProfileOptions *temp, BasalRate Basal)
 {
 	
 	
