@@ -25,8 +25,6 @@ extern uint32_t InsulinQueue_Queue[INSULIN_QUEUE_SIZE];
 STATUS Control_GlobalStatus;
 STATE Control_GlobalState;
 REMAINING Control_GlobalRemaining;
-AGE Control_AgeGroup;
-ACTIVITY Control_ActivityGroup;
 
 uint32_t Control_JoystickState;
 
@@ -66,7 +64,6 @@ int main(void)
 	// Initialize Speaker
 	Speaker_Initiate();
 	Speaker_SetFrequency(Hz_250);
-	//Speaker_Play();
 	
 	// Initialize Timers 0, 1
 	BasalDose_TimingInitiate();
@@ -181,7 +178,7 @@ void Control_ClockInitiate(void)
 	LPC_SC->PCONP |= 1 << 23;
 	
 	// Clock select Timer0, Timer1, and Timer2 (PCLK = CCLK)
-	LPC_SC->PCLKSEL0 |= 1 << 2;
+	//LPC_SC->PCLKSEL0 |= 1 << 2;
 	LPC_SC->PCLKSEL0 |= 1 << 4;
 	LPC_SC->PCLKSEL1 |= 1 << 12;
 	LPC_SC->PCLKSEL1 |= 1 << 14;

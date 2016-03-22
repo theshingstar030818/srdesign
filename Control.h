@@ -41,18 +41,14 @@ typedef struct
 	int Size1, Size2, Size3, Size4;
 }BaseDisplay;
 
-typedef struct
-{
-	int BasOpt1, BasOpt2, BasOpt3, BasOpt4;
-}BasalRate;
 
 typedef struct
 {
 	AGE Age;
 	ACTIVITY Activity;
-	BasalRate Basal;
 	
-	uint32_t BasalSteps;
+	uint32_t BasalStepsPerDay;
+	uint32_t BasalStepsPerDose;
 }ProfileOptions;
 
 /** Function Control_LEDInitiate()

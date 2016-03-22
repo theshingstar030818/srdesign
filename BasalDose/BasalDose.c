@@ -18,8 +18,8 @@ extern uint32_t StepperMotor_GlobalPosition;
 // Set and enable Timer0 for the time in between Basal doses
 void BasalDose_TimingInitiate(void)
 {
-	LPC_TIM0->PR = 0x02; // Pre-scalar
-	LPC_TIM0->MR0 = 1 << 27; // Match number
+	LPC_TIM0->PR = 0; // Pre-scalar
+	LPC_TIM0->MR0 = 1500000000; // Match number
 	LPC_TIM0->MCR |= 3 << 0; // Interrupt and reset timer on match (MCR = 011)
 	NVIC_EnableIRQ(TIMER0_IRQn); // Enable Timer0, but don't start counting
 }

@@ -7,6 +7,7 @@
 
 #include "..\Control.h"
 #include "StepperMotor.h"
+#include "..\Profile\Profile.h"
 #include "..\Speaker\Speaker.h"
 #include "..\BasalDose\BasalDose.h"
 
@@ -18,6 +19,8 @@ extern uint32_t InsulinQueue_CurrentEntryCount;
 extern bool Control_Warning_20;
 extern bool Control_Warning_10;
 extern bool Control_Warning_05;
+
+extern ProfileOptions Profile_CurrentOptions;
 
 uint32_t StepperMotor_GlobalPosition;
 uint32_t StepperMotor_CurrentPosition;
@@ -106,7 +109,7 @@ void StepperMotor_StepForward(void)
 		Control_GlobalState = Empty_State;
 	}
 	// Check to see if Basal or Bolus has completed.
-	else if((StepperMotor_CurrentBasalDose >= BASAL_STEPS) || (StepperMotor_CurrentBolusDose >= BOLUS_STEPS))
+	else if((StepperMotor_CurrentBasalDose >= Profile_CurrentOptions.BasalStepsPerDose) || (StepperMotor_CurrentBolusDose >= BOLUS_STEPS))
 	{
     Control_LEDClearAdmin();
 		Control_DosageReset();
@@ -166,7 +169,7 @@ void StepperMotor_StepBackward(void)
 void StepperMotor_SpinInitiate(void)
 {
 	LPC_TIM1->PR = 0x02; // Pre-scalar
-	LPC_TIM1->MR0 = 1 << 18; // Match number
+	LPC_TIM1->MR0 = 1 << 20; // Match number
 	LPC_TIM1->MCR |= 3 << 0; // Interrupt and reset timer on match (MCR = 011)
 	NVIC_EnableIRQ(TIMER1_IRQn);
 }

@@ -29,7 +29,8 @@ void Profile_Initiate(void);
  *  @param void: void 
  *  @return void: void
  */
-
+void Profile_RecommendDosage(void);
+void Profile_AssignBasalSteps(int units);
 void Profile_Bolus(void);
 
 /** Function Profile_CreateBaseDisplay()
@@ -72,6 +73,6 @@ ProfileOptions Profile_CreateProfile(AGE AgeRange, ACTIVITY ActivityGroup);
  *  @return ProfileOptions: ProfileOptions
  */
 
-ProfileOptions* Profile_UpdateProfile(ProfileOptions *temp, BasalRate Basal);
+ProfileOptions* Profile_UpdateProfile(ProfileOptions *temp);
 
 #endif /* PROFILE_PROFILE_H_ */

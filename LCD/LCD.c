@@ -115,7 +115,7 @@ void LCD_UpdateScreenInsulin(void)
 	}
 }
 
-void LCD_Options(BaseDisplay current)
+void LCD_DisplayOptions(BaseDisplay current)
 {
 	LCD_SetUpCommon();
 	

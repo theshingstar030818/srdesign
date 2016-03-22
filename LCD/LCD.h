@@ -61,6 +61,6 @@ void LCD_UpdateScreenInsulin(void);
  
  void LCD_SetUpCommon(void);
  
- void LCD_Options(BaseDisplay current);
+ void LCD_DisplayOptions(BaseDisplay current);
 
 #endif /* LCD_LCD_H_ */
