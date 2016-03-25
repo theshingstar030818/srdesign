@@ -15,10 +15,7 @@ extern STATE Control_GlobalState;
 extern STATUS Control_GlobalStatus;
 
 extern uint32_t InsulinQueue_CurrentEntryCount;
-
-extern bool Control_Warning_20;
-extern bool Control_Warning_10;
-extern bool Control_Warning_05;
+extern uint32_t Profile_BolusSteps;
 
 extern ProfileOptions Profile_CurrentOptions;
 

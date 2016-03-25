@@ -1,5 +1,5 @@
 /**
- *  Control.h
+ *  Profile.h
  * 
  *  Created on: March 18, 2016
  *      Author: mfeist
@@ -10,15 +10,12 @@
 #include "Profile.h"
 #include "..\LCD\LCD.h"
 
-#define NUM_AGE_GROUP 4
-#define NUM_ACTIVITY_LEVEL 3
-#define NUM_OPTIONS 4
-
 extern uint32_t Control_JoystickState;
 
 BaseDisplay Profile_BaseDisplay;
 BaseDisplay* pProfile_BaseDisplay;
 ProfileOptions Profile_CurrentOptions;
+uint32_t Profile_BolusSteps;
 
 const uint32_t Profile_DosageRecommendation[48] = {6,  9, 12, 14, /* Child Inactive */ 5,  7,  9, 12, /* Child Moderate */ 4,  6,  8, 10, /* Child Active */
 																									21, 30, 40, 50, /* Adolescent Inactive */ 17, 25, 33, 40, /* Adolescent Moderate */ 13, 19, 25, 32, /* Adolescent Active */
@@ -49,19 +46,19 @@ void Profile_Initiate(void)
 	LCD_DisplayOptions(Profile_BaseDisplay);
 	
 	do {
-		Control_JoystickState = Joystick_GetState(); 
-	} while (!(Control_JoystickState & (JOYSTICK_UP | JOYSTICK_RIGHT | JOYSTICK_DOWN | JOYSTICK_LEFT)));
+		Control_Debounce();
+	} while (!(Control_JoystickState & (JOYSTICK_LEFT | JOYSTICK_RIGHT | JOYSTICK_UP | JOYSTICK_DOWN)));
 	if (Control_JoystickState == JOYSTICK_LEFT)
 	{
 		Profile_AgeGroup = Child;
 	}
-	if (Control_JoystickState  == JOYSTICK_UP)
-	{
-		Profile_AgeGroup = Adult;
-	}
 	if (Control_JoystickState == JOYSTICK_RIGHT)
 	{
 		Profile_AgeGroup = Adolescent;
+	}
+	if (Control_JoystickState  == JOYSTICK_UP)
+	{
+		Profile_AgeGroup = Adult;
 	}
 	if (Control_JoystickState == JOYSTICK_DOWN)
 	{
@@ -72,15 +69,15 @@ void Profile_Initiate(void)
 	Profile_UpdateBaseDisplay(pProfile_BaseDisplay, "Activity Level", "", "Moderately Active", "Very Active", "Mostly Inactive");
 	LCD_DisplayOptions(Profile_BaseDisplay);
 	do {
-		Control_JoystickState = Joystick_GetState(); 
-	} while (!(Control_JoystickState & (JOYSTICK_UP | JOYSTICK_RIGHT | JOYSTICK_DOWN)));
-	if (Control_JoystickState == JOYSTICK_UP)
-	{
-		Profile_ActivityGroup = Active;
-	}
+		Control_Debounce();
+	} while (!(Control_JoystickState & (JOYSTICK_RIGHT | JOYSTICK_UP | JOYSTICK_DOWN)));
 	if (Control_JoystickState == JOYSTICK_RIGHT)
 	{
 		Profile_ActivityGroup = Moderate;
+	}
+	if (Control_JoystickState == JOYSTICK_UP)
+	{
+		Profile_ActivityGroup = Active;
 	}
 	if (Control_JoystickState == JOYSTICK_DOWN)
 	{
@@ -105,8 +102,8 @@ void Profile_RecommendDosage(void)
 	LCD_DisplayOptions(Profile_BaseDisplay);
 	
 	do {
-		Control_JoystickState = Joystick_GetState(); 
-	} while (!(Control_JoystickState & (JOYSTICK_UP | JOYSTICK_RIGHT | JOYSTICK_DOWN | JOYSTICK_LEFT)));
+		Control_Debounce(); 
+	} while (!(Control_JoystickState & (JOYSTICK_LEFT | JOYSTICK_RIGHT | JOYSTICK_UP | JOYSTICK_DOWN)));
 	if (Control_JoystickState == JOYSTICK_LEFT)
 	{
 		Profile_AssignBasalSteps(Profile_AllProfiles[Profile_CurrentOptions.Age][Profile_CurrentOptions.Activity][0]);
@@ -133,29 +130,27 @@ void Profile_AssignBasalSteps(int units)
 
 void Profile_Bolus(void)
 {
-	Profile_UpdateBaseDisplay(pProfile_BaseDisplay, "Bolus Amount", "1 Unit", "2 Units", "4 Units", "8 Units");
+	Profile_UpdateBaseDisplay(pProfile_BaseDisplay, "Bolus Amount", "1 Unit", "4 Units", "7 Units", "10 Units");
 	LCD_DisplayOptions(Profile_BaseDisplay);
 	do {
-		Control_JoystickState = Joystick_GetState(); 
-	} while (!(Control_JoystickState & (JOYSTICK_UP | JOYSTICK_RIGHT | JOYSTICK_DOWN | JOYSTICK_LEFT)));
-	/*
+		Control_Debounce();
+	} while (!(Control_JoystickState & (JOYSTICK_LEFT | JOYSTICK_RIGHT | JOYSTICK_UP | JOYSTICK_DOWN)));
 					if (Control_JoystickState == JOYSTICK_LEFT)
 					{
-						Profile_BolusSteps = ;
-					}
-					if (Control_JoystickState  == JOYSTICK_UP)
-					{
-						Profile_BolusSteps = ;
+						Profile_BolusSteps = 1;
 					}
 					if (Control_JoystickState == JOYSTICK_RIGHT)
 					{
-						Profile_BolusSteps = ;
+						Profile_BolusSteps = 4;
+					}
+					if (Control_JoystickState  == JOYSTICK_UP)
+					{
+						Profile_BolusSteps = 7;
 					}
 					if (Control_JoystickState == JOYSTICK_DOWN)
 					{
-						Profile_BolusSteps = ;
+						Profile_BolusSteps = 10;
 					}
-					*/
 }
 
 BaseDisplay Profile_CreateBaseDisplay(char *cat, char *opt1, char *opt2,

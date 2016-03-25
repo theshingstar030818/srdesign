@@ -1,5 +1,5 @@
 /**
- *  Control.h
+ *  Profile.h
  * 
  *  Created on: March 18, 2016
  *      Author: mfeist
@@ -21,16 +21,40 @@
 
 void Profile_Initiate(void);
 
-/** Function Profile_Bolus()
+/** Function Profile_RecommendDosage()
  *
- *  When Bolus is activated, allows user to select amount of
- *	insulin for a Bolus dosage
+ *  Function is called at the end of Profile_Initiate().
+ *	Based on the users age group and activity level,
+ *	the function displays and has the user select between
+ *	four different dosage rates.
  *
  *  @param void: void 
  *  @return void: void
  */
+
 void Profile_RecommendDosage(void);
+
+/** Function Profile_AssignBasalSteps()
+ *
+ *  Function is called at the end of Profile_RecommendDosage().
+ *	Based on the users selection of the recommended Basal Doses
+ *	the function converts the dosage rate into steps per day and steps per dose.
+ *
+ *  @param int: int 
+ *  @return void: void
+ */
+
 void Profile_AssignBasalSteps(int units);
+
+/** Function Profile_Bolus()
+ *
+ *  When Bolus is activated, allows user to select amount of
+ *	insulin for a Bolus dosage.
+ *
+ *  @param void: void 
+ *  @return void: void
+ */
+
 void Profile_Bolus(void);
 
 /** Function Profile_CreateBaseDisplay()

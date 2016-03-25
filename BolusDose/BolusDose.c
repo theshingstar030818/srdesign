@@ -29,6 +29,8 @@ void BolusDose_DoseInitiate(void)
 
 void EINT3_IRQHandler(void)
 {
+	GLCD_ClearScreen();
+	Profile_Bolus();
 	LPC_GPIOINT->IO2IntClr |= (1<<10); // Clear the status
 	if(StepperMotor_GlobalPosition <= SYRINGE_LENGTH)
 	{
@@ -51,7 +53,5 @@ void EINT3_IRQHandler(void)
 		Control_GlobalState = Empty_State;
 		LPC_GPIO2->FIOSET |= 1 << 2; // Signal that syringe is empty P2.2
 	}
-	//GLCD_ClearScreen();
-	//Profile_Bolus();
 	StepperMotor_SpinEnable();	
 }

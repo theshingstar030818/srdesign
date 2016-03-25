@@ -21,6 +21,9 @@
 #define WARNING_20 (SYRINGE_LENGTH * .8)
 #define WARNING_10 (SYRINGE_LENGTH * .9)
 #define WARNING_05 (SYRINGE_LENGTH * .95)
+#define NUM_AGE_GROUP 4
+#define NUM_ACTIVITY_LEVEL 3
+#define NUM_OPTIONS 4
 
 // Create state machine enum
 typedef enum {None_Status, Basal_Status, Bolus_Status, Backward_Status, Wait_Status} STATUS;
@@ -105,5 +108,15 @@ void Control_ClockInitiate(void);
  */
  
 void Control_DosageReset(void);
+
+/** Function Control_Debounce()
+ *
+ *  Function is called when the joystick is to be used for debouncing.
+ *
+ *  @param void: void 
+ *  @return void: void
+ */
+ 
+void Control_Debounce(void);
 
 #endif /* CONTROL_CONTROL_H_ */

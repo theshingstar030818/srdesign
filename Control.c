@@ -27,6 +27,7 @@ STATE Control_GlobalState;
 REMAINING Control_GlobalRemaining;
 
 uint32_t Control_JoystickState;
+uint32_t Control_JoystickStateDebounce;
 
 int main(void)
 {
@@ -190,4 +191,17 @@ void Control_DosageReset(void)
 	Control_GlobalState = None_State;
 	StepperMotor_CurrentBasalDose = 0;
 	StepperMotor_CurrentBolusDose = 0;
+}
+
+void Control_Debounce(void)
+{
+	int i,j;
+	do {
+		Control_JoystickState = Joystick_GetState();
+		for(i = 0; i < 150000; i++)
+		{
+			for(j = 0; j < 20; j++);
+		}
+		Control_JoystickStateDebounce = Joystick_GetState();
+	} while(Control_JoystickState != Control_JoystickStateDebounce);
 }
