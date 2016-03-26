@@ -29,6 +29,8 @@ REMAINING Control_GlobalRemaining;
 uint32_t Control_JoystickState;
 uint32_t Control_JoystickStateDebounce;
 
+bool Control_ShowBolusScreen;
+
 int main(void)
 {
 	uint32_t i, j;
@@ -81,6 +83,11 @@ int main(void)
 
 	while(1)
 	{
+		if(Control_ShowBolusScreen)
+		{
+			Control_ShowBolusScreen = false;
+			Profile_Bolus();
+		}
 		// Clear out the screen, and update
 		GLCD_ClearScreen();
 		LCD_UpdateScreenStatus();
@@ -91,7 +98,7 @@ int main(void)
 			case None_State:
 				for(i = 0; i < 150000; i++)
 				{
-					for(j = 0; j < 50; j++);
+					for(j = 0; j < 100; j++);
 				}
 				break;
 			case Administration_State:
@@ -99,7 +106,7 @@ int main(void)
 				//Speaker_Stop();
 				for(i = 0; i < 150000; i++)
 				{
-					for(j = 0; j < 50; j++);
+					for(j = 0; j < 100; j++);
 				}
 				break;
 			case Empty_State:

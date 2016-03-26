@@ -17,6 +17,8 @@ extern REMAINING Control_GlobalRemaining;
 
 extern uint32_t StepperMotor_GlobalPosition;
 
+extern bool Control_ShowBolusScreen;
+
 void BolusDose_DoseInitiate(void)
 {
 	LPC_PINCON->PINSEL4 &=~ (3<<20); // P2.10 is GPIO
@@ -27,7 +29,7 @@ void BolusDose_DoseInitiate(void)
 	NVIC_EnableIRQ(EINT3_IRQn); // Enable External Interrupt 3
 }
 
-void EINT3_IRQHandler(void)
+void BolusDose_AdministerBolus(void)
 {
 	GLCD_ClearScreen();
 	Profile_Bolus();
@@ -53,5 +55,11 @@ void EINT3_IRQHandler(void)
 		Control_GlobalState = Empty_State;
 		LPC_GPIO2->FIOSET |= 1 << 2; // Signal that syringe is empty P2.2
 	}
-	StepperMotor_SpinEnable();	
+	StepperMotor_SpinEnable();
+}
+
+void EINT3_IRQHandler(void)
+{
+	LPC_GPIOINT->IO2IntClr |= (1<<10);
+	Control_ShowBolusScreen = true;
 }

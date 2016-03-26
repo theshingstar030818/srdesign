@@ -19,6 +19,8 @@
  
 void BolusDose_DoseInitiate(void);
 
+void BolusDose_AdministerBolus(void);
+
 /** Function: EINT3_IRQHandler()
  *
  *  The interrupt handler for the external interrupt connected 

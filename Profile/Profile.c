@@ -130,27 +130,28 @@ void Profile_AssignBasalSteps(int units)
 
 void Profile_Bolus(void)
 {
+	GLCD_ClearScreen();
 	Profile_UpdateBaseDisplay(pProfile_BaseDisplay, "Bolus Amount", "1 Unit", "4 Units", "7 Units", "10 Units");
 	LCD_DisplayOptions(Profile_BaseDisplay);
 	do {
 		Control_Debounce();
 	} while (!(Control_JoystickState & (JOYSTICK_LEFT | JOYSTICK_RIGHT | JOYSTICK_UP | JOYSTICK_DOWN)));
-					if (Control_JoystickState == JOYSTICK_LEFT)
-					{
-						Profile_BolusSteps = 1;
-					}
-					if (Control_JoystickState == JOYSTICK_RIGHT)
-					{
-						Profile_BolusSteps = 4;
-					}
-					if (Control_JoystickState  == JOYSTICK_UP)
-					{
-						Profile_BolusSteps = 7;
-					}
-					if (Control_JoystickState == JOYSTICK_DOWN)
-					{
-						Profile_BolusSteps = 10;
-					}
+	if (Control_JoystickState == JOYSTICK_LEFT)
+	{
+		Profile_BolusSteps = 1;
+	}
+	if (Control_JoystickState == JOYSTICK_RIGHT)
+	{
+		Profile_BolusSteps = 4;
+	}
+	if (Control_JoystickState  == JOYSTICK_UP)
+	{
+		Profile_BolusSteps = 7;
+	}
+	if (Control_JoystickState == JOYSTICK_DOWN)
+	{
+		Profile_BolusSteps = 10;
+	}
 }
 
 BaseDisplay Profile_CreateBaseDisplay(char *cat, char *opt1, char *opt2,
