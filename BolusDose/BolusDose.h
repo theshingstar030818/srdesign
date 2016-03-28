@@ -19,6 +19,15 @@
  
 void BolusDose_DoseInitiate(void);
 
+/** Function: BolusDose_AdministerBolus()
+ *
+ *  The function is called in the flag in the external interrupt is triggered.
+ *	The function is set up since there are two functions trying to call SSP.
+ *  
+ *  @param void: void
+ *  @return void: void
+ */
+
 void BolusDose_AdministerBolus(void);
 
 /** Function: EINT3_IRQHandler()

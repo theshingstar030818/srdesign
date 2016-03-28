@@ -104,9 +104,12 @@ void StepperMotor_StepForward(void)
     Control_LEDClearAdmin();
 		Control_GlobalStatus = Wait_Status;
 		Control_GlobalState = Empty_State;
+		Speaker_Stop();
+		Speaker_SetFrequency(kHz_4);
+		Speaker_Play();
 	}
 	// Check to see if Basal or Bolus has completed.
-	else if((StepperMotor_CurrentBasalDose >= Profile_CurrentOptions.BasalStepsPerDose) || (StepperMotor_CurrentBolusDose >= BOLUS_STEPS))
+	else if((StepperMotor_CurrentBasalDose >= Profile_CurrentOptions.BasalStepsPerDose) || (StepperMotor_CurrentBolusDose >= Profile_BolusSteps))
 	{
     Control_LEDClearAdmin();
 		Control_DosageReset();

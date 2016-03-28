@@ -86,7 +86,7 @@ int main(void)
 		if(Control_ShowBolusScreen)
 		{
 			Control_ShowBolusScreen = false;
-			Profile_Bolus();
+			BolusDose_AdministerBolus();
 		}
 		// Clear out the screen, and update
 		GLCD_ClearScreen();
@@ -202,13 +202,10 @@ void Control_DosageReset(void)
 
 void Control_Debounce(void)
 {
-	int i,j;
+	int i;
 	do {
 		Control_JoystickState = Joystick_GetState();
-		for(i = 0; i < 150000; i++)
-		{
-			for(j = 0; j < 20; j++);
-		}
+		for(i = 0; i < 2000000; i++);
 		Control_JoystickStateDebounce = Joystick_GetState();
 	} while(Control_JoystickState != Control_JoystickStateDebounce);
 }

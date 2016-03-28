@@ -138,19 +138,19 @@ void Profile_Bolus(void)
 	} while (!(Control_JoystickState & (JOYSTICK_LEFT | JOYSTICK_RIGHT | JOYSTICK_UP | JOYSTICK_DOWN)));
 	if (Control_JoystickState == JOYSTICK_LEFT)
 	{
-		Profile_BolusSteps = 1;
+		Profile_BolusSteps = (uint32_t)(1 * SYRINGE_LENGTH / 100);
 	}
 	if (Control_JoystickState == JOYSTICK_RIGHT)
 	{
-		Profile_BolusSteps = 4;
+		Profile_BolusSteps = (uint32_t)(4 * SYRINGE_LENGTH / 100);
 	}
 	if (Control_JoystickState  == JOYSTICK_UP)
 	{
-		Profile_BolusSteps = 7;
+		Profile_BolusSteps = (uint32_t)(7 * SYRINGE_LENGTH / 100);
 	}
 	if (Control_JoystickState == JOYSTICK_DOWN)
 	{
-		Profile_BolusSteps = 10;
+		Profile_BolusSteps = (uint32_t)(10 * SYRINGE_LENGTH / 100);
 	}
 }
 
