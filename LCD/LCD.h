@@ -43,24 +43,42 @@ void LCD_UpdateScreenState(void);
 
 /** Function LCD_UpdateScreenInsulin()
  *
- *  Updates the LCD with current insulin count.
+ *  Updates the LCD with current insulin percentage.
  *
  *  @param void: void 
  *  @return void: void
  */
 
 void LCD_UpdateScreenInsulin(void);
-
-/** Function LCD_BasalRate()
+ 
+/** Function LCD_DisplayOptions()
  *
- *  Allows user to select Basal profile.
+ *  Displays the options that are passed in as parameters.
+ *
+ *  @param BaseDisplay: current 
+ *  @return void: void
+ */
+ 
+void LCD_DisplayOptions(BaseDisplay current);
+
+/** Function LCD_ClearScreen()
+ *
+ *  Clears LCD.
  *
  *  @param void: void 
  *  @return void: void
  */
  
- void LCD_SetUpCommon(void);
- 
- void LCD_DisplayOptions(BaseDisplay current);
+void LCD_ClearScreen(void);
+
+/** Function LCD_SetUpCommon()
+ *
+ *  Updates the LCD with base display for option selection.
+ *
+ *  @param void: void 
+ *  @return void: void
+ */
+
+void LCD_SetUpCommon(void);
 
 #endif /* LCD_LCD_H_ */

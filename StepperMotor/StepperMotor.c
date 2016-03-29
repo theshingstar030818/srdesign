@@ -109,7 +109,7 @@ void StepperMotor_StepForward(void)
 		Speaker_Play();
 	}
 	// Check to see if Basal or Bolus has completed.
-	else if((StepperMotor_CurrentBasalDose >= Profile_CurrentOptions.BasalStepsPerDose) || (StepperMotor_CurrentBolusDose >= Profile_BolusSteps))
+	else if((StepperMotor_CurrentBasalDose >= Profile_CurrentOptions.BasalStepsPerDose) || (StepperMotor_CurrentBolusDose >= Profile_CurrentOptions.BolusSteps))
 	{
     Control_LEDClearAdmin();
 		Control_DosageReset();

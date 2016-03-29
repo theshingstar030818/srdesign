@@ -15,6 +15,8 @@ extern REMAINING Control_GlobalRemaining;
 
 extern uint32_t StepperMotor_GlobalPosition;
 
+extern ProfileOptions Profile_CurrentOptions;
+
 // Set and enable Timer0 for the time in between Basal doses
 void BasalDose_TimingInitiate(void)
 {
@@ -46,7 +48,7 @@ void TIMER0_IRQHandler(void)
 		Control_GlobalState = Administration_State;
 		LPC_GPIO1->FIOSET |= 1 << 28; // Signal that Basal is being administered P1.28
 		
-		if(StepperMotor_GlobalPosition + BASAL_STEPS > SYRINGE_LENGTH)
+		if(StepperMotor_GlobalPosition + Profile_CurrentOptions.BasalStepsPerDose > SYRINGE_LENGTH)
 		{
 			Control_GlobalRemaining = Basal_Remaining;
 		}

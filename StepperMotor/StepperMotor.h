@@ -24,7 +24,7 @@ void StepperMotor_Initiate(void);
  * 
  *  Uses the StepperMotor_CurrentPosition to determine the
  *  next half-step in the forward motor sequence and assigns it.
- *  Then checks to see if the current dosing has finished.
+ *  Then checks various status variables to see if any further action is required.
  *  
  *  @param void: void
  *  @return void: void

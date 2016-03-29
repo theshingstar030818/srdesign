@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "Profile.h"
+#include "..\Control.h"
 #include "..\LCD\LCD.h"
 
 extern uint32_t Control_JoystickState;
@@ -45,45 +46,45 @@ void Profile_Initiate(void)
 	pProfile_BaseDisplay = &Profile_BaseDisplay;
 	LCD_DisplayOptions(Profile_BaseDisplay);
 	
-	do {
+	do{
 		Control_Debounce();
-	} while (!(Control_JoystickState & (JOYSTICK_LEFT | JOYSTICK_RIGHT | JOYSTICK_UP | JOYSTICK_DOWN)));
-	if (Control_JoystickState == JOYSTICK_LEFT)
+	}while (!(Control_JoystickState & (JOYSTICK_LEFT | JOYSTICK_RIGHT | JOYSTICK_UP | JOYSTICK_DOWN)));
+	if(Control_JoystickState == JOYSTICK_LEFT)
 	{
 		Profile_AgeGroup = Child;
 	}
-	if (Control_JoystickState == JOYSTICK_RIGHT)
+	if(Control_JoystickState == JOYSTICK_RIGHT)
 	{
 		Profile_AgeGroup = Adolescent;
 	}
-	if (Control_JoystickState  == JOYSTICK_UP)
+	if(Control_JoystickState  == JOYSTICK_UP)
 	{
 		Profile_AgeGroup = Adult;
 	}
-	if (Control_JoystickState == JOYSTICK_DOWN)
+	if(Control_JoystickState == JOYSTICK_DOWN)
 	{
 		Profile_AgeGroup = Elderly;
 	}
-	GLCD_ClearScreen();
+	LCD_ClearScreen();
 	
 	Profile_UpdateBaseDisplay(pProfile_BaseDisplay, "Activity Level", "", "Moderately Active", "Very Active", "Mostly Inactive");
 	LCD_DisplayOptions(Profile_BaseDisplay);
-	do {
+	do{
 		Control_Debounce();
-	} while (!(Control_JoystickState & (JOYSTICK_RIGHT | JOYSTICK_UP | JOYSTICK_DOWN)));
-	if (Control_JoystickState == JOYSTICK_RIGHT)
+	}while (!(Control_JoystickState & (JOYSTICK_RIGHT | JOYSTICK_UP | JOYSTICK_DOWN)));
+	if(Control_JoystickState == JOYSTICK_RIGHT)
 	{
 		Profile_ActivityGroup = Moderate;
 	}
-	if (Control_JoystickState == JOYSTICK_UP)
+	if(Control_JoystickState == JOYSTICK_UP)
 	{
 		Profile_ActivityGroup = Active;
 	}
-	if (Control_JoystickState == JOYSTICK_DOWN)
+	if(Control_JoystickState == JOYSTICK_DOWN)
 	{
 		Profile_ActivityGroup = Inactive;
 	}
-	GLCD_ClearScreen();
+	LCD_ClearScreen();
 	
 	Profile_CurrentOptions = Profile_CreateProfile(Profile_AgeGroup, Profile_ActivityGroup);
 	
@@ -103,20 +104,20 @@ void Profile_RecommendDosage(void)
 	
 	do {
 		Control_Debounce(); 
-	} while (!(Control_JoystickState & (JOYSTICK_LEFT | JOYSTICK_RIGHT | JOYSTICK_UP | JOYSTICK_DOWN)));
-	if (Control_JoystickState == JOYSTICK_LEFT)
+	}while (!(Control_JoystickState & (JOYSTICK_LEFT | JOYSTICK_RIGHT | JOYSTICK_UP | JOYSTICK_DOWN)));
+	if(Control_JoystickState == JOYSTICK_LEFT)
 	{
 		Profile_AssignBasalSteps(Profile_AllProfiles[Profile_CurrentOptions.Age][Profile_CurrentOptions.Activity][0]);
 	}
-	if (Control_JoystickState == JOYSTICK_RIGHT)
+	if(Control_JoystickState == JOYSTICK_RIGHT)
 	{
 		Profile_AssignBasalSteps(Profile_AllProfiles[Profile_CurrentOptions.Age][Profile_CurrentOptions.Activity][1]);
 	}
-	if (Control_JoystickState == JOYSTICK_UP)
+	if(Control_JoystickState == JOYSTICK_UP)
 	{
 		Profile_AssignBasalSteps(Profile_AllProfiles[Profile_CurrentOptions.Age][Profile_CurrentOptions.Activity][2]);
 	}
-	if (Control_JoystickState == JOYSTICK_DOWN)
+	if(Control_JoystickState == JOYSTICK_DOWN)
 	{
 		Profile_AssignBasalSteps(Profile_AllProfiles[Profile_CurrentOptions.Age][Profile_CurrentOptions.Activity][3]);
 	}
@@ -128,29 +129,29 @@ void Profile_AssignBasalSteps(int units)
 	Profile_CurrentOptions.BasalStepsPerDose = (uint32_t)(Profile_CurrentOptions.BasalStepsPerDay / 60.0);
 }
 
-void Profile_Bolus(void)
+void Profile_DisplayBolusOptions(void)
 {
-	GLCD_ClearScreen();
+	LCD_ClearScreen();
 	Profile_UpdateBaseDisplay(pProfile_BaseDisplay, "Bolus Amount", "1 Unit", "4 Units", "7 Units", "10 Units");
 	LCD_DisplayOptions(Profile_BaseDisplay);
-	do {
+	do{
 		Control_Debounce();
-	} while (!(Control_JoystickState & (JOYSTICK_LEFT | JOYSTICK_RIGHT | JOYSTICK_UP | JOYSTICK_DOWN)));
-	if (Control_JoystickState == JOYSTICK_LEFT)
+	}while (!(Control_JoystickState & (JOYSTICK_LEFT | JOYSTICK_RIGHT | JOYSTICK_UP | JOYSTICK_DOWN)));
+	if(Control_JoystickState == JOYSTICK_LEFT)
 	{
-		Profile_BolusSteps = (uint32_t)(1 * SYRINGE_LENGTH / 100);
+		Profile_CurrentOptions.BolusSteps = (uint32_t)(1 * SYRINGE_LENGTH / 100);
 	}
-	if (Control_JoystickState == JOYSTICK_RIGHT)
+	if(Control_JoystickState == JOYSTICK_RIGHT)
 	{
-		Profile_BolusSteps = (uint32_t)(4 * SYRINGE_LENGTH / 100);
+		Profile_CurrentOptions.BolusSteps = (uint32_t)(4 * SYRINGE_LENGTH / 100);
 	}
-	if (Control_JoystickState  == JOYSTICK_UP)
+	if(Control_JoystickState  == JOYSTICK_UP)
 	{
-		Profile_BolusSteps = (uint32_t)(7 * SYRINGE_LENGTH / 100);
+		Profile_CurrentOptions.BolusSteps = (uint32_t)(7 * SYRINGE_LENGTH / 100);
 	}
-	if (Control_JoystickState == JOYSTICK_DOWN)
+	if(Control_JoystickState == JOYSTICK_DOWN)
 	{
-		Profile_BolusSteps = (uint32_t)(10 * SYRINGE_LENGTH / 100);
+		Profile_CurrentOptions.BolusSteps = (uint32_t)(10 * SYRINGE_LENGTH / 100);
 	}
 }
 
@@ -172,7 +173,7 @@ BaseDisplay Profile_CreateBaseDisplay(char *cat, char *opt1, char *opt2,
 	return temp;
 }
 
-BaseDisplay* Profile_UpdateBaseDisplay(BaseDisplay *temp, char *cat, char *opt1, 
+void Profile_UpdateBaseDisplay(BaseDisplay *temp, char *cat, char *opt1, 
 																			char *opt2, char *opt3, char *opt4)
 {
 	memset(temp->ProfileCategory, 0, 25);
@@ -191,8 +192,6 @@ BaseDisplay* Profile_UpdateBaseDisplay(BaseDisplay *temp, char *cat, char *opt1,
 	temp->Size2 = strlen(opt2);
 	temp->Size3 = strlen(opt3);
 	temp->Size4 = strlen(opt4);
-	
-	return temp;
 }
 
 ProfileOptions Profile_CreateProfile(AGE AgeRange, ACTIVITY ActivityGroup)

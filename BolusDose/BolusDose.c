@@ -17,6 +17,8 @@ extern REMAINING Control_GlobalRemaining;
 
 extern uint32_t StepperMotor_GlobalPosition;
 
+extern ProfileOptions Profile_CurrentOptions;
+
 extern bool Control_ShowBolusScreen;
 
 void BolusDose_DoseInitiate(void)
@@ -31,8 +33,8 @@ void BolusDose_DoseInitiate(void)
 
 void BolusDose_AdministerBolus(void)
 {
-	GLCD_ClearScreen();
-	Profile_Bolus();
+	LCD_ClearScreen();
+	Profile_DisplayBolusOptions();
 	LPC_GPIOINT->IO2IntClr |= (1<<10); // Clear the status
 	if(StepperMotor_GlobalPosition <= SYRINGE_LENGTH)
 	{
@@ -40,7 +42,7 @@ void BolusDose_AdministerBolus(void)
 		Control_GlobalState = Administration_State;
 		LPC_GPIO1->FIOSET |= 1 << 29; // Signal that Bolus is being administered P1.29
 		
-		if(StepperMotor_GlobalPosition + BOLUS_STEPS > SYRINGE_LENGTH)
+		if(StepperMotor_GlobalPosition + Profile_CurrentOptions.BolusSteps > SYRINGE_LENGTH)
 		{
 			Control_GlobalRemaining = Bolus_Remaining;
 		}

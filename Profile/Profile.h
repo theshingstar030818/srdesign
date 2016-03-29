@@ -40,13 +40,13 @@ void Profile_RecommendDosage(void);
  *	Based on the users selection of the recommended Basal Doses
  *	the function converts the dosage rate into steps per day and steps per dose.
  *
- *  @param int: int 
+ *  @param int: units 
  *  @return void: void
  */
 
 void Profile_AssignBasalSteps(int units);
 
-/** Function Profile_Bolus()
+/** Function Profile_DisplayBolusOptions()
  *
  *  When Bolus is activated, allows user to select amount of
  *	insulin for a Bolus dosage.
@@ -55,14 +55,14 @@ void Profile_AssignBasalSteps(int units);
  *  @return void: void
  */
 
-void Profile_Bolus(void);
+void Profile_DisplayBolusOptions(void);
 
 /** Function Profile_CreateBaseDisplay()
  *
- *  Creates BaseDisplay struct
+ *  Creates BaseDisplay struct.
  *
- *  @param 5 char: 5 char 
- *  @return BaseDisplay: BaseDisplay
+ *  @param char*, char*, char*, char*, char*: cat, opt1, opt2, opt3, opt4
+ *  @return BaseDisplay: temp
  */
 
 BaseDisplay Profile_CreateBaseDisplay(char *cat, char *opt1, char *opt2,
@@ -70,33 +70,23 @@ BaseDisplay Profile_CreateBaseDisplay(char *cat, char *opt1, char *opt2,
 
 /** Function Profile_UpdateBaseDisplay()
  *
- *  Updates BaseDisplay struct
+ *  Updates BaseDisplay struct.
  *
- *  @param BaseDisplay, 5 char: BaseDisplay, 5 char 
- *  @return BaseDisplay: BaseDisplay
+ *  @param BaseDisplay*, char*, char*, char*, char*, char*: temp, cat, opt1, opt2, opt3, opt4
+ *  @return void: void
  */
 
-BaseDisplay* Profile_UpdateBaseDisplay(BaseDisplay *temp, char *cat, char *opt1, 
+void Profile_UpdateBaseDisplay(BaseDisplay *temp, char *cat, char *opt1, 
 																			char *opt2, char *opt3, char *opt4);
 
 /** Function Profile_CreateProfile()
  *
- *  Creates ProfileOptions struct
+ *  Creates ProfileOptions struct.
  *
- *  @param AGE, ACTIVITY: AGE, ACTIVITY 
- *  @return ProfileOptions: ProfileOptions
+ *  @param AGE, ACTIVITY: AgeRange, ActivityGroup 
+ *  @return ProfileOptions: temp
  */
 
 ProfileOptions Profile_CreateProfile(AGE AgeRange, ACTIVITY ActivityGroup);
-
-/** Function Profile_UpdateProfile()
- *
- *  Updates ProfileOptions struct
- *
- *  @param ProfileOptions, AGE, ACTIVITY: ProfileOptions, AGE, ACTIVITY 
- *  @return ProfileOptions: ProfileOptions
- */
-
-ProfileOptions* Profile_UpdateProfile(ProfileOptions *temp);
 
 #endif /* PROFILE_PROFILE_H_ */
