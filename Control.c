@@ -5,10 +5,10 @@
  *      Author: sle
  */
 
-#include <string.h>
 #include "Control.h"
 #include ".\LCD\LCD.h"
 #include ".\Speaker\Speaker.h"
+#include ".\Profile\Profile.h"
 #include ".\BasalDose\BasalDose.h"
 #include ".\BolusDose\BolusDose.h"
 #include ".\Glucometer\Glucometer.h"
@@ -27,12 +27,13 @@ STATE Control_GlobalState;
 REMAINING Control_GlobalRemaining;
 
 uint32_t Control_JoystickState;
+uint32_t Control_JoystickStateDebounce;
+
+bool Control_ShowBolusScreen;
 
 int main(void)
 {
-	uint32_t i, j;
-	BaseDisplay Control_BaseDisplay;
-	BaseDisplay* pControl_BaseDisplay;
+	uint32_t i;
 	SystemInit();
 	
 	// Set default status to None
@@ -54,6 +55,9 @@ int main(void)
 	// Built in Joystick initialization
 	Joystick_Initialize();
 	
+	// Initialize User-Profile
+	Profile_Initiate();
+	
 	// Initialize ADC for glucometer
 	Glucometer_Initiate();
 	
@@ -62,8 +66,6 @@ int main(void)
 	
 	// Initialize Speaker
 	Speaker_Initiate();
-	Speaker_SetFrequency(Hz_250);
-	//Speaker_Play();
 	
 	// Initialize Timers 0, 1
 	BasalDose_TimingInitiate();
@@ -72,57 +74,37 @@ int main(void)
 	// Initialize Timer2 and set up pointer to InsulinQueue array
 	pInsulinQueue_Queue = InsulinQueue_Queue;
 	InsulinQueue_Initiate();
-
+	
 	// Initialize External Interrupt 3
 	BolusDose_DoseInitiate();
-	
-	// Initialize Speaker
-	Speaker_Initiate();
-	
-	Control_BaseDisplay = Control_CreateBaseDisplay("Age Group", "Child", "Adolescent", "Adult", "Elderly");
-	pControl_BaseDisplay = &Control_BaseDisplay;
-	LCD_Options(Control_BaseDisplay);
-	
-	GLCD_ClearScreen();
-	
-	Control_UpdateBaseDisplay(pControl_BaseDisplay, "Activity Level", "", "Moderately Active", "Very Active", "Mostly Inactive");
-	LCD_Options(Control_BaseDisplay);
-	GLCD_ClearScreen();
-	
-	Control_UpdateBaseDisplay(pControl_BaseDisplay, "Bolus Amount", "1 Unit", "2 Units", "4 Units", "8 Units");
-	LCD_Options(Control_BaseDisplay);
 	
 	LPC_TIM0->TCR |= 1 << 0; // Start Counting Timer0
 
 	while(1)
 	{
+		if(Control_ShowBolusScreen)
+		{
+			Control_ShowBolusScreen = false;
+			BolusDose_AdministerBolus();
+		}
 		// Clear out the screen, and update
-		GLCD_ClearScreen();
+		LCD_ClearScreen();
 		LCD_UpdateScreenStatus();
 		LCD_UpdateScreenState();
 		LCD_UpdateScreenInsulin();
 		switch(Control_GlobalState)
 		{
 			case None_State:
-				for(i = 0; i < 150000; i++)
-				{
-					for(j = 0; j < 50; j++);
-				}
-				break;
 			case Administration_State:
 				// Wait for a short period of time before updating
-				Speaker_Stop();
-				for(i = 0; i < 150000; i++)
-				{
-					for(j = 0; j < 50; j++);
-				}
+				for(i = 0; i < 15000000; i++);
 				break;
 			case Empty_State:
         BasalDose_TimingDisable();
 				LPC_GPIO2->FIOSET |= 1 << 2; // Signal that syringe is empty P2.2
-				do {
+				do{
 					Control_JoystickState = Joystick_GetState(); 
-				} while((Control_JoystickState & 0x00000008) != 0x00000008);
+				}while(Control_JoystickState != JOYSTICK_UP);
 				Speaker_Stop();
 				Control_GlobalStatus = Backward_Status;
 				Control_GlobalState = Administration_State;
@@ -132,9 +114,9 @@ int main(void)
 			case Full_State:
         BasalDose_TimingDisable();
 				LPC_GPIO2->FIOSET |= 1 << 3; // Signal that syringe can be replaced P2.3
-				do {
+				do{
 					Control_JoystickState = Joystick_GetState();
-				} while((Control_JoystickState & 0x00000010) != 0x00000010);
+				}while(Control_JoystickState != JOYSTICK_DOWN);
 				Control_LEDClearAll();
 				switch(Control_GlobalRemaining)
 				{
@@ -194,7 +176,7 @@ void Control_ClockInitiate(void)
 	LPC_SC->PCONP |= 1 << 23;
 	
 	// Clock select Timer0, Timer1, and Timer2 (PCLK = CCLK)
-	LPC_SC->PCLKSEL0 |= 1 << 2;
+	//LPC_SC->PCLKSEL0 |= 1 << 2;
 	LPC_SC->PCLKSEL0 |= 1 << 4;
 	LPC_SC->PCLKSEL1 |= 1 << 12;
 	LPC_SC->PCLKSEL1 |= 1 << 14;
@@ -208,43 +190,12 @@ void Control_DosageReset(void)
 	StepperMotor_CurrentBolusDose = 0;
 }
 
-BaseDisplay Control_CreateBaseDisplay(char *cat, char *opt1, char *opt2,
-																			char *opt3, char *opt4)
+void Control_Debounce(void)
 {
-	BaseDisplay temp;
-	strcpy(temp.ProfileCategory, cat);
-	strcpy(temp.ProfileOption1, opt1);
-	strcpy(temp.ProfileOption2, opt2);
-	strcpy(temp.ProfileOption3, opt3);
-	strcpy(temp.ProfileOption4, opt4);
-	
-	temp.Size1 = strlen(opt1);
-	temp.Size2 = strlen(opt2);
-	temp.Size3 = strlen(opt3);
-	temp.Size4 = strlen(opt4);
-	
-	return temp;
-}
-
-BaseDisplay* Control_UpdateBaseDisplay(BaseDisplay *temp, char *cat, char *opt1, 
-																			char *opt2, char *opt3, char *opt4)
-{
-	memset(temp->ProfileCategory, 0, 25);
-	memset(temp->ProfileOption1, 0, 25);
-	memset(temp->ProfileOption2, 0, 25);
-	memset(temp->ProfileOption3, 0, 25);
-	memset(temp->ProfileOption4, 0, 25);
-	
-	strcpy(temp->ProfileCategory, cat);
-	strcpy(temp->ProfileOption1, opt1);
-	strcpy(temp->ProfileOption2, opt2);
-	strcpy(temp->ProfileOption3, opt3);
-	strcpy(temp->ProfileOption4, opt4);
-	
-	temp->Size1 = strlen(opt1);
-	temp->Size2 = strlen(opt2);
-	temp->Size3 = strlen(opt3);
-	temp->Size4 = strlen(opt4);
-	
-	return temp;
+	int i;
+	do{
+		Control_JoystickState = Joystick_GetState();
+		for(i = 0; i < 2000000; i++);
+		Control_JoystickStateDebounce = Joystick_GetState();
+	}while(Control_JoystickState != Control_JoystickStateDebounce);
 }

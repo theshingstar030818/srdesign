@@ -9,6 +9,8 @@
 #include ".\LCD.h"
 #include <stdint.h>
 #include "..\Control.h"
+#include "Board_GLCD.h"  // Board Support : Graphic LCD
+#include "GLCD_Config.h" // Board Support : Graphic LCD
 #include "..\InsulinQueue\InsulinQueue.h"
 #include "..\StepperMotor\StepperMotor.h"
 
@@ -115,7 +117,7 @@ void LCD_UpdateScreenInsulin(void)
 	}
 }
 
-void LCD_Options(BaseDisplay current)
+void LCD_DisplayOptions(BaseDisplay current)
 {
 	LCD_SetUpCommon();
 	
@@ -131,7 +133,11 @@ void LCD_Options(BaseDisplay current)
 	GLCD_DrawString(160 - ((current.Size4 / 2) * 6), 160, current.ProfileOption4);
 	
 	GLCD_DrawString(90, 185, "Push Down: Glucose Reading\0");
-	
+}
+
+void LCD_ClearScreen(void)
+{
+	GLCD_ClearScreen();
 }
 
 // bitmap taken from Demo.c from Keil uVision example package
