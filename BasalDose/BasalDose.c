@@ -15,11 +15,13 @@ extern REMAINING Control_GlobalRemaining;
 
 extern uint32_t StepperMotor_GlobalPosition;
 
+extern ProfileOptions Profile_CurrentOptions;
+
 // Set and enable Timer0 for the time in between Basal doses
 void BasalDose_TimingInitiate(void)
 {
-	LPC_TIM0->PR = 0x02; // Pre-scalar
-	LPC_TIM0->MR0 = 1 << 27; // Match number
+	LPC_TIM0->PR = 0; // Pre-scalar
+	LPC_TIM0->MR0 = 1500000000; // Match number
 	LPC_TIM0->MCR |= 3 << 0; // Interrupt and reset timer on match (MCR = 011)
 	NVIC_EnableIRQ(TIMER0_IRQn); // Enable Timer0, but don't start counting
 }
@@ -46,7 +48,7 @@ void TIMER0_IRQHandler(void)
 		Control_GlobalState = Administration_State;
 		LPC_GPIO1->FIOSET |= 1 << 28; // Signal that Basal is being administered P1.28
 		
-		if(StepperMotor_GlobalPosition + BASAL_STEPS > SYRINGE_LENGTH)
+		if(StepperMotor_GlobalPosition + Profile_CurrentOptions.BasalStepsPerDose > SYRINGE_LENGTH)
 		{
 			Control_GlobalRemaining = Basal_Remaining;
 		}

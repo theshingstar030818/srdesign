@@ -7,6 +7,7 @@
 
 #include "..\Control.h"
 #include "StepperMotor.h"
+#include "..\Profile\Profile.h"
 #include "..\Speaker\Speaker.h"
 #include "..\BasalDose\BasalDose.h"
 
@@ -14,10 +15,9 @@ extern STATE Control_GlobalState;
 extern STATUS Control_GlobalStatus;
 
 extern uint32_t InsulinQueue_CurrentEntryCount;
+extern uint32_t Profile_BolusSteps;
 
-extern bool Control_Warning_20;
-extern bool Control_Warning_10;
-extern bool Control_Warning_05;
+extern ProfileOptions Profile_CurrentOptions;
 
 uint32_t StepperMotor_GlobalPosition;
 uint32_t StepperMotor_CurrentPosition;
@@ -80,17 +80,23 @@ void StepperMotor_StepForward(void)
 	if(StepperMotor_GlobalPosition >= WARNING_05)
 	{
 		LPC_GPIO2->FIOSET |= 1 << 6;
-    Speaker_SetFrequency(Hz_500)
+		Speaker_Stop();
+    Speaker_SetFrequency(kHz_2);
+		Speaker_Play();
 	}
-	if(StepperMotor_GlobalPosition >= WARNING_10)
+	else if(StepperMotor_GlobalPosition >= WARNING_10)
 	{
 		LPC_GPIO2->FIOSET |= 1 << 5;
-    Speaker_SetFrequency(kHz_1)
+		Speaker_Stop();
+    Speaker_SetFrequency(kHz_1);
+		Speaker_Play();
 	}
-	if(StepperMotor_GlobalPosition >= WARNING_20)
+	else if(StepperMotor_GlobalPosition >= WARNING_20)
 	{
 		LPC_GPIO2->FIOSET |= 1 << 4;
-    Speaker_SetFrequency(kHz_2)
+		Speaker_Stop();
+    Speaker_SetFrequency(Hz_500);
+		Speaker_Play();
 	}
 
 	if(StepperMotor_GlobalPosition == SYRINGE_LENGTH)
@@ -98,9 +104,12 @@ void StepperMotor_StepForward(void)
     Control_LEDClearAdmin();
 		Control_GlobalStatus = Wait_Status;
 		Control_GlobalState = Empty_State;
+		Speaker_Stop();
+		Speaker_SetFrequency(kHz_4);
+		Speaker_Play();
 	}
 	// Check to see if Basal or Bolus has completed.
-	else if((StepperMotor_CurrentBasalDose >= BASAL_STEPS) || (StepperMotor_CurrentBolusDose >= BOLUS_STEPS))
+	else if((StepperMotor_CurrentBasalDose >= Profile_CurrentOptions.BasalStepsPerDose) || (StepperMotor_CurrentBolusDose >= Profile_CurrentOptions.BolusSteps))
 	{
     Control_LEDClearAdmin();
 		Control_DosageReset();
@@ -160,7 +169,7 @@ void StepperMotor_StepBackward(void)
 void StepperMotor_SpinInitiate(void)
 {
 	LPC_TIM1->PR = 0x02; // Pre-scalar
-	LPC_TIM1->MR0 = 1 << 18; // Match number
+	LPC_TIM1->MR0 = 1 << 20; // Match number
 	LPC_TIM1->MCR |= 3 << 0; // Interrupt and reset timer on match (MCR = 011)
 	NVIC_EnableIRQ(TIMER1_IRQn);
 }

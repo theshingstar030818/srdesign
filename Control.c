@@ -8,6 +8,7 @@
 #include "Control.h"
 #include ".\LCD\LCD.h"
 #include ".\Speaker\Speaker.h"
+#include ".\Profile\Profile.h"
 #include ".\BasalDose\BasalDose.h"
 #include ".\BolusDose\BolusDose.h"
 #include ".\Glucometer\Glucometer.h"
@@ -26,10 +27,13 @@ STATE Control_GlobalState;
 REMAINING Control_GlobalRemaining;
 
 uint32_t Control_JoystickState;
+uint32_t Control_JoystickStateDebounce;
+
+bool Control_ShowBolusScreen;
 
 int main(void)
 {
-	uint32_t i, j;
+	uint32_t i;
 	SystemInit();
 	
 	// Set default status to None
@@ -48,11 +52,11 @@ int main(void)
 	LCD_Initiate();
 	StepperMotor_Initiate();
 	
-	LCD_AgeGroup();
-	while(1);
-	
 	// Built in Joystick initialization
 	Joystick_Initialize();
+	
+	// Initialize User-Profile
+	Profile_Initiate();
 	
 	// Initialize ADC for glucometer
 	Glucometer_Initiate();
@@ -62,8 +66,6 @@ int main(void)
 	
 	// Initialize Speaker
 	Speaker_Initiate();
-	Speaker_ChangeFrequency(Hz_250);
-	//Speaker_Play();
 	
 	// Initialize Timers 0, 1
 	BasalDose_TimingInitiate();
@@ -72,44 +74,38 @@ int main(void)
 	// Initialize Timer2 and set up pointer to InsulinQueue array
 	pInsulinQueue_Queue = InsulinQueue_Queue;
 	InsulinQueue_Initiate();
-
+	
 	// Initialize External Interrupt 3
 	BolusDose_DoseInitiate();
-	
-	// Initialize Speaker
-	Speaker_Initiate();
 	
 	LPC_TIM0->TCR |= 1 << 0; // Start Counting Timer0
 
 	while(1)
 	{
+		if(Control_ShowBolusScreen)
+		{
+			Control_ShowBolusScreen = false;
+			BolusDose_AdministerBolus();
+		}
 		// Clear out the screen, and update
-		GLCD_ClearScreen();
+		LCD_ClearScreen();
 		LCD_UpdateScreenStatus();
 		LCD_UpdateScreenState();
 		LCD_UpdateScreenInsulin();
 		switch(Control_GlobalState)
 		{
 			case None_State:
-				for(i = 0; i < 150000; i++)
-				{
-					for(j = 0; j < 50; j++);
-				}
-				break;
 			case Administration_State:
 				// Wait for a short period of time before updating
-				Speaker_Stop();
-				for(i = 0; i < 150000; i++)
-				{
-					for(j = 0; j < 50; j++);
-				}
+				for(i = 0; i < 15000000; i++);
 				break;
 			case Empty_State:
         BasalDose_TimingDisable();
 				LPC_GPIO2->FIOSET |= 1 << 2; // Signal that syringe is empty P2.2
-				do {
+				do{
 					Control_JoystickState = Joystick_GetState(); 
-				} while((Control_JoystickState & 0x00000008) != 0x00000008);
+				}while(Control_JoystickState != JOYSTICK_UP);
+				Speaker_Stop();
 				Control_GlobalStatus = Backward_Status;
 				Control_GlobalState = Administration_State;
 				Control_LEDClearAdmin();
@@ -118,9 +114,9 @@ int main(void)
 			case Full_State:
         BasalDose_TimingDisable();
 				LPC_GPIO2->FIOSET |= 1 << 3; // Signal that syringe can be replaced P2.3
-				do {
+				do{
 					Control_JoystickState = Joystick_GetState();
-				} while((Control_JoystickState & 0x00000010) != 0x00000010);
+				}while(Control_JoystickState != JOYSTICK_DOWN);
 				Control_LEDClearAll();
 				switch(Control_GlobalRemaining)
 				{
@@ -180,7 +176,7 @@ void Control_ClockInitiate(void)
 	LPC_SC->PCONP |= 1 << 23;
 	
 	// Clock select Timer0, Timer1, and Timer2 (PCLK = CCLK)
-	LPC_SC->PCLKSEL0 |= 1 << 2;
+	//LPC_SC->PCLKSEL0 |= 1 << 2;
 	LPC_SC->PCLKSEL0 |= 1 << 4;
 	LPC_SC->PCLKSEL1 |= 1 << 12;
 	LPC_SC->PCLKSEL1 |= 1 << 14;
@@ -192,4 +188,14 @@ void Control_DosageReset(void)
 	Control_GlobalState = None_State;
 	StepperMotor_CurrentBasalDose = 0;
 	StepperMotor_CurrentBolusDose = 0;
+}
+
+void Control_Debounce(void)
+{
+	int i;
+	do{
+		Control_JoystickState = Joystick_GetState();
+		for(i = 0; i < 2000000; i++);
+		Control_JoystickStateDebounce = Joystick_GetState();
+	}while(Control_JoystickState != Control_JoystickStateDebounce);
 }

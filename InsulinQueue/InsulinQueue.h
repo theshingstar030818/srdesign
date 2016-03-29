@@ -30,4 +30,14 @@ void InsulinQueue_Initiate(void);
  
 void InsulinQueue_Push(uint32_t currentInsulinAmount);
 
+/** Function: TIMER2_IRQHandler()
+ * 
+ *  When Timer2 is trigged, push to the queue.
+ *  
+ *  @param void: void
+ *  @return void: void
+ */
+ 
+void TIMER2_IRQHandler(void);
+
 #endif /* INSULINQUEUE_INSULINQUEUE_H_ */
