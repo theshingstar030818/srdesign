@@ -7,7 +7,7 @@
 
 /** Glucometer_Initiate()
  *
- *  Initialize ADC
+ *  Initialize ADC.
  *
  *  @param void: void
  *  @return void: void
@@ -15,14 +15,12 @@
  
 void Glucometer_Initiate(void);
 
-/** Glucometer_GetValue()
+/** Glucometer_GetADCReading()
  *
  *  Get ADC value and convert.
  *
  *  @param void: void
- *  @return void: void
+ *  @return uint32_t: temp
  */
  
 uint32_t Glucometer_GetADCReading(void);
-
-uint32_t Glucometer_GetADCResolution(void);

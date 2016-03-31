@@ -19,8 +19,12 @@ void Glucometer_Initiate(void)
 
 uint32_t Glucometer_GetADCReading(void)
 {
+	uint32_t temp;
+	
 	LPC_ADC->ADCR |= (1 << 24);
 	while((LPC_ADC->ADDR0 & 0x8000) == 0);
-	return (LPC_ADC->ADDR0 >> 4) & 0xFFF;
+	temp = (LPC_ADC->ADDR0 >> 4) & 0xFFF;
+	
+	return temp;
 }
 
