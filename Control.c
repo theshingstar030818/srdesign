@@ -34,7 +34,18 @@ bool Control_ShowBolusScreen;
 int main(void)
 {
 	uint32_t i;
+	int32_t adcVal;
 	SystemInit();
+	while(1)
+	{
+		Glucometer_StartConversion();
+		while(Glucometer_ConversionDone() != 0);
+		adcVal = Glucometer_GetADCReading();
+		LCD_DisplayADC(adcVal);
+		for(i = 0; i < 20000000; i++);
+		LCD_ClearScreen();
+	}
+	
 	
 	// Set default status to None
 	Control_GlobalStatus = None_Status;
@@ -57,7 +68,7 @@ int main(void)
 	
 	// Initialize User-Profile
 	Profile_Initiate();
-	
+		
 	// Initialize ADC for glucometer
 	Glucometer_Initiate();
 	

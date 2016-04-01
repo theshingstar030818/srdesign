@@ -81,4 +81,6 @@ void LCD_ClearScreen(void);
 
 void LCD_SetUpCommon(void);
 
+void LCD_DisplayADC(uint32_t adcVal);
+
 #endif /* LCD_LCD_H_ */

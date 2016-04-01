@@ -28,6 +28,7 @@ extern uint32_t StepperMotor_GlobalPosition;
 // Used to hold string representation of our important numbers
 char LCD_StringInsulin[20]; 
 char LCD_InsulinQueueEntry[10];
+char LCD_ADCReading[10];
 
 void LCD_Initiate(void)
 {
@@ -306,4 +307,10 @@ void LCD_SetUpCommon(void)
 	GLCD_DrawBitmap(173, 119, 19, 14, &Arrows_16bpp_red[1*532]); // right arrow
 	GLCD_SetFont(&GLCD_Font_6x8);
 	GLCD_DrawString(1, 30, "Select option on joystick for:\0");
+}
+
+void LCD_DisplayADC(uint32_t adcVal)
+{
+	sprintf(LCD_ADCReading, "%d", adcVal);
+	GLCD_DrawString(10, 10, LCD_ADCReading);
 }
