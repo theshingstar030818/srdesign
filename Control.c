@@ -22,6 +22,8 @@ extern uint32_t *pInsulinQueue_Queue;
 extern uint32_t InsulinQueue_CurrentEntryCount;
 extern uint32_t InsulinQueue_Queue[INSULIN_QUEUE_SIZE];
 
+extern ProfileOptions Profile_CurrentOptions;
+
 STATUS Control_GlobalStatus;
 STATE Control_GlobalState;
 REMAINING Control_GlobalRemaining;
@@ -57,9 +59,6 @@ int main(void)
 	// Built in Joystick initialization
 	Joystick_Initialize();
 	
-	// Initialize User-Profile
-	Profile_Initiate();
-		
 	// Initialize ADC for glucometer
 	Glucometer_Initiate();
 	
@@ -80,6 +79,9 @@ int main(void)
 	// Initialize External Interrupt 3
 	BolusDose_DoseInitiate();
 	
+	// Initialize User-Profile
+	Profile_Initiate();
+	
 	LPC_TIM0->TCR |= 1 << 0; // Start Counting Timer0
 
 	while(1)
@@ -94,7 +96,7 @@ int main(void)
 		LCD_UpdateScreenStatus();
 		LCD_UpdateScreenState();
 		LCD_UpdateScreenInsulin();
-		Glucometer_GetPH();
+		LCD_DisplayADC(&Profile_CurrentOptions);
 		switch(Control_GlobalState)
 		{
 			case None_State:

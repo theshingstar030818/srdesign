@@ -59,6 +59,9 @@ typedef struct
 	uint32_t BasalStepsPerDose;
 	
 	uint32_t BolusSteps;
+	
+	uint32_t LastADCReading;
+	double LastPHReading;
 }ProfileOptions;
 
 /** Function Control_LEDInitiate()

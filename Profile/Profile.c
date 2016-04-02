@@ -10,6 +10,7 @@
 #include "Profile.h"
 #include "..\Control.h"
 #include "..\LCD\LCD.h"
+#include "..\Glucometer\Glucometer.h"
 
 extern uint32_t Control_JoystickState;
 
@@ -55,6 +56,10 @@ void Profile_Initiate(void)
 	
 	do{
 		Control_Debounce();
+		if(Control_JoystickState == JOYSTICK_CENTER)
+		{
+			Glucometer_GetReadings(&Profile_CurrentOptions);
+		}
 	}while (!(Control_JoystickState & (JOYSTICK_LEFT | JOYSTICK_RIGHT | JOYSTICK_UP | JOYSTICK_DOWN)));
 	if(Control_JoystickState == JOYSTICK_LEFT)
 	{
@@ -78,6 +83,10 @@ void Profile_Initiate(void)
 	LCD_DisplayOptions(Profile_BaseDisplay);
 	do{
 		Control_Debounce();
+		if(Control_JoystickState == JOYSTICK_CENTER)
+		{
+			Glucometer_GetReadings(&Profile_CurrentOptions);
+		}
 	}while (!(Control_JoystickState & (JOYSTICK_RIGHT | JOYSTICK_UP | JOYSTICK_DOWN)));
 	if(Control_JoystickState == JOYSTICK_RIGHT)
 	{
@@ -111,7 +120,11 @@ void Profile_RecommendDosage(void)
 	LCD_DisplayOptions(Profile_BaseDisplay);
 	
 	do {
-		Control_Debounce(); 
+		Control_Debounce();
+		if(Control_JoystickState == JOYSTICK_CENTER)
+		{
+			Glucometer_GetReadings(&Profile_CurrentOptions);
+		}
 	}while (!(Control_JoystickState & (JOYSTICK_LEFT | JOYSTICK_RIGHT | JOYSTICK_UP | JOYSTICK_DOWN)));
 	if(Control_JoystickState == JOYSTICK_LEFT)
 	{
@@ -150,6 +163,7 @@ void Profile_DisplayBolusOptions(void)
 {
 	int i, screenNumber = 0;
 	char BolusOpt[3][25];
+	char screenOption[15];
 	
 	for(i = 0; i < NUM_BOLUS_OPTIONS; i++)
 	{
@@ -158,13 +172,21 @@ void Profile_DisplayBolusOptions(void)
 	
 	while(screenNumber < 4)
 	{
+		if(screenNumber == 3)
+		{
+			strncpy(screenOption, "Exit Bolus", 15);
+		}
+		else
+		{
+			strncpy(screenOption, "Next Screen", 15);
+		}
 		LCD_ClearScreen();
-		Profile_UpdateBaseDisplay(pProfile_BaseDisplay, "Bolus Amount", "Next Screen", BolusOpt[screenNumber * 3 + 0], 
+		Profile_UpdateBaseDisplay(pProfile_BaseDisplay, "Bolus Amount", screenOption, BolusOpt[screenNumber * 3 + 0], 
 															BolusOpt[screenNumber * 3 + 1], BolusOpt[screenNumber * 3 + 2]);
 		LCD_DisplayOptions(Profile_BaseDisplay);
 		do{
 			Control_Debounce();
-		}while (!(Control_JoystickState & (JOYSTICK_LEFT | JOYSTICK_RIGHT | JOYSTICK_UP | JOYSTICK_DOWN)));
+		}while (!(Control_JoystickState & (JOYSTICK_LEFT | JOYSTICK_RIGHT | JOYSTICK_UP | JOYSTICK_DOWN | JOYSTICK_CENTER)));
 		if(Control_JoystickState == JOYSTICK_LEFT)
 		{
 			Profile_CurrentOptions.BolusSteps = 0;
@@ -183,6 +205,12 @@ void Profile_DisplayBolusOptions(void)
 		if(Control_JoystickState == JOYSTICK_DOWN)
 		{
 			Profile_CurrentOptions.BolusSteps = Profile_BolusSteps[screenNumber * 3 + 2];
+			break;
+		}
+		if(Control_JoystickState == JOYSTICK_CENTER)
+		{
+			Glucometer_GetReadings(&Profile_CurrentOptions);
+			Profile_CurrentOptions.BolusSteps = 0;
 			break;
 		}
 	}

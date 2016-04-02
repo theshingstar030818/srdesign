@@ -46,14 +46,20 @@ int32_t Glucometer_ConversionDone (void)
   return (Glucometer_Done ? 0 : -1);
 }
 
-uint32_t Glucometer_GetPH(void)
+uint32_t Glucometer_GetReadings(ProfileOptions* current)
 {
 	int32_t adcVal;
+	double phVal;
 
 	Glucometer_StartConversion();
 	while(Glucometer_ConversionDone() != 0);
+	
 	adcVal = Glucometer_GetADCReading();
-	LCD_DisplayADC(adcVal);
+	phVal = (adcVal + 68) / 273.0;
+	
+	current->LastADCReading = adcVal;
+	current->LastPHReading = phVal;
+	
 	return 0;
 }
 

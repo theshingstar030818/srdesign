@@ -81,6 +81,6 @@ void LCD_ClearScreen(void);
 
 void LCD_SetUpCommon(void);
 
-void LCD_DisplayADC(uint32_t adcVal);
+void LCD_DisplayADC(ProfileOptions* current);
 
 #endif /* LCD_LCD_H_ */
