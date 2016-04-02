@@ -17,8 +17,8 @@ uint32_t InsulinQueue_Queue[INSULIN_QUEUE_SIZE];
 
 void InsulinQueue_Initiate()
 {
-	LPC_TIM2->PR = 0x02; // Pre-scalar
-	LPC_TIM2->MR0 = 1 << 27; // Match number
+	LPC_TIM2->PR = 0; // Pre-scalar
+	LPC_TIM2->MR0 = 750000000;; // Match number
 	LPC_TIM2->MCR |= 3 << 0; // Interrupt and reset timer on match (MCR = 011)
 	NVIC_EnableIRQ(TIMER2_IRQn);
 	LPC_TIM2->TCR |= 1 << 0;

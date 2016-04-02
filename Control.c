@@ -184,7 +184,7 @@ void Control_ClockInitiate(void)
 	//LPC_SC->PCLKSEL0 |= 1 << 2;
 	LPC_SC->PCLKSEL0 |= 1 << 4;
 	LPC_SC->PCLKSEL1 |= 1 << 12;
-	LPC_SC->PCLKSEL1 |= 1 << 14;
+	//LPC_SC->PCLKSEL1 |= 1 << 14;
 }
 
 void Control_DosageReset(void)
