@@ -23,4 +23,10 @@ void Glucometer_Initiate(void);
  *  @return uint32_t: temp
  */
  
-uint32_t Glucometer_GetADCReading(void);
+void Glucometer_StartConversion(void);
+
+int32_t Glucometer_GetADCReading(void);
+
+int32_t Glucometer_ConversionDone(void);
+
+uint32_t Glucometer_GetPH(void);

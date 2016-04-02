@@ -34,6 +34,8 @@ bool Control_ShowBolusScreen;
 int main(void)
 {
 	uint32_t i;
+	
+	// Initialize System
 	SystemInit();
 	
 	// Set default status to None
@@ -57,7 +59,7 @@ int main(void)
 	
 	// Initialize User-Profile
 	Profile_Initiate();
-	
+		
 	// Initialize ADC for glucometer
 	Glucometer_Initiate();
 	
@@ -92,6 +94,7 @@ int main(void)
 		LCD_UpdateScreenStatus();
 		LCD_UpdateScreenState();
 		LCD_UpdateScreenInsulin();
+		Glucometer_GetPH();
 		switch(Control_GlobalState)
 		{
 			case None_State:
