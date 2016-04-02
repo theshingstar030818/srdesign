@@ -312,5 +312,5 @@ void LCD_SetUpCommon(void)
 void LCD_DisplayADC(uint32_t adcVal)
 {
 	sprintf(LCD_ADCReading, "%d", adcVal);
-	GLCD_DrawString(10, 10, LCD_ADCReading);
+	GLCD_DrawString(200, 75, LCD_ADCReading);
 }

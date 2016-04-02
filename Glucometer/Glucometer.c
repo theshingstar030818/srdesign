@@ -6,9 +6,10 @@
  */
  
 #include "..\Control.h"
+#include "..\LCD\LCD.h"
 
-static volatile uint16_t AD_last;
-static volatile uint8_t  AD_done;
+static volatile uint16_t Glucometer_Last;
+static volatile uint8_t  Glucometer_Done;
  
 void Glucometer_Initiate(void)
 {
@@ -32,17 +33,28 @@ void Glucometer_StartConversion(void)
 
 int32_t Glucometer_GetADCReading(void)
 {
-	if (AD_done)
+	if (Glucometer_Done)
 	{
-    AD_done = 0;
-    return AD_last;
+    Glucometer_Done = 0;
+    return Glucometer_Last;
   }
   return -1;
 }
 
 int32_t Glucometer_ConversionDone (void)
 {
-  return (AD_done ? 0 : -1);
+  return (Glucometer_Done ? 0 : -1);
+}
+
+uint32_t Glucometer_GetPH(void)
+{
+	int32_t adcVal;
+
+	Glucometer_StartConversion();
+	while(Glucometer_ConversionDone() != 0);
+	adcVal = Glucometer_GetADCReading();
+	LCD_DisplayADC(adcVal);
+	return 0;
 }
 
 void ADC_IRQHandler(void) {
@@ -50,7 +62,7 @@ void ADC_IRQHandler(void) {
 
   adstat = LPC_ADC->ADSTAT;
 
-  AD_last = (LPC_ADC->ADGDR >> 4) & 0xFFF;
+  Glucometer_Last = (LPC_ADC->ADGDR >> 4) & 0xFFF;
 
-  AD_done = 1;
+  Glucometer_Done = 1;
 }
