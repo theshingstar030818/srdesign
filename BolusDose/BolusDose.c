@@ -35,7 +35,6 @@ void BolusDose_AdministerBolus(void)
 {
 	LCD_ClearScreen();
 	Profile_DisplayBolusOptions();
-	LPC_GPIOINT->IO2IntClr |= (1<<10); // Clear the status
 	if(StepperMotor_GlobalPosition <= SYRINGE_LENGTH)
 	{
 		Control_GlobalStatus = Bolus_Status;

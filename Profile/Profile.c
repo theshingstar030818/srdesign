@@ -16,7 +16,13 @@ extern uint32_t Control_JoystickState;
 BaseDisplay Profile_BaseDisplay;
 BaseDisplay* pProfile_BaseDisplay;
 ProfileOptions Profile_CurrentOptions;
-uint32_t Profile_BolusSteps;
+
+uint32_t Profile_BolusSteps[NUM_BOLUS_OPTIONS];
+
+const uint32_t ProfileBolusUnits[NUM_BOLUS_OPTIONS] = {1,  3,  5,
+																												6,  8,  10,
+																												11, 13, 15,
+																												16, 18, 20};
 
 const uint32_t Profile_DosageRecommendation[48] = {6,  9, 12, 14, /* Child Inactive */ 5,  7,  9, 12, /* Child Moderate */ 4,  6,  8, 10, /* Child Active */
 																									21, 30, 40, 50, /* Adolescent Inactive */ 17, 25, 33, 40, /* Adolescent Moderate */ 13, 19, 25, 32, /* Adolescent Active */
@@ -31,6 +37,7 @@ void Profile_Initiate(void)
   ACTIVITY Profile_ActivityGroup;
 	
 	int i,j,k;
+	
 	for(i = 0; i < NUM_AGE_GROUP; i++)
 	{
 		for(j = 0; j < NUM_ACTIVITY_LEVEL; j++)
@@ -89,6 +96,7 @@ void Profile_Initiate(void)
 	Profile_CurrentOptions = Profile_CreateProfile(Profile_AgeGroup, Profile_ActivityGroup);
 	
 	Profile_RecommendDosage();
+	Profile_FillBolusSteps();
 }
 
 void Profile_RecommendDosage(void)
@@ -129,29 +137,54 @@ void Profile_AssignBasalSteps(int units)
 	Profile_CurrentOptions.BasalStepsPerDose = (uint32_t)(Profile_CurrentOptions.BasalStepsPerDay / 60.0);
 }
 
+void Profile_FillBolusSteps(void)
+{
+	int i;
+	for(i = 0; i < NUM_BOLUS_OPTIONS; i++)
+	{
+		Profile_BolusSteps[i] = (uint32_t) (ProfileBolusUnits[i] * SYRINGE_LENGTH / 100.0);
+	}
+}
+
 void Profile_DisplayBolusOptions(void)
 {
-	LCD_ClearScreen();
-	Profile_UpdateBaseDisplay(pProfile_BaseDisplay, "Bolus Amount", "1 Unit", "4 Units", "7 Units", "10 Units");
-	LCD_DisplayOptions(Profile_BaseDisplay);
-	do{
-		Control_Debounce();
-	}while (!(Control_JoystickState & (JOYSTICK_LEFT | JOYSTICK_RIGHT | JOYSTICK_UP | JOYSTICK_DOWN)));
-	if(Control_JoystickState == JOYSTICK_LEFT)
+	int i, screenNumber = 0;
+	char BolusOpt[3][25];
+	
+	for(i = 0; i < NUM_BOLUS_OPTIONS; i++)
 	{
-		Profile_CurrentOptions.BolusSteps = (uint32_t)(1 * SYRINGE_LENGTH / 100);
+		sprintf(BolusOpt[i],"%d Units", ProfileBolusUnits[i]);
 	}
-	if(Control_JoystickState == JOYSTICK_RIGHT)
+	
+	while(screenNumber < 4)
 	{
-		Profile_CurrentOptions.BolusSteps = (uint32_t)(4 * SYRINGE_LENGTH / 100);
-	}
-	if(Control_JoystickState  == JOYSTICK_UP)
-	{
-		Profile_CurrentOptions.BolusSteps = (uint32_t)(7 * SYRINGE_LENGTH / 100);
-	}
-	if(Control_JoystickState == JOYSTICK_DOWN)
-	{
-		Profile_CurrentOptions.BolusSteps = (uint32_t)(10 * SYRINGE_LENGTH / 100);
+		LCD_ClearScreen();
+		Profile_UpdateBaseDisplay(pProfile_BaseDisplay, "Bolus Amount", "Next Screen", BolusOpt[screenNumber * 3 + 0], 
+															BolusOpt[screenNumber * 3 + 1], BolusOpt[screenNumber * 3 + 2]);
+		LCD_DisplayOptions(Profile_BaseDisplay);
+		do{
+			Control_Debounce();
+		}while (!(Control_JoystickState & (JOYSTICK_LEFT | JOYSTICK_RIGHT | JOYSTICK_UP | JOYSTICK_DOWN)));
+		if(Control_JoystickState == JOYSTICK_LEFT)
+		{
+			Profile_CurrentOptions.BolusSteps = 0;
+			screenNumber++;
+		}
+		if(Control_JoystickState == JOYSTICK_RIGHT)
+		{
+			Profile_CurrentOptions.BolusSteps = Profile_BolusSteps[screenNumber * 3 + 0];
+			break;
+		}
+		if(Control_JoystickState  == JOYSTICK_UP)
+		{
+			Profile_CurrentOptions.BolusSteps = Profile_BolusSteps[screenNumber * 3 + 1];
+			break;
+		}
+		if(Control_JoystickState == JOYSTICK_DOWN)
+		{
+			Profile_CurrentOptions.BolusSteps = Profile_BolusSteps[screenNumber * 3 + 2];
+			break;
+		}
 	}
 }
 

@@ -46,6 +46,16 @@ void Profile_RecommendDosage(void);
 
 void Profile_AssignBasalSteps(int units);
 
+/** Function Profile_FillBolusSteps()
+ *
+ *  Function calculates the desired Bolus units into steps.
+ *
+ *  @param void: void 
+ *  @return void: void
+ */
+ 
+void Profile_FillBolusSteps(void);
+
 /** Function Profile_DisplayBolusOptions()
  *
  *  When Bolus is activated, allows user to select amount of
