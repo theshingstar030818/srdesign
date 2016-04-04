@@ -261,6 +261,7 @@ ProfileOptions Profile_CreateProfile(AGE AgeRange, ACTIVITY ActivityGroup)
 	
 	temp.Age = AgeRange;
 	temp.Activity = ActivityGroup;
+	temp.BolusSteps = 0;
 	
 	return temp;
 }

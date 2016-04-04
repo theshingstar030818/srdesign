@@ -28,7 +28,6 @@ void BasalDose_TimingInitiate(void)
 
 void BasalDose_TimingEnable(void)
 {
-	StepperMotor_SpinDisable(); // Disable and Reset Timer1
 	LPC_TIM0->TCR |= 1 << 0; // Start counting (TCR = 01)
 }
 
@@ -63,5 +62,6 @@ void TIMER0_IRQHandler(void)
 		Control_GlobalState = Empty_State;
 		LPC_GPIO2->FIOSET |= 1 << 2; // Signal that syringe is empty P2.2
 	}
-	StepperMotor_SpinEnable();	
+	StepperMotor_SpinEnable();
+	LPC_TIM0->IR |= 1 << 0; // Clear out Timer0 registers
 }

@@ -109,11 +109,12 @@ void StepperMotor_StepForward(void)
 		Speaker_Play();
 	}
 	// Check to see if Basal or Bolus has completed.
-	else if((StepperMotor_CurrentBasalDose >= Profile_CurrentOptions.BasalStepsPerDose) || (StepperMotor_CurrentBolusDose >= Profile_CurrentOptions.BolusSteps))
+	else if((StepperMotor_CurrentBasalDose >= Profile_CurrentOptions.BasalStepsPerDose) || 
+					((StepperMotor_CurrentBolusDose >= Profile_CurrentOptions.BolusSteps) && (Profile_CurrentOptions.BolusSteps != 0)))
 	{
     Control_LEDClearAdmin();
 		Control_DosageReset();
-    BasalDose_TimingEnable();
+		StepperMotor_SpinDisable();
 	}
 }
 
@@ -176,7 +177,6 @@ void StepperMotor_SpinInitiate(void)
 
 void StepperMotor_SpinEnable(void)
 {
-	BasalDose_TimingDisable(); // Disable and Reset Timer0
 	LPC_TIM1->TCR |= 1 << 0; // Start counting (TCR = 01)
 }
 

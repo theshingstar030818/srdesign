@@ -123,10 +123,11 @@ int main(void)
 					Control_JoystickState = Joystick_GetState();
 				}while(Control_JoystickState != JOYSTICK_DOWN);
 				Control_LEDClearAll();
+				BasalDose_TimingEnable();
 				switch(Control_GlobalRemaining)
 				{
 					case None_Remaining:
-						BasalDose_TimingEnable();
+						StepperMotor_SpinDisable();
 						Control_DosageReset();
 						break;
 					case Basal_Remaining:
