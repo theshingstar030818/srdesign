@@ -30,6 +30,16 @@ void InsulinQueue_Initiate(void);
  
 void InsulinQueue_Push(uint32_t currentInsulinAmount);
 
+/** Function: InsulinQueue_ValidDose()
+ * 
+ *  Check to see if the last half of queue exceedes certain limit
+ *  
+ *  @param uint32_t: new_dose - the new dose being requested
+ *  @return bool: whether or not more insulin can be injected
+ */
+ 
+bool InsulinQueue_ValidDose(uint32_t new_dose);
+
 /** Function: TIMER2_IRQHandler()
  * 
  *  When Timer2 is trigged, push to the queue.
