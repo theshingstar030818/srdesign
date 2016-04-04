@@ -9,6 +9,7 @@
 #define INSULINQUEUE_INSULINQUEUE_H_
 
 #define INSULIN_QUEUE_SIZE 20
+#define INSULIN_ACCEPTABLE_STEPS 200
 
 /** Function: InsulinQueue_Initiate()
  * 

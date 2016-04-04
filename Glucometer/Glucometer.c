@@ -46,7 +46,7 @@ int32_t Glucometer_ConversionDone (void)
   return (Glucometer_Done ? 0 : -1);
 }
 
-uint32_t Glucometer_GetReadings(ProfileOptions* current)
+void Glucometer_GetReadings(ProfileOptions* current)
 {
 	int32_t adcVal;
 	double phVal;
@@ -59,11 +59,10 @@ uint32_t Glucometer_GetReadings(ProfileOptions* current)
 	
 	current->LastADCReading = adcVal;
 	current->LastPHReading = phVal;
-	
-	return 0;
 }
 
-void ADC_IRQHandler(void) {
+void ADC_IRQHandler(void) 
+{
   volatile uint32_t adstat;
 
   adstat = LPC_ADC->ADSTAT;

@@ -8,8 +8,6 @@
 #include "..\Control.h"
 #include ".\InsulinQueue.h"
 
-#define INSULIN_ACCEPTABLE_STEPS 200
-
 extern uint32_t StepperMotor_GlobalPosition;
 
 uint32_t InsulinQueue_Head;
