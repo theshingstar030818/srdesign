@@ -13,6 +13,7 @@
 #include "..\Glucometer\Glucometer.h"
 
 extern uint32_t Control_JoystickState;
+extern uint32_t StepperMotor_CurrentBolusDose;
 
 BaseDisplay Profile_BaseDisplay;
 BaseDisplay* pProfile_BaseDisplay;
@@ -213,6 +214,14 @@ void Profile_DisplayBolusOptions(void)
 			Profile_CurrentOptions.BolusSteps = 0;
 			break;
 		}
+	}
+}
+
+void Profile_BasalDuringBolus(void)
+{
+	if(StepperMotor_CurrentBolusDose > Profile_CurrentOptions.BasalStepsPerDose)
+	{
+		StepperMotor_CurrentBolusDose = StepperMotor_CurrentBolusDose - Profile_CurrentOptions.BasalStepsPerDose;
 	}
 }
 

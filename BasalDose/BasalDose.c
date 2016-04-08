@@ -7,6 +7,7 @@
 
 #include "BasalDose.h"
 #include "..\Control.h"
+#include "..\Profile\Profile.h"
 #include "..\StepperMotor\StepperMotor.h"
 
 extern STATE Control_GlobalState;
@@ -41,26 +42,34 @@ void BasalDose_TimingDisable(void)
 
 void TIMER0_IRQHandler(void)
 {
-	if(StepperMotor_GlobalPosition <= SYRINGE_LENGTH)
+	if(Control_GlobalStatus == Bolus_Status)
 	{
-		Control_GlobalStatus = Basal_Status;
-		Control_GlobalState = Administration_State;
+		Profile_BasalDuringBolus();
 		LPC_GPIO1->FIOSET |= 1 << 28; // Signal that Basal is being administered P1.28
-		
-		if(StepperMotor_GlobalPosition + Profile_CurrentOptions.BasalStepsPerDose > SYRINGE_LENGTH)
-		{
-			Control_GlobalRemaining = Basal_Remaining;
-		}
-		else
-		{
-			Control_GlobalRemaining = None_Remaining;
-		}
 	}
 	else
 	{
-		Control_GlobalStatus = None_Status;
-		Control_GlobalState = Empty_State;
-		LPC_GPIO2->FIOSET |= 1 << 2; // Signal that syringe is empty P2.2
+		if(StepperMotor_GlobalPosition <= SYRINGE_LENGTH)
+		{
+			Control_GlobalStatus = Basal_Status;
+			Control_GlobalState = Administration_State;
+			LPC_GPIO1->FIOSET |= 1 << 28; // Signal that Basal is being administered P1.28
+			
+			if(StepperMotor_GlobalPosition + Profile_CurrentOptions.BasalStepsPerDose > SYRINGE_LENGTH)
+			{
+				Control_GlobalRemaining = Basal_Remaining;
+			}
+			else
+			{
+				Control_GlobalRemaining = None_Remaining;
+			}
+		}
+		else
+		{
+			Control_GlobalStatus = None_Status;
+			Control_GlobalState = Empty_State;
+			LPC_GPIO2->FIOSET |= 1 << 2; // Signal that syringe is empty P2.2
+		}
 	}
 	StepperMotor_SpinEnable();
 	LPC_TIM0->IR |= 1 << 0; // Clear out Timer0 registers
