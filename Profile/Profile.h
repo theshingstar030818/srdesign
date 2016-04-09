@@ -67,6 +67,18 @@ void Profile_FillBolusSteps(void);
 
 void Profile_DisplayBolusOptions(void);
 
+/** Function Profile_BasalDuringBolus()
+ *
+ *	Function is called when a Basal occurs during a Bolus.
+ *	Function subtracts the number of Basal injecttions from
+ *	the StepperMotor_CurrentBolusDose.
+ *
+ *  @param void: void 
+ *  @return void: void
+ */
+
+void Profile_BasalDuringBolus(void);
+
 /** Function Profile_CreateBaseDisplay()
  *
  *  Creates BaseDisplay struct.

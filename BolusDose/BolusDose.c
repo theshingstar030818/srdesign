@@ -35,28 +35,31 @@ void BolusDose_AdministerBolus(void)
 {
 	LCD_ClearScreen();
 	Profile_DisplayBolusOptions();
-	if(StepperMotor_GlobalPosition <= SYRINGE_LENGTH)
+	if(Profile_CurrentOptions.BolusSteps != 0)
 	{
-		Control_GlobalStatus = Bolus_Status;
-		Control_GlobalState = Administration_State;
-		LPC_GPIO1->FIOSET |= 1 << 29; // Signal that Bolus is being administered P1.29
-		
-		if(StepperMotor_GlobalPosition + Profile_CurrentOptions.BolusSteps > SYRINGE_LENGTH)
+		if(StepperMotor_GlobalPosition <= SYRINGE_LENGTH)
 		{
-			Control_GlobalRemaining = Bolus_Remaining;
+			Control_GlobalStatus = Bolus_Status;
+			Control_GlobalState = Administration_State;
+			LPC_GPIO1->FIOSET |= 1 << 29; // Signal that Bolus is being administered P1.29
+			
+			if(StepperMotor_GlobalPosition + Profile_CurrentOptions.BolusSteps > SYRINGE_LENGTH)
+			{
+				Control_GlobalRemaining = Bolus_Remaining;
+			}
+			else
+			{
+				Control_GlobalRemaining = None_Remaining;
+			}
 		}
 		else
 		{
-			Control_GlobalRemaining = None_Remaining;
+			Control_GlobalStatus = None_Status;
+			Control_GlobalState = Empty_State;
+			LPC_GPIO2->FIOSET |= 1 << 2; // Signal that syringe is empty P2.2
 		}
-	}
-	else
-	{
-		Control_GlobalStatus = None_Status;
-		Control_GlobalState = Empty_State;
-		LPC_GPIO2->FIOSET |= 1 << 2; // Signal that syringe is empty P2.2
-	}
 	StepperMotor_SpinEnable();
+	}
 }
 
 void EINT3_IRQHandler(void)

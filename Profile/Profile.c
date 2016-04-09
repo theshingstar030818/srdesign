@@ -13,6 +13,7 @@
 #include "..\Glucometer\Glucometer.h"
 
 extern uint32_t Control_JoystickState;
+extern uint32_t StepperMotor_CurrentBolusDose;
 
 BaseDisplay Profile_BaseDisplay;
 BaseDisplay* pProfile_BaseDisplay;
@@ -216,6 +217,14 @@ void Profile_DisplayBolusOptions(void)
 	}
 }
 
+void Profile_BasalDuringBolus(void)
+{
+	if(StepperMotor_CurrentBolusDose > Profile_CurrentOptions.BasalStepsPerDose)
+	{
+		StepperMotor_CurrentBolusDose = StepperMotor_CurrentBolusDose - Profile_CurrentOptions.BasalStepsPerDose;
+	}
+}
+
 BaseDisplay Profile_CreateBaseDisplay(char *cat, char *opt1, char *opt2,
 																			char *opt3, char *opt4)
 {
@@ -261,6 +270,7 @@ ProfileOptions Profile_CreateProfile(AGE AgeRange, ACTIVITY ActivityGroup)
 	
 	temp.Age = AgeRange;
 	temp.Activity = ActivityGroup;
+	temp.BolusSteps = 0;
 	
 	return temp;
 }
