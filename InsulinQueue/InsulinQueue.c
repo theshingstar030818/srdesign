@@ -7,6 +7,7 @@
  
 #include "..\Control.h"
 #include ".\InsulinQueue.h"
+#include "..\StepperMotor\StepperMotor.h"
 
 extern uint32_t StepperMotor_GlobalPosition;
 
