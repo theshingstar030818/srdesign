@@ -83,4 +83,6 @@ void LCD_SetUpCommon(void);
 
 void LCD_DisplayADC(ProfileOptions* current);
 
+void LCD_InsulinOverDosePrevention(STATUS current);
+
 #endif /* LCD_LCD_H_ */
