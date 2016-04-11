@@ -8,7 +8,6 @@
 #include <stdio.h>
 #include ".\LCD.h"
 #include <stdint.h>
-#include "..\Control.h"
 #include "Board_GLCD.h"  // Board Support : Graphic LCD
 #include "GLCD_Config.h" // Board Support : Graphic LCD
 #include "..\Profile\Profile.h"

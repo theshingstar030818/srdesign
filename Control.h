@@ -8,10 +8,7 @@
 #ifndef CONTROL_CONTROL_H_
 #define CONTROL_CONTROL_H_
 
-#include <string.h>
-#include <stdbool.h>
 #include "lpc17xx.h"     // Device header
-#include "Board_Joystick.h" // Board Support : Joystick
 
 // Steps to exhaust syringe
 #define SYRINGE_LENGTH 3750
@@ -128,5 +125,15 @@ void Control_DosageReset(void);
  */
  
 void Control_Debounce(void);
+
+/** Function Control_InitializeEnums()
+ *
+ *	Function initializes enumeration lists.
+ *
+ *	@param void: void 
+ *	@return void: void
+ */
+
+void Control_InitializeEnums(void);
 
 #endif /* CONTROL_CONTROL_H_ */

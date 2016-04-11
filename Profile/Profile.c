@@ -1,15 +1,16 @@
 /**
- *  Profile.h
+ *  Profile.c
  * 
  *  Created on: March 18, 2016
  *      Author: mfeist
  */
 
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
-#include "Profile.h"
-#include "..\Control.h"
+#include ".\Profile.h"
 #include "..\LCD\LCD.h"
+#include "Board_Joystick.h"
 #include "..\Glucometer\Glucometer.h"
 
 extern uint32_t Control_JoystickState;

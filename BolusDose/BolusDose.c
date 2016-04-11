@@ -5,9 +5,11 @@
  *      Author: sle
  */
 
-#include "BolusDose.h"
+#include <stdbool.h>
 #include "..\LCD\LCD.h"
 #include "..\Control.h"
+#include ".\BolusDose.h"
+#include "Board_Joystick.h"
 #include "..\Profile\Profile.h"
 #include "..\StepperMotor\StepperMotor.h"
 #include "..\InsulinQueue\InsulinQueue.h"
