@@ -5,10 +5,10 @@
  *      Author: sle
  */
 
-#include "../Control.h"
-
 #ifndef SPEAKER_SPEAKER_H_
 #define SPEAKER_SPEAKER_H_
+
+#include "..\Control.h"
 
 /** Speaker_Initiate()
  *

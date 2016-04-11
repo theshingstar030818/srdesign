@@ -42,10 +42,12 @@ void BasalDose_TimingDisable(void);
 /** Function: TIMER0_IRQHandler()
  *  
  *  Sets the GlobalStatus depending on how much is left in the syringe.
+ *  Ensures no overdose.
  *  
  *  @param void: void
  *  @return void: void
  */
+ 
 void TIMER0_IRQHandler(void);
 
 #endif /* BASALDOSE_H_ */

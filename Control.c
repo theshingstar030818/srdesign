@@ -5,8 +5,11 @@
  *      Author: sle
  */
 
+#include <string.h>
+#include <stdbool.h>
 #include "Control.h"
 #include ".\LCD\LCD.h"
+#include "Board_Joystick.h"
 #include ".\Speaker\Speaker.h"
 #include ".\Profile\Profile.h"
 #include ".\BasalDose\BasalDose.h"
@@ -40,14 +43,8 @@ int main(void)
 	// Initialize System
 	SystemInit();
 	
-	// Set default status to None
-	Control_GlobalStatus = None_Status;
-	
-	// Set default state to None
-	Control_GlobalState = None_State;
-	
-	// Set default remaining to None
-	Control_GlobalRemaining = None_Remaining;
+	// Initialize Enums
+	Control_InitializeEnums();
 	
 	// Initialize Clock for Timers
 	Control_ClockInitiate();
@@ -123,10 +120,11 @@ int main(void)
 					Control_JoystickState = Joystick_GetState();
 				}while(Control_JoystickState != JOYSTICK_DOWN);
 				Control_LEDClearAll();
+				BasalDose_TimingEnable();
 				switch(Control_GlobalRemaining)
 				{
 					case None_Remaining:
-						BasalDose_TimingEnable();
+						StepperMotor_SpinDisable();
 						Control_DosageReset();
 						break;
 					case Basal_Remaining:
@@ -203,4 +201,16 @@ void Control_Debounce(void)
 		for(i = 0; i < 2000000; i++);
 		Control_JoystickStateDebounce = Joystick_GetState();
 	}while(Control_JoystickState != Control_JoystickStateDebounce);
+}
+
+void Control_InitializeEnums(void)
+{
+	// Set default status to None
+	Control_GlobalStatus = None_Status;
+	
+	// Set default state to None
+	Control_GlobalState = None_State;
+	
+	// Set default remaining to None
+	Control_GlobalRemaining = None_Remaining;
 }
