@@ -1,15 +1,16 @@
 /**
- *  Profile.h
+ *  Profile.c
  * 
  *  Created on: March 18, 2016
  *      Author: mfeist
  */
 
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
-#include "Profile.h"
-#include "..\Control.h"
+#include ".\Profile.h"
 #include "..\LCD\LCD.h"
+#include "Board_Joystick.h"
 #include "..\Glucometer\Glucometer.h"
 
 extern uint32_t Control_JoystickState;
@@ -61,7 +62,7 @@ void Profile_Initiate(void)
 		{
 			Glucometer_GetReadings(&Profile_CurrentOptions);
 		}
-	}while (!(Control_JoystickState & (JOYSTICK_LEFT | JOYSTICK_RIGHT | JOYSTICK_UP | JOYSTICK_DOWN)));
+	}while(!(Control_JoystickState & (JOYSTICK_LEFT | JOYSTICK_RIGHT | JOYSTICK_UP | JOYSTICK_DOWN)));
 	if(Control_JoystickState == JOYSTICK_LEFT)
 	{
 		Profile_AgeGroup = Child;
@@ -88,7 +89,7 @@ void Profile_Initiate(void)
 		{
 			Glucometer_GetReadings(&Profile_CurrentOptions);
 		}
-	}while (!(Control_JoystickState & (JOYSTICK_RIGHT | JOYSTICK_UP | JOYSTICK_DOWN)));
+	}while(!(Control_JoystickState & (JOYSTICK_RIGHT | JOYSTICK_UP | JOYSTICK_DOWN)));
 	if(Control_JoystickState == JOYSTICK_RIGHT)
 	{
 		Profile_ActivityGroup = Moderate;
@@ -126,7 +127,7 @@ void Profile_RecommendDosage(void)
 		{
 			Glucometer_GetReadings(&Profile_CurrentOptions);
 		}
-	}while (!(Control_JoystickState & (JOYSTICK_LEFT | JOYSTICK_RIGHT | JOYSTICK_UP | JOYSTICK_DOWN)));
+	}while(!(Control_JoystickState & (JOYSTICK_LEFT | JOYSTICK_RIGHT | JOYSTICK_UP | JOYSTICK_DOWN)));
 	if(Control_JoystickState == JOYSTICK_LEFT)
 	{
 		Profile_AssignBasalSteps(Profile_AllProfiles[Profile_CurrentOptions.Age][Profile_CurrentOptions.Activity][0]);
@@ -187,7 +188,7 @@ void Profile_DisplayBolusOptions(void)
 		LCD_DisplayOptions(Profile_BaseDisplay);
 		do{
 			Control_Debounce();
-		}while (!(Control_JoystickState & (JOYSTICK_LEFT | JOYSTICK_RIGHT | JOYSTICK_UP | JOYSTICK_DOWN | JOYSTICK_CENTER)));
+		}while(!(Control_JoystickState & (JOYSTICK_LEFT | JOYSTICK_RIGHT | JOYSTICK_UP | JOYSTICK_DOWN | JOYSTICK_CENTER)));
 		if(Control_JoystickState == JOYSTICK_LEFT)
 		{
 			Profile_CurrentOptions.BolusSteps = 0;

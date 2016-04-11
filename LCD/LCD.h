@@ -81,6 +81,24 @@ void LCD_ClearScreen(void);
 
 void LCD_SetUpCommon(void);
 
+/** Function LCD_DisplayADC()
+ *
+ *  Updates the LCD with the last ADC reading.
+ *
+ *  @param current: ProfileOptions* - structure with ADC reading
+ *  @return void: void
+ */
+ 
 void LCD_DisplayADC(ProfileOptions* current);
+
+/** Function LCD_InsulinOverDosePrevention()
+ *
+ *  Updates the LCD with overdose prevention screen.
+ *
+ *  @param current: STATUS - current status
+ *  @return void: void
+ */
+
+void LCD_InsulinOverDosePrevention(STATUS current);
 
 #endif /* LCD_LCD_H_ */

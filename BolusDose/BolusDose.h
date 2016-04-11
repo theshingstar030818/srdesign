@@ -34,6 +34,7 @@ void BolusDose_AdministerBolus(void);
  *
  *  The interrupt handler for the external interrupt connected 
  *  to pin P2.10. Sets flag for bolus dose selection.
+ *  Ensures no overdose.
  *  
  *  @param void: void
  *  @return void: void

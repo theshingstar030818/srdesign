@@ -6,7 +6,7 @@
  */
 
 #include "..\Control.h"
-#include "StepperMotor.h"
+#include ".\StepperMotor.h"
 #include "..\Profile\Profile.h"
 #include "..\Speaker\Speaker.h"
 #include "..\BasalDose\BasalDose.h"
