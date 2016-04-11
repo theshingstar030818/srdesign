@@ -46,6 +46,16 @@ void Profile_RecommendDosage(void);
 
 void Profile_AssignBasalSteps(int units);
 
+/** Function Profile_FillBolusSteps()
+ *
+ *  Function calculates the desired Bolus units into steps.
+ *
+ *  @param void: void 
+ *  @return void: void
+ */
+ 
+void Profile_FillBolusSteps(void);
+
 /** Function Profile_DisplayBolusOptions()
  *
  *  When Bolus is activated, allows user to select amount of
@@ -56,6 +66,18 @@ void Profile_AssignBasalSteps(int units);
  */
 
 void Profile_DisplayBolusOptions(void);
+
+/** Function Profile_BasalDuringBolus()
+ *
+ *	Function is called when a Basal occurs during a Bolus.
+ *	Function subtracts the number of Basal injecttions from
+ *	the StepperMotor_CurrentBolusDose.
+ *
+ *  @param void: void 
+ *  @return void: void
+ */
+
+void Profile_BasalDuringBolus(void);
 
 /** Function Profile_CreateBaseDisplay()
  *

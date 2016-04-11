@@ -8,13 +8,11 @@
 #ifndef CONTROL_CONTROL_H_
 #define CONTROL_CONTROL_H_
 
-#include <string.h>
-#include <stdbool.h>
 #include "lpc17xx.h"     // Device header
-#include "Board_Joystick.h" // Board Support : Joystick
 
 // Steps to exhaust syringe
 #define SYRINGE_LENGTH 3750
+
 
 // Indicator levels for syringe
 #define WARNING_20 (SYRINGE_LENGTH * .8)
@@ -22,17 +20,20 @@
 #define WARNING_05 (SYRINGE_LENGTH * .95)
 
 // Number of options for each profile category
+#define NUM_OPTIONS 4
 #define NUM_AGE_GROUP 4
 #define NUM_ACTIVITY_LEVEL 3
-#define NUM_OPTIONS 4
+
+// Number of options for Bolus
+#define NUM_BOLUS_OPTIONS 12
 
 // Create enums 
-typedef enum {None_Status, Basal_Status, Bolus_Status, Backward_Status, Wait_Status} STATUS;
-typedef enum {None_State, Administration_State, Empty_State, Full_State} STATE;
-typedef enum {None_Remaining, Basal_Remaining, Bolus_Remaining} REMAINING;
-typedef enum {Hz_250 = 40000, Hz_440 = 22727, Hz_500 = 20000, kHz_1 = 10000, kHz_2 = 5000, kHz_4 = 2500} FREQ;
-typedef enum {Child, Adolescent, Adult, Elderly} AGE;
 typedef enum {Inactive, Moderate, Active} ACTIVITY;
+typedef enum {Child, Adolescent, Adult, Elderly} AGE;
+typedef enum {None_Remaining, Basal_Remaining, Bolus_Remaining} REMAINING;
+typedef enum {None_State, Administration_State, Empty_State, Full_State} STATE;
+typedef enum {None_Status, Basal_Status, Bolus_Status, Backward_Status, Wait_Status} STATUS;
+typedef enum {Hz_250 = 40000, Hz_440 = 22727, Hz_500 = 20000, kHz_1 = 10000, kHz_2 = 5000, kHz_4 = 2500} FREQ;
 
 // Structure for LCD base display
 typedef struct
@@ -55,6 +56,9 @@ typedef struct
 	uint32_t BasalStepsPerDose;
 	
 	uint32_t BolusSteps;
+	
+	uint32_t LastADCReading;
+	double LastPHReading;
 }ProfileOptions;
 
 /** Function Control_LEDInitiate()
@@ -121,5 +125,15 @@ void Control_DosageReset(void);
  */
  
 void Control_Debounce(void);
+
+/** Function Control_InitializeEnums()
+ *
+ *	Function initializes enumeration lists.
+ *
+ *	@param void: void 
+ *	@return void: void
+ */
+
+void Control_InitializeEnums(void);
 
 #endif /* CONTROL_CONTROL_H_ */

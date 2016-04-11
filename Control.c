@@ -5,8 +5,11 @@
  *      Author: sle
  */
 
+#include <string.h>
+#include <stdbool.h>
 #include "Control.h"
 #include ".\LCD\LCD.h"
+#include "Board_Joystick.h"
 #include ".\Speaker\Speaker.h"
 #include ".\Profile\Profile.h"
 #include ".\BasalDose\BasalDose.h"
@@ -22,6 +25,8 @@ extern uint32_t *pInsulinQueue_Queue;
 extern uint32_t InsulinQueue_CurrentEntryCount;
 extern uint32_t InsulinQueue_Queue[INSULIN_QUEUE_SIZE];
 
+extern ProfileOptions Profile_CurrentOptions;
+
 STATUS Control_GlobalStatus;
 STATE Control_GlobalState;
 REMAINING Control_GlobalRemaining;
@@ -34,16 +39,12 @@ bool Control_ShowBolusScreen;
 int main(void)
 {
 	uint32_t i;
+	
+	// Initialize System
 	SystemInit();
 	
-	// Set default status to None
-	Control_GlobalStatus = None_Status;
-	
-	// Set default state to None
-	Control_GlobalState = None_State;
-	
-	// Set default remaining to None
-	Control_GlobalRemaining = None_Remaining;
+	// Initialize Enums
+	Control_InitializeEnums();
 	
 	// Initialize Clock for Timers
 	Control_ClockInitiate();
@@ -54,9 +55,6 @@ int main(void)
 	
 	// Built in Joystick initialization
 	Joystick_Initialize();
-	
-	// Initialize User-Profile
-	Profile_Initiate();
 	
 	// Initialize ADC for glucometer
 	Glucometer_Initiate();
@@ -78,6 +76,9 @@ int main(void)
 	// Initialize External Interrupt 3
 	BolusDose_DoseInitiate();
 	
+	// Initialize User-Profile
+	Profile_Initiate();
+	
 	LPC_TIM0->TCR |= 1 << 0; // Start Counting Timer0
 
 	while(1)
@@ -92,6 +93,7 @@ int main(void)
 		LCD_UpdateScreenStatus();
 		LCD_UpdateScreenState();
 		LCD_UpdateScreenInsulin();
+		LCD_DisplayADC(&Profile_CurrentOptions);
 		switch(Control_GlobalState)
 		{
 			case None_State:
@@ -118,10 +120,11 @@ int main(void)
 					Control_JoystickState = Joystick_GetState();
 				}while(Control_JoystickState != JOYSTICK_DOWN);
 				Control_LEDClearAll();
+				BasalDose_TimingEnable();
 				switch(Control_GlobalRemaining)
 				{
 					case None_Remaining:
-						BasalDose_TimingEnable();
+						StepperMotor_SpinDisable();
 						Control_DosageReset();
 						break;
 					case Basal_Remaining:
@@ -179,7 +182,7 @@ void Control_ClockInitiate(void)
 	//LPC_SC->PCLKSEL0 |= 1 << 2;
 	LPC_SC->PCLKSEL0 |= 1 << 4;
 	LPC_SC->PCLKSEL1 |= 1 << 12;
-	LPC_SC->PCLKSEL1 |= 1 << 14;
+	//LPC_SC->PCLKSEL1 |= 1 << 14;
 }
 
 void Control_DosageReset(void)
@@ -198,4 +201,16 @@ void Control_Debounce(void)
 		for(i = 0; i < 2000000; i++);
 		Control_JoystickStateDebounce = Joystick_GetState();
 	}while(Control_JoystickState != Control_JoystickStateDebounce);
+}
+
+void Control_InitializeEnums(void)
+{
+	// Set default status to None
+	Control_GlobalStatus = None_Status;
+	
+	// Set default state to None
+	Control_GlobalState = None_State;
+	
+	// Set default remaining to None
+	Control_GlobalRemaining = None_Remaining;
 }

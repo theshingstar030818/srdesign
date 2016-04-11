@@ -8,9 +8,9 @@
 #include <stdio.h>
 #include ".\LCD.h"
 #include <stdint.h>
-#include "..\Control.h"
 #include "Board_GLCD.h"  // Board Support : Graphic LCD
 #include "GLCD_Config.h" // Board Support : Graphic LCD
+#include "..\Profile\Profile.h"
 #include "..\InsulinQueue\InsulinQueue.h"
 #include "..\StepperMotor\StepperMotor.h"
 
@@ -25,9 +25,14 @@ extern uint32_t *pInsulinQueue_Queue;
 
 extern uint32_t StepperMotor_GlobalPosition;
 
+extern ProfileOptions Profile_CurrentOptions;
+
 // Used to hold string representation of our important numbers
 char LCD_StringInsulin[20]; 
 char LCD_InsulinQueueEntry[10];
+char LCD_ADCReading[20];
+char LCD_PHReading[20];
+char LCD_StringInsulinOD[30];
 
 void LCD_Initiate(void)
 {
@@ -306,4 +311,31 @@ void LCD_SetUpCommon(void)
 	GLCD_DrawBitmap(173, 119, 19, 14, &Arrows_16bpp_red[1*532]); // right arrow
 	GLCD_SetFont(&GLCD_Font_6x8);
 	GLCD_DrawString(1, 30, "Select option on joystick for:\0");
+}
+
+void LCD_DisplayADC(ProfileOptions* current)
+{
+	sprintf(LCD_ADCReading, "ADC: %d", current->LastADCReading);
+	GLCD_DrawString(20, 100, LCD_ADCReading);
+	
+	sprintf(LCD_PHReading, " PH: %.2f", current->LastPHReading);
+	GLCD_DrawString(20, 110, LCD_PHReading);
+}
+
+void LCD_InsulinOverDosePrevention(STATUS current)
+{
+	GLCD_ClearScreen();
+	GLCD_SetFont(&GLCD_Font_16x24);
+	if(current == Bolus_Status)
+	{
+		sprintf(LCD_StringInsulinOD, "Bolus: %d units", Profile_CurrentOptions.BolusSteps);
+	}
+	else if(current == Basal_Status)
+	{
+		sprintf(LCD_StringInsulinOD, "Basal: %d units", Profile_CurrentOptions.BasalStepsPerDose);
+	}
+	GLCD_DrawString(20, 60, LCD_StringInsulinOD);
+	GLCD_SetFont(&GLCD_Font_6x8);
+	GLCD_DrawString(20, 100, "Please wait to administer insulin\0");
+	GLCD_DrawString(20, 120, "Press down on jowstick to advance\0");
 }
