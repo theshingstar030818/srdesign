@@ -55,7 +55,7 @@ void Glucometer_GetReadings(ProfileOptions* current)
 	while(Glucometer_ConversionDone() != 0);
 
 	adcVal = Glucometer_GetADCReading();
-	phVal = (adcVal + 68) / 273.0;
+	phVal = (-3*adcVal + 7700) / 200.0;
 
 	current->LastADCReading = adcVal;
 	current->LastPHReading = phVal;

@@ -337,5 +337,5 @@ void LCD_InsulinOverDosePrevention(STATUS current)
 	GLCD_DrawString(20, 60, LCD_StringInsulinOD);
 	GLCD_SetFont(&GLCD_Font_6x8);
 	GLCD_DrawString(20, 100, "Please wait to administer insulin\0");
-	GLCD_DrawString(20, 120, "Press down on jowstick to advance\0");
+	GLCD_DrawString(20, 120, "Press down on joystick to advance\0");
 }
