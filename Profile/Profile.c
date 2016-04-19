@@ -38,7 +38,7 @@ const uint32_t Profile_DosageRecommendation[48] = {6,  9, 12, 14, /* Child Inact
                                                   10, 15, 21, 27, /* Adult Active */
                                                   14, 21, 28, 34, /* Elder Inactive */
                                                   10, 15, 21, 27, /* Elder Moderate */
-                                                   7, 11, 15, 20 /* Elder Active */};									
+                                                   7, 11, 15, 20  /* Elder Active */};									
 
 uint32_t Profile_AllProfiles[NUM_AGE_GROUP][NUM_ACTIVITY_LEVEL][NUM_OPTIONS];
 
@@ -55,7 +55,7 @@ void Profile_Initiate(void)
 		{
 			for(k = 0; k < NUM_OPTIONS; k++)
 			{
-					Profile_AllProfiles[i][j][k] = Profile_DosageRecommendation[(i*NUM_AGE_GROUP*NUM_ACTIVITY_LEVEL)+(j*NUM_AGE_GROUP)+k];
+				Profile_AllProfiles[i][j][k] = Profile_DosageRecommendation[(i*NUM_AGE_GROUP*NUM_ACTIVITY_LEVEL)+(j*NUM_AGE_GROUP)+k];
 			}
 		}
 	}
