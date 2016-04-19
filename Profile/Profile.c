@@ -23,21 +23,29 @@ ProfileOptions Profile_CurrentOptions;
 uint32_t Profile_BolusSteps[NUM_BOLUS_OPTIONS];
 
 const uint32_t ProfileBolusUnits[NUM_BOLUS_OPTIONS] = {1,  3,  5,
-																												6,  8,  10,
-																												11, 13, 15,
-																												16, 18, 20};
+                                                       6,  8, 10,
+                                                      11, 13, 15,
+                                                      16, 18, 20};
 
-const uint32_t Profile_DosageRecommendation[48] = {6,  9, 12, 14, /* Child Inactive */ 5,  7,  9, 12, /* Child Moderate */ 4,  6,  8, 10, /* Child Active */
-																									21, 30, 40, 50, /* Adolescent Inactive */ 17, 25, 33, 40, /* Adolescent Moderate */ 13, 19, 25, 32, /* Adolescent Active */
-																									17, 25, 33, 40, /* Adult Inactive */ 14, 21, 28, 34, /* Adult Moderate */ 10, 15, 21, 27, /* Adult Active */
-																									14, 21, 28, 34, /* Elder Inactive */ 10, 15, 21, 27, /* Elder Moderate */ 7,  11, 15, 20 /* Elder Active */};									
+const uint32_t Profile_DosageRecommendation[48] = {6,  9, 12, 14, /* Child Inactive */
+                                                   5,  7,  9, 12, /* Child Moderate */
+                                                   4,  6,  8, 10, /* Child Active */
+                                                  21, 30, 40, 50, /* Adolescent Inactive */
+                                                  17, 25, 33, 40, /* Adolescent Moderate */
+                                                  13, 19, 25, 32, /* Adolescent Active */
+                                                  17, 25, 33, 40, /* Adult Inactive */
+                                                  14, 21, 28, 34, /* Adult Moderate */
+                                                  10, 15, 21, 27, /* Adult Active */
+                                                  14, 21, 28, 34, /* Elder Inactive */
+                                                  10, 15, 21, 27, /* Elder Moderate */
+                                                   7, 11, 15, 20 /* Elder Active */};									
 
 uint32_t Profile_AllProfiles[NUM_AGE_GROUP][NUM_ACTIVITY_LEVEL][NUM_OPTIONS];
 
 void Profile_Initiate(void)
 {
 	AGE Profile_AgeGroup;
-  ACTIVITY Profile_ActivityGroup;
+	ACTIVITY Profile_ActivityGroup;
 	
 	int i,j,k;
 	
@@ -121,7 +129,7 @@ void Profile_RecommendDosage(void)
 	Profile_BaseDisplay = Profile_CreateBaseDisplay("Dosage", opt[0], opt[1], opt[2], opt[3]);
 	LCD_DisplayOptions(Profile_BaseDisplay);
 	
-	do {
+	do{
 		Control_Debounce();
 		if(Control_JoystickState == JOYSTICK_CENTER)
 		{
@@ -227,7 +235,7 @@ void Profile_BasalDuringBolus(void)
 }
 
 BaseDisplay Profile_CreateBaseDisplay(char *cat, char *opt1, char *opt2,
-																			char *opt3, char *opt4)
+                                      char *opt3, char *opt4)
 {
 	BaseDisplay temp;
 	strcpy(temp.ProfileCategory, cat);
@@ -245,7 +253,7 @@ BaseDisplay Profile_CreateBaseDisplay(char *cat, char *opt1, char *opt2,
 }
 
 void Profile_UpdateBaseDisplay(BaseDisplay *temp, char *cat, char *opt1, 
-																			char *opt2, char *opt3, char *opt4)
+                                      char *opt2, char *opt3, char *opt4)
 {
 	memset(temp->ProfileCategory, 0, 25);
 	memset(temp->ProfileOption1, 0, 25);

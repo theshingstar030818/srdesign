@@ -81,27 +81,27 @@ void StepperMotor_StepForward(void)
 	{
 		LPC_GPIO2->FIOSET |= 1 << 6;
 		Speaker_Stop();
-    Speaker_SetFrequency(kHz_2);
+		Speaker_SetFrequency(kHz_2);
 		Speaker_Play();
 	}
 	else if(StepperMotor_GlobalPosition >= WARNING_10)
 	{
 		LPC_GPIO2->FIOSET |= 1 << 5;
 		Speaker_Stop();
-    Speaker_SetFrequency(kHz_1);
+		Speaker_SetFrequency(kHz_1);
 		Speaker_Play();
 	}
 	else if(StepperMotor_GlobalPosition >= WARNING_20)
 	{
 		LPC_GPIO2->FIOSET |= 1 << 4;
 		Speaker_Stop();
-    Speaker_SetFrequency(Hz_500);
+		Speaker_SetFrequency(Hz_500);
 		Speaker_Play();
 	}
 
 	if(StepperMotor_GlobalPosition == SYRINGE_LENGTH)
 	{
-    Control_LEDClearAdmin();
+		Control_LEDClearAdmin();
 		Control_GlobalStatus = Wait_Status;
 		Control_GlobalState = Empty_State;
 		Speaker_Stop();
@@ -112,7 +112,7 @@ void StepperMotor_StepForward(void)
 	else if((StepperMotor_CurrentBasalDose >= Profile_CurrentOptions.BasalStepsPerDose) || 
 					(StepperMotor_CurrentBolusDose > Profile_CurrentOptions.BolusSteps))
 	{
-    Control_LEDClearAdmin();
+		Control_LEDClearAdmin();
 		Control_DosageReset();
 		StepperMotor_SpinDisable();
 	}

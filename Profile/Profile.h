@@ -13,7 +13,7 @@
 /** Function Profile_Initiate()
  *
  *  Initializes Profile to set the Age Group, Activity Level, and
- *	Rate of Basal
+ *  Rate of Basal
  *
  *  @param void: void 
  *  @return void: void
@@ -24,9 +24,9 @@ void Profile_Initiate(void);
 /** Function Profile_RecommendDosage()
  *
  *  Function is called at the end of Profile_Initiate().
- *	Based on the users age group and activity level,
- *	the function displays and has the user select between
- *	four different dosage rates.
+ *  Based on the users age group and activity level,
+ *  the function displays and has the user select between
+ *  four different dosage rates.
  *
  *  @param void: void 
  *  @return void: void
@@ -37,8 +37,8 @@ void Profile_RecommendDosage(void);
 /** Function Profile_AssignBasalSteps()
  *
  *  Function is called at the end of Profile_RecommendDosage().
- *	Based on the users selection of the recommended Basal Doses
- *	the function converts the dosage rate into steps per day and steps per dose.
+ *  Based on the users selection of the recommended Basal Doses
+ *  the function converts the dosage rate into steps per day and steps per dose.
  *
  *  @param int: units 
  *  @return void: void
@@ -59,7 +59,7 @@ void Profile_FillBolusSteps(void);
 /** Function Profile_DisplayBolusOptions()
  *
  *  When Bolus is activated, allows user to select amount of
- *	insulin for a Bolus dosage.
+ *  insulin for a Bolus dosage.
  *
  *  @param void: void 
  *  @return void: void
@@ -69,9 +69,9 @@ void Profile_DisplayBolusOptions(void);
 
 /** Function Profile_BasalDuringBolus()
  *
- *	Function is called when a Basal occurs during a Bolus.
- *	Function subtracts the number of Basal injecttions from
- *	the StepperMotor_CurrentBolusDose.
+ *  Function is called when a Basal occurs during a Bolus.
+ *  Function subtracts the number of Basal injecttions from
+ *  the StepperMotor_CurrentBolusDose.
  *
  *  @param void: void 
  *  @return void: void
